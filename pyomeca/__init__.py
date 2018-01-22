@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
-__all__ = ["math", "data"]
+__all__ = ["types", "math", "data"]
 from . import *
