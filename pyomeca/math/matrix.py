@@ -7,20 +7,22 @@ Date: January 2018
 
 """
 
-import numpy
+import numpy as np
+from pyomeca.types import Vectors3d
 
 
 def reshape_2d_to_3d_matrix(m):
-    """Convert a Fx3*N into a 3xNxF matrix
+    """
+    Convert a Fx3*N into a 3xNxF matrix
     :param m: Fx3*N matrix
     :type m: numpy.array
     :return a 3xNxF matrix
     """
 
     s = m.shape
-    m2 = numpy.ones((4, s[1]/3, s[0]))
-    m2[0:3, :, :] = numpy.reshape(m.T, (3, s[1] / 3, s[0]), 'A')
-    return m2
+    if int(s[1]/3) != s[1]/3:
+        raise IndexError("Number of columns must be divisible by 3")
+    return Vectors3d(np.reshape(m.T, (3, int(s[1]/3), s[0]), 'F'))
 
 
 def reshape_3d_to_2d_matrix(m):
@@ -31,7 +33,7 @@ def reshape_3d_to_2d_matrix(m):
     """
 
     s = m.shape
-    return numpy.reshape(m[0:3, : ,:], (s[0] * s[1], s[2]), 'A').T
+    return np.reshape(m[0:3, :, :], (s[0] * s[1], s[2]), 'A').T
 
 
 def define_axes(axis1, axis2, axesName, keep, origin):
@@ -71,9 +73,9 @@ def rotate(rt, m):
     if len(s_rt) == 2 and len(s_m) == 2:
         m2 = rt.dot(m)
     elif len(s_rt) == 2 and len(s_m) == 3:
-        m2 = numpy.einsum('ij,jkl->ikl', rt, m)
+        m2 = np.einsum('ij,jkl->ikl', rt, m)
     elif len(s_rt) == 3 and len(s_m) == 3:
-        m2 = numpy.einsum('ijk,jlk->ilk', rt, m)
+        m2 = np.einsum('ijk,jlk->ilk', rt, m)
     else:
         raise ValueError('Size of RT and M must match coucou')
 
