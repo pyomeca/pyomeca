@@ -6,7 +6,7 @@ Written by: Pariterre & Romain Martinez
 Date: January 2018
 """
 
-import numpy
+import numpy as np
 import pandas
 from pyomeca import math
 

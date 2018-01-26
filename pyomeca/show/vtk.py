@@ -1,23 +1,23 @@
 import vtk
 import sys
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import QPalette, QColor
+from PyQt5 import QtWidgets
+from PyQt5.QtGui import QPalette, QColor
 from vtk.qt4.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from vtk import vtkInteractorStyleTrackballCamera
 from pyomeca.types import Vectors3d
 
 first = True
 if first:
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     first = False
 
 
-class Window(QtGui.QMainWindow):
+class Window(QtWidgets.QMainWindow):
     def __init__(self, parent=None, background_color=(0, 0, 0)):
-        QtGui.QMainWindow.__init__(self, parent)
-        self.frame = QtGui.QFrame()
+        QtWidgets.QMainWindow.__init__(self, parent)
+        self.frame = QtWidgets.QFrame()
 
-        self.vl = QtGui.QVBoxLayout()
+        self.vl = QtWidgets.QVBoxLayout()
         self.vtkWidget = QVTKRenderWindowInteractor(self.frame)
         self.vl.addWidget(self.vtkWidget)
 
@@ -57,12 +57,10 @@ class Window(QtGui.QMainWindow):
         self.setPalette(QPalette(QColor(color[0]*255, color[1]*255, color[2]*255)))
 
 
-
-class Model(QtGui.QWidget):
+class Model(QtWidgets.QWidget):
     def __init__(self, parent, markers_size=5, markers_color=(1, 1, 1), markers_opacity=1.0):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.parent_window = parent
-
 
         palette = QPalette()
         palette.setColor(self.backgroundRole(), QColor(255, 255, 255))
