@@ -8,7 +8,7 @@ Date: January 2018
 
 import numpy as np
 import pandas
-from pyomeca import math
+from pyomeca.math import matrix
 
 
 def load_data(file_name, mark_names=None, mark_idx=list(), header=None):
@@ -19,14 +19,14 @@ def load_data(file_name, mark_names=None, mark_idx=list(), header=None):
     :param mark_names: list depicting the marker to keep (the order of the marker is kept in return data)
     :type mark_names: list of string
     :param list mark_idx: list depicting the marker to keep (the order of the marker is kept in return data)
-    :type mark_idx: list of integer
+    :type mark_idx: list
     :param header: number of line of header as needed by pandas.read_csv
     :type header: int
     :return data
     """
 
     data_frame = pandas.read_csv(file_name, header=header)
-    data_set = math.matrix.reshape_2d_to_3d_matrix(data_frame.values)
+    data_set = matrix.reshape_2d_to_3d_matrix(data_frame.values)
     if not mark_names and not mark_idx:
         return data_set
     elif not mark_names:
@@ -42,19 +42,23 @@ def extract_data(m, mark_idx):
     ----------
     m : numpy.array
         a Fx3*N or 3xNxF matrix of marker position
-    mark_idx : int
+    mark_idx : list(int)
         idx of marker to keep (order is kept in the returned data)
     Returns
     -------
     numpy.array
         extracted data
     """
-
-    s = len(numpy.shape(mark_idx))
-    if s == 2:
-        data = numpy.mean(m[:, numpy.mean(mark_idx, axis=0).astype(int), :])
-    elif s == 3:
+    s_tp = np.shape(mark_idx)
+    s = len(s_tp)
+    if s == 1:
         data = m[:, mark_idx, :]
+    elif s == 2:
+        data = m[:, mark_idx[0], :]
+        for i in range(1, s_tp[0]):
+            data += m[:, mark_idx[i], :]
+        data /= s_tp[0]
+
     else:
         raise NotImplementedError('extract_data works only on Fx3*N or 3xNxF matrices')
     return data

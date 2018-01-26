@@ -92,10 +92,6 @@ class Model(QtWidgets.QWidget):
         self.markers = markers
 
         # Remove previous actors from the scene
-        # actors = self.parent_window.ren.GetActors()
-        # actors.InitTraversal()
-        # for i in range(actors.GetNumberOfItems()):
-        #    self.parent_window.ren.RemoveActor(actors.GetNextActor())
         for actor in self.actors:
             self.parent_window.ren.RemoveActor(actor)
         self.actors = list()
@@ -120,9 +116,6 @@ class Model(QtWidgets.QWidget):
             raise IndexError("Numbers of markers should be the same set by new_markers_set")
         self.markers = markers
 
-        # actors = self.parent_window.ren.GetActors()
-        # actors.InitTraversal()
-        # for i in range(actors.GetNumberOfItems()):
         for i, actor in enumerate(self.actors):
             # mapper = actors.GetNextActor().GetMapper()
             mapper = actor.GetMapper()

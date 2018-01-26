@@ -32,8 +32,7 @@ def reshape_3d_to_2d_matrix(m):
     :return a Fx3*N matrix
     """
 
-    s = m.shape
-    return np.reshape(m[0:3, :, :], (s[0] * s[1], s[2]), 'A').T
+    return np.reshape(m[0:3, :, :], (3 * m.number_markers(), m.number_frames()), 'A').T
 
 
 def define_axes(axis1, axis2, axesName, keep, origin):
@@ -54,40 +53,3 @@ def define_axes(axis1, axis2, axesName, keep, origin):
     # axis1 = s2m_data.extract_data(data_set, idx_xaxis)
     # axis2 = s2m_data.extract_data(data_set, idx_yaxis)
     # origin = s2m_data.extract_data(data_set, idx_origin)
-
-
-def rotate(rt, m):
-    """Rotate markers m about rt
-    :param rt: an homogeneous matrix of rototranslation (4x4xF). If F == 1 then the matrix is repeated to fit m size
-    :type rt: numpy.array
-    :param m: matrix of markers (3x4xF)
-    :type m: numpy.array
-    :return m rotated by rt
-    """
-
-    s_m = m.shape
-    s_rt = rt.shape
-    if s_rt[0] != s_m[0]:
-        raise ValueError('Size of RT and M must match')
-
-    if len(s_rt) == 2 and len(s_m) == 2:
-        m2 = rt.dot(m)
-    elif len(s_rt) == 2 and len(s_m) == 3:
-        m2 = np.einsum('ij,jkl->ikl', rt, m)
-    elif len(s_rt) == 3 and len(s_m) == 3:
-        m2 = np.einsum('ijk,jlk->ilk', rt, m)
-    else:
-        raise ValueError('Size of RT and M must match coucou')
-
-    return m2
-
-
-def inv_rt(rt):
-    """Returns the transposed (and, by definition, inverted) homogeneous 4x4xF matrix
-    :param rt: an homogeneous matrix of rototranslation (4x4xF)
-    :type rt: numpy.array
-    :return rt transposed
-    """
-
-    print('coucou')
-    return rt
