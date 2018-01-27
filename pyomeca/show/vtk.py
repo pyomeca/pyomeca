@@ -5,6 +5,7 @@ from PyQt5.QtGui import QPalette, QColor
 from vtk.qt4.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from vtk import vtkInteractorStyleTrackballCamera
 from pyomeca.types import Vectors3d
+from pyomeca.types import RotoTrans
 
 first = True
 if first:
@@ -71,8 +72,10 @@ class Model(QtWidgets.QWidget):
         self.markers_size = markers_size
         self.markers_color = markers_color
         self.markers_opacity = markers_opacity
+        self.markers_actors = []
+        self.rt = RotoTrans()
+        self.rt_actors = []
         self.parent_window.should_reset_camera = True
-        self.actors = []
 
     def set_markers_color(self, markers_color):
         self.markers_color = markers_color
@@ -92,9 +95,9 @@ class Model(QtWidgets.QWidget):
         self.markers = markers
 
         # Remove previous actors from the scene
-        for actor in self.actors:
+        for actor in self.markers_actors:
             self.parent_window.ren.RemoveActor(actor)
-        self.actors = list()
+        self.markers_actors = list()
 
         # Create the geometry of a point (the coordinate) points = vtk.vtkPoints()
         for i in range(markers.number_markers()):
@@ -102,10 +105,10 @@ class Model(QtWidgets.QWidget):
             mapper = vtk.vtkPolyDataMapper()
 
             # Create an actor
-            self.actors.append(vtk.vtkActor())
-            self.actors[i].SetMapper(mapper)
+            self.markers_actors.append(vtk.vtkActor())
+            self.markers_actors[i].SetMapper(mapper)
 
-            self.parent_window.ren.AddActor(self.actors[i])
+            self.parent_window.ren.AddActor(self.markers_actors[i])
             self.parent_window.ren.ResetCamera()
         self.update_markers(self.markers)
 
@@ -116,15 +119,50 @@ class Model(QtWidgets.QWidget):
             raise IndexError("Numbers of markers should be the same set by new_markers_set")
         self.markers = markers
 
-        for i, actor in enumerate(self.actors):
+        for i, actor in enumerate(self.markers_actors):
             # mapper = actors.GetNextActor().GetMapper()
             mapper = actor.GetMapper()
-            self.actors[i].GetProperty().SetColor(self.markers_color)
-            self.actors[i].GetProperty().SetOpacity(self.markers_opacity)
+            self.markers_actors[i].GetProperty().SetColor(self.markers_color)
+            self.markers_actors[i].GetProperty().SetOpacity(self.markers_opacity)
             source = vtk.vtkSphereSource()
             source.SetCenter(markers[0:3, i])
             source.SetRadius(self.markers_size)
             mapper.SetInputConnection(source.GetOutputPort())
 
+    def new_rt_set(self, rt):
+        # see https://www.vtk.org/Wiki/VTK/Examples/Cxx/GeometricObjects/OrientedCylinder
+        if rt.number_frames() is not 1:
+            raise IndexError("Markers should be from one frame only")
+        self.rt = rt
 
+        # Remove previous actors from the scene
+        for actor in self.rt_actors:
+            self.parent_window.ren.RemoveActor(actor)
+        self.rt_actors = list()
+
+        # Create the geometry of a point (the coordinate) points = vtk.vtkPoints()
+        for i in range(3): # 3 axes for a rt
+            # Create a mapper
+            mapper = vtk.vtkPolyDataMapper()
+
+            # Create an actor
+            self.rt_actors.append(vtk.vtkActor())
+            self.rt_actors[i].SetMapper(mapper)
+            self.rt_actors[i].GetProperty().SetLineWidth(15)
+            if i == 0:
+                self.rt_actors[i].GetProperty().SetColor((1, 0, 0))
+            if i == 1:
+                self.rt_actors[i].GetProperty().SetColor((0, 1, 0))
+            if i == 2:
+                self.rt_actors[i].GetProperty().SetColor((0, 0, 1))
+
+            cylinder = vtk.vtkCylinderSource()
+            cylinder.SetResolution(20)
+            cylinder.SetCenter(rt[0:3, 3]+i)
+            cylinder.SetRadius(self.markers_size)
+            mapper.SetInputConnection(cylinder.GetOutputPort())
+
+            self.parent_window.ren.AddActor(self.rt_actors[i])
+            self.parent_window.ren.ResetCamera()
+        # self.update_markers(self.markers)
 
