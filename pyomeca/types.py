@@ -27,11 +27,56 @@ class FrameDependentNpArray(np.ndarray):
         return np.asarray(array).view(cls)
 
     def number_frames(self):
+        """
+
+        Returns
+        -------
+        The number of frames
+        """
         s = self.shape
         if len(s) == 2:
             return 1
         else:
             return s[2]
+
+    def get_frame(self, f):
+        return self[:, :, f]
+
+
+class RotoTransCollection(list):
+    """
+    List of RotoTrans
+    """
+    def get_rt(self, i):
+        """
+        Get a specific RotoTrans of the collection
+        Parameters
+        ----------
+        i : int
+            Index of the RotoTrans in the collection
+
+        Returns
+        -------
+        All frame of RotoTrans of index i
+        """
+        return self[i]
+
+    def get_frame(self, f):
+        """
+        Get the RotoTransCollection for frame f
+        Parameters
+        ----------
+        f : int
+            Frame to get
+
+        Returns
+        -------
+        RotoTransCollection of frame f
+        """
+        rt_coll = RotoTransCollection()
+        for rt in self:
+            rt_coll.append(rt.get_frame(f))
+        return rt_coll
 
 
 class RotoTrans(FrameDependentNpArray):
@@ -60,6 +105,12 @@ class RotoTrans(FrameDependentNpArray):
             s = rt.shape
             if s[0] != 4 or s[1] != 4:
                 raise IndexError('RotoTrans must by a 4x4xF matrix')
+            # Make sure last line reads [0, 0, 0, 1]
+            if len(s) == 2:
+                rt[3, :] = np.array([0, 0, 0, 1])
+            else:
+                rt[3, 0:3, :] = 0
+                rt[3, 3, :] = 1
 
         # Finally, we must return the newly created object:
         return np.asarray(rt).view(cls)
@@ -193,21 +244,63 @@ class RotoTrans(FrameDependentNpArray):
 
         rt = np.eye(4)
         rt[0:3, 0:3] = r
-        rt[0:3, 3] = translations
+        rt[0:3, 3] = translations[0:3]
 
         return RotoTrans(rt)
+
+    def rotation(self):
+        """
+        Returns
+        -------
+        Rotation part of the RotoTrans
+        """
+        return self[0:3, 0:3]
+
+    def set_rotation(self, r):
+        """
+        Set rotation part of the RotoTrans
+        Parameters
+        ----------
+        r : np.array
+            A 3x3 rotation matrix
+        """
+        self[0:3, 0:3] = r
+
+    def translation(self):
+        """
+        Returns
+        -------
+        Translation part of the RotoTrans
+        """
+        return self[0:3, 3]
+
+    def set_translation(self, t):
+        """
+        Set translation part of the RotoTrans
+        Parameters
+        ----------
+        t : np.array
+            A 3x1 vector
+        """
+        self[0:3, 3, :] = t[0:3, :, :].reshape(3, t.shape[2])
 
     def transpose(self):
         """
 
         Returns
         -------
-        Transposed rotranslation matrix
+        Transposed RotoTrans matrix
         """
         print("Transpose here")
         raise NotImplementedError("Transpose rototranslation is not implemented yet")
 
     def inverse(self):
+        """
+
+        Returns
+        -------
+        Inverse of the RotoTrans matrix
+        """
         return self.transpose()
 
 
@@ -237,16 +330,20 @@ class Vectors3d(FrameDependentNpArray):
         return obj
 
     def number_markers(self):
+        """
+        Returns
+        -------
+        Get the number of markers
+        """
         s = self.shape
         return s[1]
 
     def rotate(self, rt):
         """
-
         Parameters
         ----------
         rt : RotoTrans
-            Rototranslation to rotate about
+            Rototranslation matrix to rotate about
 
         Returns
         -------

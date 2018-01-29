@@ -8,15 +8,22 @@ Date: January 2018
 """
 
 import numpy as np
+from pyomeca import data
 from pyomeca.types import Vectors3d
+from pyomeca.types import RotoTrans
 
 
 def reshape_2d_to_3d_matrix(m):
     """
-    Convert a Fx3*N into a 3xNxF matrix
-    :param m: Fx3*N matrix
-    :type m: numpy.array
-    :return a 3xNxF matrix
+    Takes a matrix CSV style matrix and returns a Vectors3d
+    Parameters
+    ----------
+    m : np.array
+        A CSV style matrix (Fx3*N)
+
+    Returns
+    -------
+    Vectors3d of data set
     """
 
     s = m.shape
@@ -26,30 +33,102 @@ def reshape_2d_to_3d_matrix(m):
 
 
 def reshape_3d_to_2d_matrix(m):
-    """Convert a 3xNxF into a Fx3*N matrix
-    :param numpy.array m: 3xNxF matrix
-    :type m: numpy.array
-    :return a Fx3*N matrix
+    """
+    Takes a Vectors3d style matrix and returns a matrix CSV style
+    Parameters
+    ----------
+    m : Vectors3d
+        Matrix to be reshaped
+
+    Returns
+    -------
+    CSV-style matrix
     """
 
-    return np.reshape(m[0:3, :, :], (3 * m.number_markers(), m.number_frames()), 'A').T
+    return np.reshape(m[0:3, :, :], (3 * m.number_markers(), m.number_frames()), 'F').T
 
 
-def define_axes(axis1, axis2, axesName, keep, origin):
-    """Creates and returns 4x4xF systems of axes made from axis1 and axis2 data.
-    :param axis1: matrix of markers (3xN or 3x1xN) that defines the first axis
-    :type axis1: numpy.array
-    :param axis2: matrix of markers (3xN or 3x1xN) that defines the second axis
-    :type axis2: numpy.array
-    :param axesName: a string that defines the axis ('xy', 'yx', 'xz', 'zx', 'yz' or 'zy')
-    :type axesName: string
-    :param keep: index of kept axis
-    :type keep: int
-    :param origin: matrix of markers (3xN or 3x1xN) that defines the origin position
-    :type origin: numpy.array
-    :return homogenous hypermatrix (4x4xF)
+def define_axes(data_set, idx_axis1, idx_axis2, axes_name, axis_to_recalculate, idx_origin):
+    """
+    This function creates system of axes from axis1 and axis2
+    Parameters
+    ----------
+    data_set : Vectors3d
+        Whole data set
+    idx_axis1 : list(int)
+        First column is the beginning of the axis, second is the end. Rows are the markers to be mean
+    idx_axis2 : list(int)
+        First column is the beginning of the axis, second is the end. Rows are the markers to be mean
+    axes_name : str
+        Name of the axis1 and axis2 in that order ("xy", "yx", "xz", ...)
+    axis_to_recalculate : str
+        Which of the 3 axes to recalculate
+    idx_origin : list(int)
+        Markers to be mean to define the origin of the system of axes
+
+    Returns
+    -------
+    System of axes
     """
 
-    # axis1 = s2m_data.extract_data(data_set, idx_xaxis)
-    # axis2 = s2m_data.extract_data(data_set, idx_yaxis)
-    # origin = s2m_data.extract_data(data_set, idx_origin)
+    # Extract mean of each required axis indexes
+    idx_axis1 = np.matrix(idx_axis1)
+    idx_axis2 = np.matrix(idx_axis2)
+
+    axis1 = data.extract_data(data_set, idx_axis1[:, 1]) - data.extract_data(data_set, idx_axis1[:, 0])
+    axis2 = data.extract_data(data_set, idx_axis2[:, 1]) - data.extract_data(data_set, idx_axis2[:, 0])
+    origin = data.extract_data(data_set, np.matrix(idx_origin).reshape((len(idx_origin), 1)))
+
+    axis1 = axis1[0:3, :, :].reshape(3, axis1.shape[2]).T
+    axis2 = axis2[0:3, :, :].reshape(3, axis2.shape[2]).T
+
+    # If we inverse axes_names, inverse axes as well
+    axes_name_tp = ''.join(sorted(axes_name))
+    if axes_name != axes_name_tp:
+        axis1_copy = axis1
+        axis1 = axis2
+        axis2 = axis1_copy
+        axes_name = axes_name_tp
+
+    if axes_name[0] == "x":
+        x = axis1
+        if axes_name[1] == "y":
+            y = axis2
+            z = np.cross(x, y)
+        elif axes_name[1] == "z":
+            z = axis2
+            y = np.cross(z, x)
+        else:
+            raise ValueError("Axes names should be 2 values of ""x"", ""y"" and ""z"" permutations)")
+
+    elif axes_name[0] == "y":
+        y = axis1
+        if axes_name[1] == "z":
+            z = axis2
+            x = np.cross(y, z)
+        else:
+            raise ValueError("Axes names should be 2 values of ""x"", ""y"" and ""z"" permutations)")
+    else:
+        raise ValueError("Axes names should be 2 values of ""x"", ""y"" and ""z"" permutations)")
+
+    # Normalize each vector
+    x = x / np.matrix(np.linalg.norm(x, axis=1)).T
+    y = y / np.matrix(np.linalg.norm(y, axis=1)).T
+    z = z / np.matrix(np.linalg.norm(z, axis=1)).T
+
+    # # Recalculate the temporary axis
+    if axis_to_recalculate == "x":
+        x = np.cross(y, z)
+    elif axis_to_recalculate == "y":
+        y = np.cross(z, x)
+    elif axis_to_recalculate == "z":
+        z = np.cross(x, y)
+    else:
+        raise ValueError("Axis to recalculate must be ""x"", ""y"" or ""z""")
+
+    rt = RotoTrans(rt=np.zeros((4, 4, data_set.shape[2])))
+    rt[0:3, 0, :] = x.T
+    rt[0:3, 1, :] = y.T
+    rt[0:3, 2, :] = z.T
+    rt.set_translation(origin)
+    return rt

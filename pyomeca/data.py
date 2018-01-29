@@ -11,18 +11,23 @@ import pandas
 from pyomeca.math import matrix
 
 
-def load_data(file_name, mark_names=None, mark_idx=list(), header=None):
-    """ This function reads CSV or C3D files and classes them according to the mark_names string list or
-    the mark_idx integer list
-    :param file_name: path + name of the file (including extension)
-    :type file_name: string
-    :param mark_names: list depicting the marker to keep (the order of the marker is kept in return data)
-    :type mark_names: list of string
-    :param list mark_idx: list depicting the marker to keep (the order of the marker is kept in return data)
-    :type mark_idx: list
-    :param header: number of line of header as needed by pandas.read_csv
-    :type header: int
-    :return data
+def load_data(file_name, header=None, mark_idx=list(), mark_names=None):
+    """
+    Load CSV or C3D data
+    Parameters
+    ----------
+    file_name : str
+        Path of file
+    mark_names : list(str)
+        Order of markers given by names, if both mark_names and mark_idx are provided, mark_idx prevails
+    mark_idx : list(int)
+        Order of markers given by index,
+    header : int
+        Number of rows in the csv file header, this parameter is ignored when the file is a C3D
+
+    Returns
+    -------
+    Data set in Vectors3d format
     """
 
     data_frame = pandas.read_csv(file_name, header=header)
@@ -43,23 +48,20 @@ def extract_data(m, mark_idx):
     m : numpy.array
         a Fx3*N or 3xNxF matrix of marker position
     mark_idx : list(int)
-        idx of marker to keep (order is kept in the returned data)
+        idx of marker to keep (order is kept in the returned data).
+        If mark_idx has more than one row, output is the mean of the markers over the columns.
     Returns
     -------
     numpy.array
         extracted data
     """
-    s_tp = np.shape(mark_idx)
-    s = len(s_tp)
-    if s == 1:
-        data = m[:, mark_idx, :]
-    elif s == 2:
-        data = m[:, mark_idx[0], :]
-        for i in range(1, s_tp[0]):
-            data += m[:, mark_idx[i], :]
-        data /= s_tp[0]
+    mark_idx = np.matrix(mark_idx)
 
-    else:
-        raise NotImplementedError('extract_data works only on Fx3*N or 3xNxF matrices')
+    try:
+        data = m[:, np.array(mark_idx)[0, :], :]
+        for i in range(1, mark_idx.shape[0]):
+            data += m[:, np.array(mark_idx)[i, :], :]
+        data /= mark_idx.shape[0]
+    except IndexError:
+        raise IndexError('extract_data works only on 3xNxF matrices and mark_idx must be a ixj array')
     return data
-
