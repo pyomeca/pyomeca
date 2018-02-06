@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+
+Visualization toolkit in PyoMeca library
+
+"""
+
 import vtk
 import sys
 from PyQt5 import QtWidgets

@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 
-File IO of the S2M python library
-Written by: Pariterre & Romain Martinez
-Date: January 2018
+File IO in PyoMeca library
+
 """
 
 import numpy as np

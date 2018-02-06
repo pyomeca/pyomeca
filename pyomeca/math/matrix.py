@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
-Matrix manipulation of S2M python library
-Written by: Pariterre & Romain Martinez
-Date: January 2018
+Matrix manipulation in PyoMeca library
 
 """
 
