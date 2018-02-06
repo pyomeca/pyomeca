@@ -10,10 +10,12 @@ from pyomeca.types import RotoTrans
 from pyomeca.types import RotoTransCollection
 from pyomeca.math.matrix import define_axes
 
+TEST_FILENAME = './data/markers.csv'
+
 # Load some test data
-d = PyoData.load_data("TestDataMarkers.csv", mark_idx=[0, 1, 2, 3, 4, 5])  # all markers
-d2 = PyoData.load_data("TestDataMarkers.csv", mark_idx=[[0, 1, 2], [0, 4, 2]])  # mean of 1st and 4th
-d3 = PyoData.load_data("TestDataMarkers.csv", mark_idx=[[0], [1], [2]])  # mean of first 3 markers
+d = PyoData.load_data(TEST_FILENAME, mark_idx=[0, 1, 2, 3, 4, 5])  # all markers
+d2 = PyoData.load_data(TEST_FILENAME, mark_idx=[[0, 1, 2], [0, 4, 2]])  # mean of 1st and 4th
+d3 = PyoData.load_data(TEST_FILENAME, mark_idx=[[0], [1], [2]])  # mean of first 3 markers
 
 # Create a windows with a nice gray background
 vtkWindow = PyoWindow(background_color=(.5, .5, .5))
