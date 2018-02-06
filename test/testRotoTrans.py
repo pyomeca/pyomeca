@@ -13,7 +13,7 @@ angles = np.random.rand(4, 1)
 # Test all sequences
 for angle_seq in angles_seq:
     # Extract the right amount of angle relative to sequence length
-    angles_to_test= angles[0:len(angle_seq)]
+    angles_to_test = angles[0:len(angle_seq)]
 
     # Get a RotoTrans from euler angles
     p = RotoTrans(angles=angles_to_test, angle_sequence=angle_seq)
@@ -23,7 +23,6 @@ for angle_seq in angles_seq:
 
     # If the difference between the initial and the final angles are less than epsilon, test is success
     if (a - angles_to_test).sum() < 1e-14:
-        print("Test successfully passed for " + angle_seq)
+        print(f'Test successfully passed for {angle_seq}')
     else:
-        print("Test failed for " + angle_seq)
-
+        print(f'Test failed for {angle_seq}')

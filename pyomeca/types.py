@@ -128,7 +128,7 @@ class RotoTrans(FrameDependentNpArray):
             Euler angles associated with RotoTrans
         """
         if self.number_frames() > 1:
-            raise NotImplementedError("get_eule_angles on more than one frame at a time is not implemented yet")
+            raise NotImplementedError("get_euler_angles on more than one frame at a time is not implemented yet")
 
         angles = np.ndarray(shape=(len(angle_sequence), 1))
 
