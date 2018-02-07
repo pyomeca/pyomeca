@@ -28,7 +28,6 @@ def load_data(file_name, header=None, mark_idx=list(), mark_names=None):
     -------
     Data set in Vectors3d format
     """
-
     data_frame = pandas.read_csv(file_name, header=header)
     data_set = matrix.reshape_2d_to_3d_matrix(data_frame.values)
     if not mark_names and not mark_idx:
@@ -44,7 +43,7 @@ def extract_data(m, mark_idx):
 
     Parameters
     ----------
-    m : numpy.array
+    m : Vectors3D
         a Fx3*N or 3xNxF matrix of marker position
     mark_idx : list(int)
         idx of marker to keep (order is kept in the returned data).
