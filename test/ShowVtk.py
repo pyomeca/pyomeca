@@ -10,7 +10,7 @@ from pyomeca.types import RotoTrans
 from pyomeca.types import RotoTransCollection
 from pyomeca.math.matrix import define_axes
 
-TEST_FILENAME = './data/markers.csv'
+TEST_FILENAME = './data/markers_without_header.csv'
 
 # Load some test data
 d = PyoData.load_data(TEST_FILENAME, mark_idx=[0, 1, 2, 3, 4, 5])  # all markers
