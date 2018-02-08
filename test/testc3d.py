@@ -1,10 +1,2 @@
-from thirdparty import btk
-# import thirdparty.btk as btk
-
-reader = btk.btkAcquisitionFileReader()
-reader.SetFilename("testc3d.c3d")
-reader.Update()
-acq = reader.GetOutput()
-
-for marker in btk.Iterate(acq.GetPoints()):
-    print(marker.GetValues())
+from pyomeca import data
+d = data.load_marker_data("testc3d.c3d", mark_names=['CLAV_post', 'PSISl', 'STERr', 'CLAV_post'])
