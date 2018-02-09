@@ -289,17 +289,31 @@ class RotoTrans(FrameDependentNpArray):
 
         Returns
         -------
-        Transposed RotoTrans matrix
+        Rt_t : RotoTrans
+            Transposed RotoTrans matrix ([R.T -R.T*t],[0 0 0 1])
         """
-        print("Transpose here")
-        raise NotImplementedError("Transpose rototranslation is not implemented yet")
+        # Create a matrix with the transposed rotation part
+        rt_t = RotoTrans(rt=np.ndarray((4, 4, self.number_frames())))
+        rt_t[0:3, 0:3, :] = np.transpose(self[0:3, 0:3, :], (1, 0, 2))
+
+        # Fill the last column and row with 0 and bottom corner with 1
+        rt_t[3, 0:3, :] = 0
+        rt_t[0:3, 3, :] = 0
+        rt_t[3, 3, :] = 1
+
+        # Transpose the translation part
+        t = Vectors3d(positions=np.reshape(self[0:3, 3, :], (3, 1, self.number_frames())))
+        rt_t[0:3, 3, :] = t.rotate(-rt_t)[0:3, :].reshape((3, self.number_frames()))
+
+        # Return transposed matrix
+        return rt_t
 
     def inverse(self):
         """
 
         Returns
         -------
-        Inverse of the RotoTrans matrix
+        Inverse of the RotoTrans matrix (which is by definition the transposed matrix)
         """
         return self.transpose()
 
