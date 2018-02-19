@@ -5,7 +5,6 @@ Definition of different container in PyoMeca library
 
 """
 
-import math
 import numpy as np
 
 
@@ -47,6 +46,7 @@ class RotoTransCollection(list):
     """
     List of RotoTrans
     """
+
     def get_rt(self, i):
         """
         Get a specific RotoTrans of the collection
@@ -133,61 +133,61 @@ class RotoTrans(FrameDependentNpArray):
         angles = np.ndarray(shape=(len(angle_sequence), 1))
 
         if angle_sequence == "x":
-            angles[0] = math.asin(self[2, 1])
+            angles[0] = np.arcsin(self[2, 1])
         elif angle_sequence == "y":
-            angles[0] = math.asin(self[0, 2])
+            angles[0] = np.arcsin(self[0, 2])
         elif angle_sequence == "z":
-            angles[0] = math.asin(self[1, 0])
+            angles[0] = np.arcsin(self[1, 0])
         elif angle_sequence == "xy":
-            angles[0] = math.asin(self[2, 1])
-            angles[1] = math.asin(self[0, 2])
+            angles[0] = np.arcsin(self[2, 1])
+            angles[1] = np.arcsin(self[0, 2])
         elif angle_sequence == "xz":
-            angles[0] = -math.asin(self[1, 2])
-            angles[1] = -math.asin(self[0, 1])
+            angles[0] = -np.arcsin(self[1, 2])
+            angles[1] = -np.arcsin(self[0, 1])
         elif angle_sequence == "yx":
-            angles[0] = -math.asin(self[2, 0])
-            angles[1] = -math.asin(self[1, 2])
+            angles[0] = -np.arcsin(self[2, 0])
+            angles[1] = -np.arcsin(self[1, 2])
         elif angle_sequence == "yz":
-            angles[0] = math.asin(self[0, 2])
-            angles[1] = math.asin(self[1, 0])
+            angles[0] = np.arcsin(self[0, 2])
+            angles[1] = np.arcsin(self[1, 0])
         elif angle_sequence == "zx":
-            angles[0] = math.asin(self[1, 0])
-            angles[1] = math.asin(self[2, 1])
+            angles[0] = np.arcsin(self[1, 0])
+            angles[1] = np.arcsin(self[2, 1])
         elif angle_sequence == "zy":
-            angles[0] = -math.asin(self[0, 1])
-            angles[1] = -math.asin(self[2, 0])
+            angles[0] = -np.arcsin(self[0, 1])
+            angles[1] = -np.arcsin(self[2, 0])
         elif angle_sequence == "xyz":
-            angles[0] = math.atan2(self[1, 2], self[2, 2])
-            angles[1] = math.asin(self[0, 1])
-            angles[2] = math.atan2(-self[0, 1], self[0, 0])
+            angles[0] = np.arctan2(self[1, 2], self[2, 2])
+            angles[1] = np.arcsin(self[0, 1])
+            angles[2] = np.arctan2(-self[0, 1], self[0, 0])
         elif angle_sequence == "xzy":
-            angles[0] = math.atan2(self[2, 1], self[1, 1])
-            angles[2] = math.atan2(self[0, 2], self[0, 0])
-            angles[1] = -math.asin(self[0, 1])
+            angles[0] = np.arctan2(self[2, 1], self[1, 1])
+            angles[2] = np.arctan2(self[0, 2], self[0, 0])
+            angles[1] = -np.arcsin(self[0, 1])
         elif angle_sequence == "xzy":
-            angles[1] = -math.asin(self[1, 2])
-            angles[0] = math.atan2(self[0, 2], self[2, 2])
-            angles[2] = math.atan2(self[1, 0], self[1, 1])
+            angles[1] = -np.arcsin(self[1, 2])
+            angles[0] = np.arctan2(self[0, 2], self[2, 2])
+            angles[2] = np.arctan2(self[1, 0], self[1, 1])
         elif angle_sequence == "yzx":
-            angles[2] = math.atan2(-self[1, 2], self[1, 1])
-            angles[0] = math.atan2(-self[2, 0], self[0, 0])
-            angles[1] = math.asin(self[1, 2])
+            angles[2] = np.arctan2(-self[1, 2], self[1, 1])
+            angles[0] = np.arctan2(-self[2, 0], self[0, 0])
+            angles[1] = np.arcsin(self[1, 2])
         elif angle_sequence == "zxy":
-            angles[1] = math.asin(self[2, 1])
-            angles[2] = math.atan2(-self[2, 0], self[2, 2])
-            angles[0] = math.atan2(-self[0, 1], self[1, 1])
+            angles[1] = np.arcsin(self[2, 1])
+            angles[2] = np.arctan2(-self[2, 0], self[2, 2])
+            angles[0] = np.arctan2(-self[0, 1], self[1, 1])
         elif angle_sequence == "zyz":
-            angles[0] = math.atan2(self[1, 2], self[0, 2])
-            angles[1] = math.acos(self[2, 2])
-            angles[2] = math.atan2(self[2, 1], -self[2, 0])
+            angles[0] = np.arctan2(self[1, 2], self[0, 2])
+            angles[1] = np.arccos(self[2, 2])
+            angles[2] = np.arctan2(self[2, 1], -self[2, 0])
         elif angle_sequence == "zxz":
-            angles[0] = math.atan2(self[0, 2], -self[1, 2])
-            angles[1] = math.acos(self[2, 2])
-            angles[2] = math.atan2(self[2, 0], self[2, 1])
+            angles[0] = np.arctan2(self[0, 2], -self[1, 2])
+            angles[1] = np.arccos(self[2, 2])
+            angles[2] = np.arctan2(self[2, 0], self[2, 1])
         elif angle_sequence == "zyzz":
-            angles[0] = math.atan2(self[1, 2], self[0, 2])
-            angles[1] = math.acos(self[2, 2])
-            angles[2] = math.atan2(self[2, 1], -self[2, 0])
+            angles[0] = np.arctan2(self[1, 2], self[0, 2])
+            angles[1] = np.arccos(self[2, 2])
+            angles[2] = np.arctan2(self[2, 1], -self[2, 0])
 
         return angles
 
@@ -209,7 +209,7 @@ class RotoTrans(FrameDependentNpArray):
             The rototranslation associated to the input parameters
         """
         if angle_sequence == "zyzz":
-            angles = (angles[0], angles[1], angles[2]-angles[0])
+            angles = (angles[0], angles[1], angles[2] - angles[0])
             angle_sequence = "zyz"
 
         if len(angles) is not len(angle_sequence):
@@ -221,17 +221,17 @@ class RotoTrans(FrameDependentNpArray):
                 if angle_sequence[i] == "x":
                     a = angles[i]
                     matrix_to_prod.append(np.array([[1, 0, 0],
-                                                    [0, math.cos(a), math.sin(a)],
-                                                    [0, -math.sin(a), math.cos(a)]]).T)
+                                                    [0, np.cos(a), np.sin(a)],
+                                                    [0, -np.sin(a), np.cos(a)]]).T)
                 elif angle_sequence[i] == "y":
                     a = angles[i]
-                    matrix_to_prod.append(np.array([[math.cos(a), 0, -math.sin(a)],
+                    matrix_to_prod.append(np.array([[np.cos(a), 0, -np.sin(a)],
                                                     [0, 1, 0],
-                                                    [math.sin(a), 0, math.cos(a)]]).T)
+                                                    [np.sin(a), 0, np.cos(a)]]).T)
                 elif angle_sequence[i] == "z":
                     a = angles[i]
-                    matrix_to_prod.append(np.array([[math.cos(a), math.sin(a), 0],
-                                                    [-math.sin(a), math.cos(a), 0],
+                    matrix_to_prod.append(np.array([[np.cos(a), np.sin(a), 0],
+                                                    [-np.sin(a), np.cos(a), 0],
                                                     [0, 0, 1]]).T)
                 else:
                     raise ValueError("angle_sequence must be a permutation of axes (e.g. ""xyz"", ""yzx"", ...)")
