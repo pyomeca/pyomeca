@@ -4,12 +4,19 @@ Test and example script for File IO
 
 from pyomeca import data as PyoData
 
-TEST_FILENAME_CSV = './data/markers_without_header.csv'
-TEST_FILENAME_C3D = './data/markers_and_analogs.c3d'
+TEST_FILENAME = {
+    # TODO: add csv with header
+    'markers_without_header': './data/markers_without_header.csv',
+    'c3d': './data/markers_and_analogs.c3d'
+}
 
 print('FileIO')
 
-points_1 = PyoData.load_data(TEST_FILENAME_CSV, mark_idx=[0, 1, 2, 3, 4, 5])  # all markers
+# csv without header
+points_1 = PyoData.load_data(TEST_FILENAME['markers_without_header'],
+                             mark_idx=[0, 1, 2, 3, 4, 5])
 print('\tcsv without header: OK')
 
-points_2 =
+# csv with header
+
+# c3d
