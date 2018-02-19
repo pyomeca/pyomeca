@@ -6,9 +6,10 @@ Matrix manipulation in PyoMeca library
 """
 
 import numpy as np
+
 from pyomeca import data
-from pyomeca.types import Vectors3d
 from pyomeca.types import RotoTrans
+from pyomeca.types import Vectors3d
 
 
 def reshape_2d_to_3d_matrix(m):
@@ -25,9 +26,9 @@ def reshape_2d_to_3d_matrix(m):
     """
 
     s = m.shape
-    if int(s[1]/3) != s[1]/3:
+    if int(s[1] / 3) != s[1] / 3:
         raise IndexError("Number of columns must be divisible by 3")
-    return Vectors3d(np.reshape(m.T, (3, int(s[1]/3), s[0]), 'F'))
+    return Vectors3d(np.reshape(m.T, (3, int(s[1] / 3), s[0]), 'F'))
 
 
 def reshape_3d_to_2d_matrix(m):
