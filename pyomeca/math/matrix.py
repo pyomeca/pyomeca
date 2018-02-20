@@ -7,14 +7,14 @@ Matrix manipulation in PyoMeca library
 
 import numpy as np
 
-from pyomeca import data
+from pyomeca import fileio as pyio
 from pyomeca.types import RotoTrans
 from pyomeca.types import Vectors3d
 
 
 def reshape_2d_to_3d_matrix(m):
     """
-    Takes a matrix CSV style matrix and returns a Vectors3d
+    Takes a tabular matrix and returns a Vectors3d
     Parameters
     ----------
     m : np.array
@@ -33,7 +33,7 @@ def reshape_2d_to_3d_matrix(m):
 
 def reshape_3d_to_2d_matrix(m):
     """
-    Takes a Vectors3d style matrix and returns a matrix CSV style
+    Takes a Vectors3d style matrix and returns a tabular matrix
     Parameters
     ----------
     m : Vectors3d
@@ -41,7 +41,7 @@ def reshape_3d_to_2d_matrix(m):
 
     Returns
     -------
-    CSV-style matrix
+    tabular matrix
     """
 
     return np.reshape(m[0:3, :, :], (3 * m.number_markers(), m.number_frames()), 'F').T
@@ -74,9 +74,9 @@ def define_axes(data_set, idx_axis1, idx_axis2, axes_name, axis_to_recalculate, 
     idx_axis1 = np.matrix(idx_axis1)
     idx_axis2 = np.matrix(idx_axis2)
 
-    axis1 = data.extract_data(data_set, idx_axis1[:, 1]) - data.extract_data(data_set, idx_axis1[:, 0])
-    axis2 = data.extract_data(data_set, idx_axis2[:, 1]) - data.extract_data(data_set, idx_axis2[:, 0])
-    origin = data.extract_data(data_set, np.matrix(idx_origin).reshape((len(idx_origin), 1)))
+    axis1 = pyio.extract_data(data_set, idx_axis1[:, 1]) - pyio.extract_data(data_set, idx_axis1[:, 0])
+    axis2 = pyio.extract_data(data_set, idx_axis2[:, 1]) - pyio.extract_data(data_set, idx_axis2[:, 0])
+    origin = pyio.extract_data(data_set, np.matrix(idx_origin).reshape((len(idx_origin), 1)))
 
     axis1 = axis1[0:3, :, :].reshape(3, axis1.shape[2]).T
     axis2 = axis2[0:3, :, :].reshape(3, axis2.shape[2]).T

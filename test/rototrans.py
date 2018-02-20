@@ -1,8 +1,9 @@
 """
 Unittest and example script for euler to rot and rot to euler
 """
-from pyomeca.types import RotoTrans
 import numpy as np
+
+from pyomeca.types import RotoTrans
 
 # Define all the possible angle_sequence to test
 angles_seq = ["x", "y", "z", "xy", "xz", "yx", "yz", "zx", "zy", "xyz", "xzy", "yxz", "yzx", "zxy", "zyx", "zyzz"]
@@ -22,7 +23,8 @@ for angle_seq in angles_seq:
     a = p.get_euler_angles(angle_sequence=angle_seq)
 
     # If the difference between the initial and the final angles are less than epsilon, test is success
-    if (a - angles_to_test).sum() < 1e-14:
+    EPSILON = 1e-14
+    if (a - angles_to_test).sum() < EPSILON:
         print(f'Test successfully passed for {angle_seq}')
     else:
         print(f'Test failed for {angle_seq}')
