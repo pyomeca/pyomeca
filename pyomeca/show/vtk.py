@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
-Visualization toolkit in PyoMeca library
+Visualization toolkit in pyomeca
 
 """
 

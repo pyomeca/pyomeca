@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
-Matrix manipulation in PyoMeca library
+Matrix manipulation in pyomeca
 
 """
 

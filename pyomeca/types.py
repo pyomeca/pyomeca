@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
-Definition of different container in PyoMeca library
+Definition of different container in pyomeca
 
 """
 
