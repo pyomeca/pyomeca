@@ -30,7 +30,7 @@ def read_csv(file_name, first_row=None, first_column=0, idx=None, header=None, n
     names : list(str)
         Order of columns given by names, if both names and idx are provided, an error occurs
     kind : str
-        Kind of data to read (markers, analogs or EMG)
+        Kind of data to read (markers or analogs)
     delimiter : str
         Delimiter of the CSV file
     prefix : str
@@ -40,6 +40,10 @@ def read_csv(file_name, first_row=None, first_column=0, idx=None, header=None, n
     -------
     Data set in Vectors3d format
     """
+
+    if names and idx:
+        raise ValueError("names and idx can't be set simultaneously, please select only one")
+
     # read the file
     data = pd.read_csv(file_name, delimiter=delimiter, header=header, skiprows=np.arange(header + 1, first_row))
     data.drop(data.columns[:first_column], axis=1, inplace=True)
@@ -54,21 +58,22 @@ def read_csv(file_name, first_row=None, first_column=0, idx=None, header=None, n
             # find names in column_names
             idx = np.argwhere(np.in1d(np.array(column_names),
                                       np.array(names))).ravel()
-        data = extract_data(data, idx)
+        data = extract_markers(data, idx)
     elif kind == 'analogs':
         # TODO: implements for analogs
         pass
     else:
-        raise ValueError('kind should be "markers", "analogs" or "EMG"')
+        raise ValueError('kind should be "markers" or "analogs"')
 
     return data
 
 
 def read_c3d():
+    # TODO: implements for c3d
     pass
 
 
-def extract_data(m, mark_idx):
+def extract_markers(m, mark_idx):
     """
     # TODO: description
     Parameters
@@ -91,12 +96,12 @@ def extract_data(m, mark_idx):
             data += m[:, np.array(mark_idx)[i, :], :]
         data /= mark_idx.shape[0]
     except IndexError:
-        raise IndexError('extract_data works only on 3xNxF matrices and mark_idx must be a ixj array')
+        raise IndexError('extract_markers works only on 3xNxF matrices and mark_idx must be a ixj array')
     return data
 
 
 if __name__ == '__main__':
-    FILENAME = '/home/romain/Documents/codes/pyomeca/test/data/markers_with_header.csv'
+    FILENAME = '/home/romain/Documents/codes/pyomeca/test/data/markers.csv'
     # read_csv(file_name=FILENAME, first_row=5, first_column=2, idx=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], header=2,
     #          prefix=':')
 

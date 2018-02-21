@@ -74,9 +74,9 @@ def define_axes(data_set, idx_axis1, idx_axis2, axes_name, axis_to_recalculate, 
     idx_axis1 = np.matrix(idx_axis1)
     idx_axis2 = np.matrix(idx_axis2)
 
-    axis1 = pyio.extract_data(data_set, idx_axis1[:, 1]) - pyio.extract_data(data_set, idx_axis1[:, 0])
-    axis2 = pyio.extract_data(data_set, idx_axis2[:, 1]) - pyio.extract_data(data_set, idx_axis2[:, 0])
-    origin = pyio.extract_data(data_set, np.matrix(idx_origin).reshape((len(idx_origin), 1)))
+    axis1 = pyio.extract_markers(data_set, idx_axis1[:, 1]) - pyio.extract_markers(data_set, idx_axis1[:, 0])
+    axis2 = pyio.extract_markers(data_set, idx_axis2[:, 1]) - pyio.extract_markers(data_set, idx_axis2[:, 0])
+    origin = pyio.extract_markers(data_set, np.matrix(idx_origin).reshape((len(idx_origin), 1)))
 
     axis1 = axis1[0:3, :, :].reshape(3, axis1.shape[2]).T
     axis2 = axis2[0:3, :, :].reshape(3, axis2.shape[2]).T
