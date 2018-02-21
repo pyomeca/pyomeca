@@ -8,43 +8,51 @@ Matrix manipulation in pyomeca
 import numpy as np
 
 from pyomeca import fileio as pyio
-from pyomeca.types import RotoTrans
-from pyomeca.types import Vectors3d
+from pyomeca.types import Markers3d, Analogs3d, RotoTrans
 
 
-def reshape_2d_to_3d_matrix(m):
+def reshape_2d_to_3d_matrix(m, kind='markers'):
     """
     Takes a tabular matrix and returns a Vectors3d
     Parameters
     ----------
     m : np.array
-        A CSV style matrix (Fx3*N)
-
+        A CSV tabular matrix (Fx3*N)
+    kind : str
+        Kind of data to read (markers or analogs)
     Returns
     -------
     Vectors3d of data set
     """
-
     s = m.shape
-    if int(s[1] / 3) != s[1] / 3:
-        raise IndexError("Number of columns must be divisible by 3")
-    return Vectors3d(np.reshape(m.T, (3, int(s[1] / 3), s[0]), 'F'))
+    if kind == 'markers':
+        if s[1] % 3 != 0:
+            raise IndexError("Number of columns must be divisible by 3")
+        output = Markers3d(np.reshape(m.T, (3, int(s[1] / 3), s[0]), 'F'))
+    elif kind == 'analogs':
+        output = Analogs3d(np.reshape(m.T, (1, s[1], s[0]), 'F'))
+    return output
 
 
-def reshape_3d_to_2d_matrix(m):
+def reshape_3d_to_2d_matrix(m, kind='markers'):
     """
     Takes a Vectors3d style matrix and returns a tabular matrix
     Parameters
     ----------
-    m : Vectors3d
+    m : FrameDependentNpArray
         Matrix to be reshaped
-
+    kind : str
+        Kind of data to read (markers or analogs)
     Returns
     -------
     tabular matrix
     """
-
-    return np.reshape(m[0:3, :, :], (3 * m.number_markers(), m.number_frames()), 'F').T
+    s = m.shape
+    if kind == 'markers':
+        output = np.reshape(m[0:3, :, :], (3 * m.n_markers(), m.n_frames()), 'F').T
+    elif kind == 'analogs':
+        output = np.squeeze(m.T, axis=2)
+    return output
 
 
 def define_axes(data_set, idx_axis1, idx_axis2, axes_name, axis_to_recalculate, idx_origin):
@@ -52,7 +60,7 @@ def define_axes(data_set, idx_axis1, idx_axis2, axes_name, axis_to_recalculate, 
     This function creates system of axes from axis1 and axis2
     Parameters
     ----------
-    data_set : Vectors3d
+    data_set : Markers3d
         Whole data set
     idx_axis1 : list(int)
         First column is the beginning of the axis, second is the end. Rows are the markers to be mean
@@ -69,7 +77,6 @@ def define_axes(data_set, idx_axis1, idx_axis2, axes_name, axis_to_recalculate, 
     -------
     System of axes
     """
-
     # Extract mean of each required axis indexes
     idx_axis1 = np.matrix(idx_axis1)
     idx_axis2 = np.matrix(idx_axis2)
