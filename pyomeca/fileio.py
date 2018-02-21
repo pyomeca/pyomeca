@@ -43,14 +43,13 @@ def read_csv(file_name, first_row=None, first_column=0, idx=None, header=None, n
     """
     if names and idx:
         raise ValueError("names and idx can't be set simultaneously, please select only one")
-    # read the file
-    data = pd.read_csv(str(file_name), delimiter=delimiter, header=header, skiprows=np.arange(header + 1, first_row))
+
+    data = pd.read_csv(str(file_name), delimiter=delimiter, header=header,
+                       skiprows=np.arange(header + 1, first_row))
     data.drop(data.columns[:first_column], axis=1, inplace=True)
-    # get column names
     column_names = data.columns.tolist()
-    # separate and delete empty names
-    column_names = [icol.split(prefix)[1] for icol in column_names if icol[:7] != 'Unnamed']
-    # return data in pyomeca format
+    if kind == 'markers':
+        column_names = [icol.split(prefix)[1] for icol in column_names if icol[:7] != 'Unnamed']
     return _to_vectors(data=data.values,
                        kind=kind,
                        idx=idx,
@@ -74,13 +73,14 @@ def read_c3d(file_name, idx=None, names=None, kind='markers', prefix=None, get_m
     prefix : str
         Prefix to remove in the header
     get_metadata : bool
-        Return a dict with metadata if true
+        Return a dict with metadata if True
 
     Returns
     -------
-    Data set in Vectors3d format and metadata dict
+    Data set in Vectors3d format or Data set in Vectors3d format and metadata dict if get_metadata is True
     """
-    # TODO: metadata in dict?
+    if names and idx:
+        raise ValueError("names and idx can't be set simultaneously, please select only one")
     reader = btk.btkAcquisitionFileReader()
     reader.SetFilename(str(file_name))
     reader.Update()
@@ -101,9 +101,19 @@ def read_c3d(file_name, idx=None, names=None, kind='markers', prefix=None, get_m
         for i, (key, value) in enumerate(flat_data.items()):
             data[:, i * 3: i * 3 + 3] = value
             channel_names.append(key.split(prefix)[1])
-    else:
-        # TODO: implements for analogs
-        all_data = acq.GetAnalogs()
+    elif kind == 'analogs':
+        flat_data = {i.GetLabel(): i.GetValues() for i in btk.Iterate(acq.GetAnalogs())}
+        metadata = {'n_analogs': acq.GetAnalogNumber(), 'n_frames': acq.GetAnalogFrameNumber()}
+        if get_metadata:
+            metadata.update({
+                'first_frame': acq.GetFirstFrame(),
+                'last_frame': acq.GetLastFrame(),
+                'analog_rate': acq.GetAnalogFrequency()
+            })
+        data = np.ndarray((metadata['n_frames'], metadata['n_analogs']))
+        for i, (key, value) in enumerate(flat_data.items()):
+            data[:, i] = value.ravel()
+            channel_names.append(key.split(prefix)[-1])
 
     data = _to_vectors(data=data,
                        kind=kind,
@@ -112,25 +122,20 @@ def read_c3d(file_name, idx=None, names=None, kind='markers', prefix=None, get_m
                        target_names=names)
     return (data, metadata) if get_metadata else data
 
-    # read the file
-    # get column names
-    # separate and delete empty names
-    # return data in pyomeca format
-
 
 def _to_vectors(data, kind, idx, actual_names, target_names):
+    if not idx:
+        # find names in column_names
+        idx = np.argwhere(np.in1d(np.array(actual_names),
+                                  np.array(target_names))).ravel()
+
     if kind == 'markers':
         data = matrix.reshape_2d_to_3d_matrix(data)
-        if not idx:
-            # find names in column_names
-            idx = np.argwhere(np.in1d(np.array(actual_names),
-                                      np.array(target_names))).ravel()
-        data = extract_markers(data, idx)
     elif kind == 'analogs':
-        # TODO: implements for analogs
-        pass
+        data = matrix.reshape_2d_to_3d_matrix(data, kind='analogs')
     else:
         raise ValueError('kind should be "markers" or "analogs"')
+    data = extract_markers(data, idx)
     return data
 
 
