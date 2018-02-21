@@ -79,14 +79,38 @@ m_csv_4 = pyoio.read_csv(markers_csv, first_row=5, first_column=2, header=2,
 check_array(m_csv_4,
             expected_shape=(4, 3, 580),
             expected_values=[879.73, 177.838, 223.66, 1.],
-            text_str='\t\twith mark_names', kind='markers')
+            text_str='\t\twith names', kind='markers')
 
 # 2. Load markers in c3d
 print('\tmarkers in c3d')
-# 2.1. All markers
+# 2.1. 11 markers
+m_c3d_1 = pyoio.read_c3d(markers_analogs_c3d, idx=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                         kind='markers', prefix=':')
+check_array(m_c3d_1,
+            expected_shape=(4, 11, 580),
+            expected_values=[99.25964, -259.17093, 903.9809, 1.],
+            text_str='\t\t11 markers', kind='markers')
 
 # 2.2. Mean of 1st and 4th
+m_c3d_2 = pyoio.read_c3d(markers_analogs_c3d, idx=[[0, 1, 2], [0, 4, 2]],
+                         kind='markers', prefix=':')
+check_array(m_c3d_2,
+            expected_shape=(4, 3, 580),
+            expected_values=[99.25964, -259.17093, 903.9809, 1.],
+            text_str='\t\tmean of 1st and 4th', kind='markers')
 
 # 2.3. Mean of first 3 markers
+m_c3d_3 = pyoio.read_c3d(markers_analogs_c3d, idx=[[0], [1], [2]],
+                         kind='markers', prefix=':')
+check_array(m_c3d_3,
+            expected_shape=(4, 1, 580),
+            expected_values=[48.55782, -114.2767, 903.79779, 1.],
+            text_str='\t\tmean of first 3 markers', kind='markers')
 
-# 2.4. With mark_names
+# 2.4. With mark_names and metadata
+m_c3d_4, meta = pyoio.read_c3d(markers_analogs_c3d, names=['CLAV_post', 'PSISl', 'STERr', 'CLAV_post'],
+                               kind='markers', prefix=':', get_metadata=True)
+check_array(m_c3d_4,
+            expected_shape=(4, 3, 580),
+            expected_values=[879.7298, 177.83847, 223.6602, 1.],
+            text_str='\t\twith names and metadata', kind='markers')
