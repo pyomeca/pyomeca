@@ -15,23 +15,23 @@ from pyomeca.types import RotoTransCollection
 
 # Path to data
 DATA_FOLDER = Path('.') / 'data'
-markers_csv = DATA_FOLDER / 'markers.csv'
-markers_analogs_c3d = DATA_FOLDER / 'markers_analogs.c3d'
+MARKERS_CSV = DATA_FOLDER / 'markers.csv'
+MARKERS_ANALOGS_C3D = DATA_FOLDER / 'markers_analogs.c3d'
 
 # Load data
 # all markers
-d = pyoio.read_csv(markers_csv, first_row=5, first_column=2, header=2,
+d = pyoio.read_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
                    idx=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], prefix=':')
 # mean of 1st and 4th
-d2 = pyoio.read_csv(markers_csv, first_row=5, first_column=2, header=2,
+d2 = pyoio.read_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
                     idx=[[0, 1, 2], [0, 4, 2]], prefix=':')
 # mean of first 3 markers
-d3 = pyoio.read_csv(markers_csv, first_row=5, first_column=2, header=2,
+d3 = pyoio.read_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
                     idx=[[0], [1], [2]], prefix=':')
 
-# TODO: replace this with c3d file
-d4 = pyoio.read_csv(markers_csv, first_row=5, first_column=2, header=2,
-                    idx=[[0], [1], [2]], prefix=':')
+# mean of first 3 markers in c3d file
+d4 = pyoio.read_c3d(MARKERS_ANALOGS_C3D, idx=[[0], [1], [2]],
+                    kind='markers', prefix=':')
 
 # Create a windows with a nice gray background
 vtkWindow = PyoWindow(background_color=(.5, .5, .5))
@@ -75,7 +75,7 @@ while vtkWindow.is_active:
         vtkModelMid.set_markers_opacity((i % 75) / 75 + 25)
 
     # Rotate one system of axes
-    all_rt_real[0] = RotoTrans(angles=[i / d.number_frames() * np.pi * 2, 0, 0],
+    all_rt_real[0] = RotoTrans(angles=[i / d.n_frames() * np.pi * 2, 0, 0],
                                angle_sequence="yxz", translations=d[:, 0, 0])
     vtkModelReal.update_rt(all_rt_real)
 
@@ -84,4 +84,4 @@ while vtkWindow.is_active:
 
     # Update window
     vtkWindow.update_frame()
-    i = (i + 1) % d.number_frames()
+    i = (i + 1) % d.n_frames()
