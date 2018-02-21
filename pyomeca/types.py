@@ -20,12 +20,12 @@ class FrameDependentNpArray(np.ndarray):
 
         """
         if not isinstance(array, np.ndarray):
-            raise TypeError('RotoTrans must be a numpy array')
+            raise TypeError('FrameDependentNpArray must be a numpy array')
 
         # Finally, we must return the newly created object:
         return np.asarray(array).view(cls)
 
-    def number_frames(self):
+    def n_frames(self):
         """
 
         Returns
@@ -124,10 +124,10 @@ class RotoTrans(FrameDependentNpArray):
             Euler sequence of angles; valid values are all permutation of axes (e.g. "xyz", "yzx", ...)
         Returns
         -------
-        angles : Vectors3d
+        angles : Markers3d
             Euler angles associated with RotoTrans
         """
-        if self.number_frames() > 1:
+        if self.n_frames() > 1:
             raise NotImplementedError("get_euler_angles on more than one frame at a time is not implemented yet")
 
         angles = np.ndarray(shape=(len(angle_sequence), 1))
@@ -293,7 +293,7 @@ class RotoTrans(FrameDependentNpArray):
             Transposed RotoTrans matrix ([R.T -R.T*t],[0 0 0 1])
         """
         # Create a matrix with the transposed rotation part
-        rt_t = RotoTrans(rt=np.ndarray((4, 4, self.number_frames())))
+        rt_t = RotoTrans(rt=np.ndarray((4, 4, self.n_frames())))
         rt_t[0:3, 0:3, :] = np.transpose(self[0:3, 0:3, :], (1, 0, 2))
 
         # Fill the last column and row with 0 and bottom corner with 1
@@ -302,8 +302,8 @@ class RotoTrans(FrameDependentNpArray):
         rt_t[3, 3, :] = 1
 
         # Transpose the translation part
-        t = Vectors3d(positions=np.reshape(self[0:3, 3, :], (3, 1, self.number_frames())))
-        rt_t[0:3, 3, :] = t.rotate(-rt_t)[0:3, :].reshape((3, self.number_frames()))
+        t = Markers3d(positions=np.reshape(self[0:3, 3, :], (3, 1, self.n_frames())))
+        rt_t[0:3, 3, :] = t.rotate(-rt_t)[0:3, :].reshape((3, self.n_frames()))
 
         # Return transposed matrix
         return rt_t
@@ -318,32 +318,27 @@ class RotoTrans(FrameDependentNpArray):
         return self.transpose()
 
 
-class Vectors3d(FrameDependentNpArray):
-    def __new__(cls, positions=np.ndarray((3, 0, 0)), names=list()):
+class Markers3d(FrameDependentNpArray):
+    def __new__(cls, data=np.ndarray((3, 0, 0)), names=list()):
         """
         Parameters
         ----------
+        data : np.ndarray
+            3xNxF matrix of marker positions
         names : list of string
             name of the marker that correspond to second dimension of the positions matrix
-        positions : np.ndarray
-            3xNxF matrix of marker positions
         """
-
-        s = positions.shape
+        s = data.shape
         if s[0] == 3:
             pos = np.ones((4, s[1], s[2]))
-            pos[0:3, :, :] = positions
+            pos[0:3, :, :] = data
         elif s[0] == 4:
-            pos = positions
+            pos = data
         else:
             raise IndexError('Vectors3d must have a length of 3 on the first dimension')
+        return np.asarray(pos).view(cls)
 
-        obj = np.asarray(pos).view(cls)
-
-        # Finally, we must return the newly created object:
-        return obj
-
-    def number_markers(self):
+    def n_markers(self):
         """
         Returns
         -------
@@ -373,6 +368,19 @@ class Vectors3d(FrameDependentNpArray):
         elif len(s_rt) == 3 and len(s_m) == 3:
             m2 = np.einsum('ijk,jlk->ilk', rt, self)
         else:
-            raise ValueError('Size of RT and M must match coucou')
+            raise ValueError('Size of RT and M must match')
 
-        return Vectors3d(positions=m2)
+        return Markers3d(positions=m2)
+
+
+class Analogs3d(FrameDependentNpArray):
+    def __new__(cls, data=np.ndarray((3, 0, 0)), names=list()):
+        """
+        Parameters
+        ----------
+        data : np.ndarray
+            1xNxF matrix of analogs data
+        names : list of string
+            name of the analogs that correspond to second dimension of the matrix
+        """
+        return np.asarray(data).view(cls)
