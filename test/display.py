@@ -57,11 +57,19 @@ one_rt = define_axes(d, [3, 5], [[4, 3], [4, 5]], "zx", "z", [3, 4, 5])
 i = 0
 while vtkWindow.is_active:
     # Update markers
-    vtkModelReal.update_markers(d.get_frame(i))
-    vtkModelPred.update_markers(d2.get_frame(i))
-    vtkModelMid.update_markers(d3.get_frame(i))
-    vtkModelByNames.update_markers(d4.get_frame(i))
-    vtkModelFromC3d.update_markers(d5.get_frame(i))
+    if i < 100:
+        vtkModelReal.update_markers(d.get_frame(i))
+        vtkModelPred.update_markers(d2.get_frame(i))
+        vtkModelMid.update_markers(d3.get_frame(i))
+        vtkModelByNames.update_markers(d4.get_frame(i))
+        vtkModelFromC3d.update_markers(d5.get_frame(i))
+    else:
+        # Dynamically change amount of markers for each Model
+        vtkModelReal.update_markers(d2.get_frame(i))
+        vtkModelPred.update_markers(d3.get_frame(i))
+        vtkModelMid.update_markers(d4.get_frame(i))
+        vtkModelByNames.update_markers(d5.get_frame(i))
+        vtkModelFromC3d.update_markers(d.get_frame(i))
 
     # Funky online update of markers characteristics
     if i > 150:

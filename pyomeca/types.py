@@ -78,6 +78,16 @@ class RotoTransCollection(list):
             rt_coll.append(rt.get_frame(f))
         return rt_coll
 
+    def n_rt(self):
+        """
+        Get the number of RotoTrans in the collection
+        Returns
+        -------
+        n : int
+        Number of RotoTrans in the collection
+        """
+        return len(self)
+
 
 class RotoTrans(FrameDependentNpArray):
     def __new__(cls, rt=np.eye(4), angles=(0, 0, 0), angle_sequence="", translations=(0, 0, 0)):

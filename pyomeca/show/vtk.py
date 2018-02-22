@@ -124,11 +124,10 @@ class Model(QtWidgets.QWidget):
         self.markers_color = markers_color
         self.markers_opacity = markers_opacity
         self.markers_actors = list()
-        self.markers_initialized = False
         self.all_rt = RotoTransCollection()
+        self.n_rt = 0
         self.rt_size = rt_size
         self.rt_actors = list()
-        self.rt_initialized = False
         self.parent_window.should_reset_camera = True
 
     def set_markers_color(self, markers_color):
@@ -198,7 +197,6 @@ class Model(QtWidgets.QWidget):
             self.parent_window.ren.ResetCamera()
 
         # Update marker position
-        self.markers_initialized = True
         self.update_markers(self.markers)
 
     def update_markers(self, markers):
@@ -210,13 +208,12 @@ class Model(QtWidgets.QWidget):
             One frame of markers
 
         """
-        if not self.markers_initialized:
-            self.new_marker_set(markers)
 
         if markers.n_frames() is not 1:
             raise IndexError("Markers should be from one frame only")
         if markers.n_markers() is not self.markers.n_markers():
-            raise IndexError("Numbers of markers should be the same set by new_markers_set")
+            self.new_marker_set(markers)
+            return # Prevent calling update_markers recursively
         self.markers = markers
 
         for i, actor in enumerate(self.markers_actors):
@@ -311,7 +308,7 @@ class Model(QtWidgets.QWidget):
             self.parent_window.ren.ResetCamera()
 
         # Set rt orientations
-        self.rt_initialized = True
+        self.n_rt = all_rt.n_rt()
         self.update_rt(all_rt)
 
     def update_rt(self, all_rt):
@@ -323,13 +320,14 @@ class Model(QtWidgets.QWidget):
             One frame of all RotoTrans to draw
 
         """
-        if not self.rt_initialized:
-            self.new_rt_set(all_rt)
-
         if isinstance(all_rt, RotoTrans):
             rt_tp = RotoTransCollection()
             rt_tp.append(all_rt[:, :])
             all_rt = rt_tp
+
+        if all_rt.n_rt() is not self.n_rt:
+            self.new_rt_set(all_rt)
+            return  # Prevent calling update_rt recursively
 
         if not isinstance(all_rt, RotoTransCollection):
             raise TypeError("Please send a list of rt to new_rt_set")
