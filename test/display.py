@@ -45,33 +45,23 @@ vtkModelMid = PyoModel(vtkWindow, markers_color=(0, 0, 1), markers_size=10.0, ma
 vtkModelByNames = PyoModel(vtkWindow, markers_color=(0, 1, 1), markers_size=10.0, markers_opacity=.5)
 vtkModelFromC3d = PyoModel(vtkWindow, markers_color=(0, 1, 0), markers_size=10.0, markers_opacity=.5)
 
-# Add markers to the marker holders
-vtkModelReal.new_marker_set(d[:, :, 0])
-vtkModelPred.new_marker_set(d2[:, :, 0])
-vtkModelMid.new_marker_set(d3[:, :, 0])
-vtkModelByNames.new_marker_set(d4[:, :, 0])
-vtkModelFromC3d.new_marker_set(d5[:, :, 0])
-
 # Create some RotoTrans attached to the first model
 all_rt_real = RotoTransCollection()
 all_rt_real.append(RotoTrans(angles=[0, 0, 0], angle_sequence="yxz", translations=d[:, 0, 0]))
 all_rt_real.append(RotoTrans(angles=[0, 0, 0], angle_sequence="yxz", translations=d[:, 0, 0]))
-vtkModelReal.new_rt_set(all_rt_real)
 
 # Create some RotoTrans attached to the second model
-all_rt_pred = RotoTransCollection()
-all_rt_pred.append(define_axes(d, [3, 5], [[4, 3], [4, 5]], "zx", "z", [3, 4, 5]))
-vtkModelPred.new_rt_set(all_rt_pred.get_frame(0))
+one_rt = define_axes(d, [3, 5], [[4, 3], [4, 5]], "zx", "z", [3, 4, 5])
 
 # Animate all this
 i = 0
 while vtkWindow.is_active:
     # Update markers
-    vtkModelReal.update_markers(d[:, :, i])
-    vtkModelPred.update_markers(d2[:, :, i])
-    vtkModelMid.update_markers(d3[:, :, i])
-    vtkModelByNames.update_markers(d4[:, :, i])
-    vtkModelFromC3d.update_markers(d5[:, :, i])
+    vtkModelReal.update_markers(d.get_frame(i))
+    vtkModelPred.update_markers(d2.get_frame(i))
+    vtkModelMid.update_markers(d3.get_frame(i))
+    vtkModelByNames.update_markers(d4.get_frame(i))
+    vtkModelFromC3d.update_markers(d5.get_frame(i))
 
     # Funky online update of markers characteristics
     if i > 150:
@@ -85,7 +75,7 @@ while vtkWindow.is_active:
     vtkModelReal.update_rt(all_rt_real)
 
     # Update another system of axes
-    vtkModelPred.update_rt(all_rt_pred.get_frame(i))
+    vtkModelPred.update_rt(one_rt.get_frame(i))
 
     # Update window
     vtkWindow.update_frame()
