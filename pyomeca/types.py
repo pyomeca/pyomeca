@@ -302,7 +302,7 @@ class RotoTrans(FrameDependentNpArray):
         rt_t[3, 3, :] = 1
 
         # Transpose the translation part
-        t = Markers3d(positions=np.reshape(self[0:3, 3, :], (3, 1, self.n_frames())))
+        t = Markers3d(data=np.reshape(self[0:3, 3, :], (3, 1, self.n_frames())))
         rt_t[0:3, 3, :] = t.rotate(-rt_t)[0:3, :].reshape((3, self.n_frames()))
 
         # Return transposed matrix
@@ -370,7 +370,7 @@ class Markers3d(FrameDependentNpArray):
         else:
             raise ValueError('Size of RT and M must match')
 
-        return Markers3d(positions=m2)
+        return Markers3d(data=m2)
 
 
 class Analogs3d(FrameDependentNpArray):
