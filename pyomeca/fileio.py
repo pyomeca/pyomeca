@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
-File IO in pyomeca library
+File IO in pyomeca
 
 """
 
@@ -43,12 +43,15 @@ def read_csv(file_name, first_row=None, first_column=0, idx=None, header=None, n
     """
     if names and idx:
         raise ValueError("names and idx can't be set simultaneously, please select only one")
+    if not header:
+        skiprows = np.arange(1, first_row)
+    else:
+        skiprows = np.arange(header + 1, first_row)
 
-    data = pd.read_csv(str(file_name), delimiter=delimiter, header=header,
-                       skiprows=np.arange(header + 1, first_row))
+    data = pd.read_csv(str(file_name), delimiter=delimiter, header=header, skiprows=skiprows)
     data.drop(data.columns[:first_column], axis=1, inplace=True)
     column_names = data.columns.tolist()
-    if kind == 'markers':
+    if kind == 'markers' and header:
         column_names = [icol.split(prefix)[1] for icol in column_names if icol[:7] != 'Unnamed']
     return _to_vectors(data=data.values,
                        kind=kind,

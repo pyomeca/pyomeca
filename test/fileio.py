@@ -16,24 +16,21 @@ ANALOGS_CSV = DATA_FOLDER / 'analogs.csv'
 
 
 def check_array(arr, expected_shape, expected_values, text=None):
-    try:
-        np.testing.assert_equal(arr.shape, expected_shape)
-    except AssertionError:
-        raise AssertionError(f'{text} shape: FAILED')
-    print(f'{text} shape: OK')
+    np.testing.assert_equal(arr.shape, expected_shape,
+                            err_msg=f'{text} [shape]: FAILED')
+    print(f'{text} [shape]: OK')
 
-    try:
-        np.testing.assert_almost_equal(arr[:, 0, int(arr.shape[2] / 2)], expected_values, decimal=5)
-    except AssertionError:
-        raise AssertionError(f'{text} value: FAILED')
-    print(f'{text} value: OK')
+    np.testing.assert_almost_equal(arr[:, 0, int(arr.shape[2] / 2)], expected_values,
+                                   decimal=5,
+                                   err_msg=f'{text} [value]: FAILED')
+    print(f'{text} [value]: OK')
 
 
 def compare_arrays(arr1, arr2, text):
-    try:
-        np.testing.assert_allclose(arr1[:-1], arr2[:-1], atol=1e-2, equal_nan=True)
-    except AssertionError:
-        raise AssertionError(f'{text}: FAILED')
+    np.testing.assert_allclose(arr1[:-1], arr2[:-1],
+                               atol=1e-2,
+                               equal_nan=True,
+                               err_msg=f'{text}: FAILED')
     print(f'{text}: OK')
 
 
