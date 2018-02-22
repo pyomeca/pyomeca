@@ -97,7 +97,7 @@ def read_c3d(file_name, idx=None, names=None, kind='markers', prefix=None, get_m
                 'last_frame': acq.GetLastFrame(),
                 'point_rate': acq.GetPointFrequency()
             })
-        data = np.ndarray((metadata['n_frames'], 3 * metadata['n_points']))
+        data = np.full([metadata['n_frames'], 3 * metadata['n_points']], np.nan)
         for i, (key, value) in enumerate(flat_data.items()):
             data[:, i * 3: i * 3 + 3] = value
             channel_names.append(key.split(prefix)[1])
@@ -110,7 +110,7 @@ def read_c3d(file_name, idx=None, names=None, kind='markers', prefix=None, get_m
                 'last_frame': acq.GetLastFrame(),
                 'analog_rate': acq.GetAnalogFrequency()
             })
-        data = np.ndarray((metadata['n_frames'], metadata['n_analogs']))
+        data = np.full([metadata['n_frames'], metadata['n_analogs']], np.nan)
         for i, (key, value) in enumerate(flat_data.items()):
             data[:, i] = value.ravel()
             channel_names.append(key.split(prefix)[-1])
@@ -124,6 +124,7 @@ def read_c3d(file_name, idx=None, names=None, kind='markers', prefix=None, get_m
 
 
 def _to_vectors(data, kind, idx, actual_names, target_names):
+    data[data == 0.0] = np.nan  # because nan are replace by 0.0 sometimes
     if not idx:
         # find names in column_names
         idx = np.argwhere(np.in1d(np.array(actual_names),
