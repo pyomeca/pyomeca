@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
-Visualization toolkit in PyoMeca library
+Visualization toolkit in pyomeca
 
 """
 
@@ -16,7 +16,7 @@ from vtk import vtkPoints
 from vtk import vtkLine
 from vtk import vtkCellArray
 from vtk import vtkUnsignedCharArray
-from pyomeca.types import Vectors3d
+from pyomeca.types import Markers3d
 from pyomeca.types import RotoTransCollection
 
 first = True
@@ -118,7 +118,7 @@ class Model(QtWidgets.QWidget):
         self.setAutoFillBackground(True)
         self.setPalette(palette)
 
-        self.markers = Vectors3d()
+        self.markers = Markers3d()
         self.markers_size = markers_size
         self.markers_color = markers_color
         self.markers_opacity = markers_opacity
@@ -169,11 +169,11 @@ class Model(QtWidgets.QWidget):
         Define a new marker set. This function must be called each time the number of markers change
         Parameters
         ----------
-        markers : Vectors3d
+        markers : Markers3d
             One frame of markers
 
         """
-        if markers.number_frames() is not 1:
+        if markers.n_frames() is not 1:
             raise IndexError("Markers should be from one frame only")
         self.markers = markers
 
@@ -183,7 +183,7 @@ class Model(QtWidgets.QWidget):
         self.markers_actors = list()
 
         # Create the geometry of a point (the coordinate) points = vtk.vtkPoints()
-        for i in range(markers.number_markers()):
+        for i in range(markers.n_markers()):
             # Create a mapper
             mapper = vtk.vtkPolyDataMapper()
 
@@ -200,13 +200,13 @@ class Model(QtWidgets.QWidget):
         Update position of the markers on the screen (but do not repaint)
         Parameters
         ----------
-        markers : Vectors3d
+        markers : Markers3d
             One frame of markers
 
         """
-        if markers.number_frames() is not 1:
+        if markers.n_frames() is not 1:
             raise IndexError("Markers should be from one frame only")
-        if markers.number_markers() is not self.markers.number_markers():
+        if markers.n_markers() is not self.markers.n_markers():
             raise IndexError("Numbers of markers should be the same set by new_markers_set")
         self.markers = markers
 
@@ -239,7 +239,7 @@ class Model(QtWidgets.QWidget):
         self.rt_actors = list()
 
         for i, rt in enumerate(all_rt):
-            if rt.number_frames() is not 1:
+            if rt.n_frames() is not 1:
                 raise IndexError("Markers should be from one frame only")
 
             # Create the polyline which will hold the actors
