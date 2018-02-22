@@ -15,29 +15,26 @@ MARKERS_ANALOGS_C3D = DATA_FOLDER / 'markers_analogs.c3d'
 ANALOGS_CSV = DATA_FOLDER / 'analogs.csv'
 
 
-def check_array(arr, expected_shape, expected_values, text_str=None, kind='markers'):
-    """
-    Check if array respect some conditions
-    Parameters
-    ----------
-    arr : numpy.array
-        Array to check
-    expected_shape : Tuple
-        Expected shape
-    expected_values : list
-        Expected values
-    kind : str
-        Type of array tested
-    text_str : str
-        String to print to identify the current test
-    """
-    shape_condition = arr.shape == expected_shape
-    value_condition = np.array_equal(np.round(arr[:, 0, -1], decimals=5),
-                                     expected_values)
-    if shape_condition and value_condition:
-        print(f'{text_str}: OK')
-    else:
-        raise ValueError(f'{text_str}: FAILED')
+def check_array(arr, expected_shape, expected_values, text=None):
+    try:
+        np.testing.assert_equal(arr.shape, expected_shape)
+    except AssertionError:
+        raise AssertionError(f'{text} shape: FAILED')
+    print(f'{text} shape: OK')
+
+    try:
+        np.testing.assert_almost_equal(arr[:, 0, int(arr.shape[2] / 2)], expected_values, decimal=5)
+    except AssertionError:
+        raise AssertionError(f'{text} value: FAILED')
+    print(f'{text} value: OK')
+
+
+def compare_arrays(arr1, arr2, text):
+    try:
+        np.testing.assert_allclose(arr1[:-1], arr2[:-1], atol=1e-2, equal_nan=True)
+    except AssertionError:
+        raise AssertionError(f'{text}: FAILED')
+    print(f'{text}: OK')
 
 
 print('File IO tests:')
@@ -49,8 +46,8 @@ m_csv_1 = pyoio.read_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
                          idx=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], prefix=':')
 check_array(m_csv_1,
             expected_shape=(4, 11, 580),
-            expected_values=[99.2596, -259.171, 903.981, 1.],
-            text_str='\t\t1.1. 11 first', kind='markers')
+            expected_values=[3.18461e+02, -1.69003e+02, 1.05422e+03, 1.00000e+00],
+            text='\t\t1.1. 11 first')
 
 # 1.2. mean of 1st and 4th
 m_csv_2 = pyoio.read_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
@@ -58,24 +55,24 @@ m_csv_2 = pyoio.read_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
 
 check_array(m_csv_2,
             expected_shape=(4, 3, 580),
-            expected_values=[99.2596, -259.171, 903.981, 1.],
-            text_str='\t\t1.2. mean of 1st and 4th', kind='markers')
+            expected_values=[3.18461e+02, -1.69003e+02, 1.05422e+03, 1.00000e+00],
+            text='\t\t1.2. mean of 1st and 4th')
 
 # 1.3. mean of first 3 markers
 m_csv_3 = pyoio.read_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
                          idx=[[0], [1], [2]], prefix=':')
 check_array(m_csv_3,
             expected_shape=(4, 1, 580),
-            expected_values=[48.55783, -114.27667, 903.79767, 1.],
-            text_str='\t\t1.3. mean of first 3', kind='markers')
+            expected_values=[2.62055670e+02, -2.65073300e+01, 1.04641333e+03, 1.00000000e+00],
+            text='\t\t1.3. mean of first 3')
 
 # 1.4. with names
 m_csv_4 = pyoio.read_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
                          names=['CLAV_post', 'PSISl', 'STERr', 'CLAV_post'], prefix=':')
 check_array(m_csv_4,
             expected_shape=(4, 3, 580),
-            expected_values=[879.73, 177.838, 223.66, 1.],
-            text_str='\t\t1.4. with names', kind='markers')
+            expected_values=[861.668, 171.53, 227.042, 1.],
+            text='\t\t1.4. with names')
 
 # 2. markers in c3d
 print('\t2. markers in c3d')
@@ -84,32 +81,32 @@ m_c3d_1 = pyoio.read_c3d(MARKERS_ANALOGS_C3D, idx=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
                          kind='markers', prefix=':')
 check_array(m_c3d_1,
             expected_shape=(4, 11, 580),
-            expected_values=[99.25964, -259.17093, 903.9809, 1.],
-            text_str='\t\t2.1. 11 first', kind='markers')
+            expected_values=[3.18461360e+02, -1.69002700e+02, 1.05422009e+03, 1.00000000e+00],
+            text='\t\t2.1. 11 first')
 
 # 2.2. mean of 1st and 4th
 m_c3d_2 = pyoio.read_c3d(MARKERS_ANALOGS_C3D, idx=[[0, 1, 2], [0, 4, 2]],
                          kind='markers', prefix=':')
 check_array(m_c3d_2,
             expected_shape=(4, 3, 580),
-            expected_values=[99.25964, -259.17093, 903.9809, 1.],
-            text_str='\t\t2.2. mean of 1st and 4th', kind='markers')
+            expected_values=[3.18461360e+02, -1.69002700e+02, 1.05422009e+03, 1.00000000e+00],
+            text='\t\t2.2. mean of 1st and 4th')
 
 # 2.3. mean of first 3 markers
 m_c3d_3 = pyoio.read_c3d(MARKERS_ANALOGS_C3D, idx=[[0], [1], [2]],
                          kind='markers', prefix=':')
 check_array(m_c3d_3,
             expected_shape=(4, 1, 580),
-            expected_values=[48.55782, -114.2767, 903.79779, 1.],
-            text_str='\t\t2.3. mean of first 3', kind='markers')
+            expected_values=[2.62055570e+02, -2.65075200e+01, 1.04641496e+03, 1.00000000e+00],
+            text='\t\t2.3. mean of first 3')
 
 # 2.4. with names and metadata
 m_c3d_4, meta = pyoio.read_c3d(MARKERS_ANALOGS_C3D, names=['CLAV_post', 'PSISl', 'STERr', 'CLAV_post'],
                                kind='markers', prefix=':', get_metadata=True)
 check_array(m_c3d_4,
             expected_shape=(4, 3, 580),
-            expected_values=[879.7298, 177.83847, 223.6602, 1.],
-            text_str='\t\t2.4. with names and metadata', kind='markers')
+            expected_values=[861.66766, 171.52963, 227.04192, 1.],
+            text='\t\t2.4. with names and metadata')
 
 # 3. analogs in csv
 print('\t3. analogs in csv')
@@ -118,8 +115,8 @@ a_csv_1 = pyoio.read_csv(ANALOGS_CSV, first_row=5, first_column=2, header=3, kin
                          idx=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], prefix=':')
 check_array(a_csv_1,
             expected_shape=(1, 11, 11600),
-            expected_values=[0.],
-            text_str='\t\t3.1. 11 first', kind='analogs')
+            expected_values=[-0.01396],
+            text='\t\t3.1. 11 first')
 
 # 3.2. mean of 1st and 4th
 a_csv_2 = pyoio.read_csv(ANALOGS_CSV, first_row=5, first_column=2, header=3, kind='analogs',
@@ -127,24 +124,24 @@ a_csv_2 = pyoio.read_csv(ANALOGS_CSV, first_row=5, first_column=2, header=3, kin
 
 check_array(a_csv_2,
             expected_shape=(1, 3, 11600),
-            expected_values=[0.],
-            text_str='\t\t3.2. mean of 1st and 4th', kind='analogs')
+            expected_values=[-0.01396],
+            text='\t\t3.2. mean of 1st and 4th')
 
 # 3.3. mean of first 3
 a_csv_3 = pyoio.read_csv(ANALOGS_CSV, first_row=5, first_column=2, header=3, kind='analogs',
                          idx=[[0], [1], [2]], prefix=':')
 check_array(a_csv_3,
             expected_shape=(1, 1, 11600),
-            expected_values=[0.],
-            text_str='\t\t3.3. mean of first 3', kind='analogs')
+            expected_values=[-0.10447],
+            text='\t\t3.3. mean of first 3')
 
 # 3.4. with names
 a_csv_4 = pyoio.read_csv(ANALOGS_CSV, first_row=5, first_column=2, header=3, kind='analogs',
                          names=['EMG1', 'EMG11', 'EMG5', 'EMG13'], prefix=':')
 check_array(a_csv_4,
             expected_shape=(1, 4, 11600),
-            expected_values=[-2.e-05],
-            text_str='\t\t3.4. with names', kind='analogs')
+            expected_values=[-0.00039],
+            text='\t\t3.4. with names')
 
 # 4. analogs in c3d
 print('\t4. analogs in c3d')
@@ -153,30 +150,52 @@ a_c3d_1 = pyoio.read_c3d(MARKERS_ANALOGS_C3D, idx=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
                          kind='analogs', prefix=':')
 check_array(a_c3d_1,
             expected_shape=(1, 11, 11600),
-            expected_values=[0.],
-            text_str='\t\t4.1. 11 first', kind='analogs')
+            expected_values=[-0.01396],
+            text='\t\t4.1. 11 first')
 
 # 4.2. mean of 1st and 4th
 a_c3d_2 = pyoio.read_c3d(MARKERS_ANALOGS_C3D, idx=[[0, 1, 2], [0, 4, 2]],
                          kind='analogs', prefix=':')
 check_array(a_c3d_2,
             expected_shape=(1, 3, 11600),
-            expected_values=[0.],
-            text_str='\t\t4.2. mean of 1st and 4th', kind='analogs')
+            expected_values=[-0.01396],
+            text='\t\t4.2. mean of 1st and 4th')
 
 # 4.3. mean of first 3
 a_c3d_3 = pyoio.read_c3d(MARKERS_ANALOGS_C3D, idx=[[0], [1], [2]],
                          kind='analogs', prefix=':')
 check_array(a_c3d_3,
             expected_shape=(1, 1, 11600),
-            expected_values=[0.],
-            text_str='\t\t4.3. mean of first 3', kind='analogs')
+            expected_values=[-0.10447],
+            text='\t\t4.3. mean of first 3')
 
 # 4.4. with names and metadata
-a_c3d_4, meta = pyoio.read_c3d(MARKERS_ANALOGS_C3D,
-                               names=['Delt_ant.EMG1', 'Subscap.EMG11', 'Triceps.EMG5', 'Gd_dors.IM EMG13'],
-                               kind='analogs', prefix=':', get_metadata=True)
+a_c3d_4, _ = pyoio.read_c3d(MARKERS_ANALOGS_C3D,
+                            names=['Delt_ant.EMG1', 'Subscap.EMG11', 'Triceps.EMG5', 'Gd_dors.IM EMG13'],
+                            kind='analogs', prefix=':', get_metadata=True)
 check_array(a_c3d_4,
             expected_shape=(1, 4, 11600),
-            expected_values=[-2.e-05],
-            text_str='\t\t4.4. with names and metadata', kind='analogs')
+            expected_values=[-0.00039],
+            text='\t\t4.4. with names and metadata')
+
+# 5. constancy c3d and csv markers
+print('\t5. compare c3d and csv markers')
+# 5.1. 11 first
+compare_arrays(m_csv_1, m_c3d_1, text='\t\t11 first')
+# 5.2. mean of 1st and 4th
+compare_arrays(m_csv_2, m_c3d_2, text='\t\tmean of 1st and 4th')
+# 5.3. mean of first 3
+compare_arrays(m_csv_3, m_c3d_3, text='\t\tmean of first 3')
+# 5.4. with names and metadata
+compare_arrays(m_csv_4, m_c3d_4, text='\t\twith names')
+
+# 6. constancy c3d and csv analogs
+print('\t6. compare c3d and csv analogs')
+# 6.1. 11 first
+compare_arrays(a_csv_1, a_c3d_1, text='\t\t11 first')
+# 6.2. mean of 1st and 4th
+compare_arrays(a_csv_2, a_c3d_2, text='\t\tmean of 1st and 4th')
+# 6.3. mean of first 3
+compare_arrays(a_csv_3, a_c3d_3, text='\t\tmean of first 3')
+# 6.4. with names and metadata
+compare_arrays(a_csv_4, a_c3d_4, text='\t\twith names')
