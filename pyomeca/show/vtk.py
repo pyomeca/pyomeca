@@ -18,6 +18,7 @@ from vtk import vtkCellArray
 from vtk import vtkUnsignedCharArray
 from pyomeca.types import Markers3d
 from pyomeca.types import RotoTransCollection
+from pyomeca.types import RotoTrans
 
 first = True
 if first:
@@ -123,9 +124,11 @@ class Model(QtWidgets.QWidget):
         self.markers_color = markers_color
         self.markers_opacity = markers_opacity
         self.markers_actors = list()
+        self.markers_initialized = False
         self.all_rt = RotoTransCollection()
         self.rt_size = rt_size
         self.rt_actors = list()
+        self.rt_initialized = False
         self.parent_window.should_reset_camera = True
 
     def set_markers_color(self, markers_color):
@@ -193,6 +196,9 @@ class Model(QtWidgets.QWidget):
 
             self.parent_window.ren.AddActor(self.markers_actors[i])
             self.parent_window.ren.ResetCamera()
+
+        # Update marker position
+        self.markers_initialized = True
         self.update_markers(self.markers)
 
     def update_markers(self, markers):
@@ -204,6 +210,9 @@ class Model(QtWidgets.QWidget):
             One frame of markers
 
         """
+        if not self.markers_initialized:
+            self.new_marker_set(markers)
+
         if markers.n_frames() is not 1:
             raise IndexError("Markers should be from one frame only")
         if markers.n_markers() is not self.markers.n_markers():
@@ -229,6 +238,10 @@ class Model(QtWidgets.QWidget):
             One frame of all RotoTrans to draw
 
         """
+        if isinstance(all_rt, RotoTrans):
+            rt_tp = RotoTransCollection()
+            rt_tp.append(all_rt[:, :])
+            all_rt = rt_tp
 
         if not isinstance(all_rt, RotoTransCollection):
             raise TypeError("Please send a list of rt to new_rt_set")
@@ -240,7 +253,7 @@ class Model(QtWidgets.QWidget):
 
         for i, rt in enumerate(all_rt):
             if rt.n_frames() is not 1:
-                raise IndexError("Markers should be from one frame only")
+                raise IndexError("RT should be from one frame only")
 
             # Create the polyline which will hold the actors
             lines_poly_data = vtkPolyData()
@@ -298,6 +311,7 @@ class Model(QtWidgets.QWidget):
             self.parent_window.ren.ResetCamera()
 
         # Set rt orientations
+        self.rt_initialized = True
         self.update_rt(all_rt)
 
     def update_rt(self, all_rt):
@@ -309,12 +323,23 @@ class Model(QtWidgets.QWidget):
             One frame of all RotoTrans to draw
 
         """
+        if not self.rt_initialized:
+            self.new_rt_set(all_rt)
+
+        if isinstance(all_rt, RotoTrans):
+            rt_tp = RotoTransCollection()
+            rt_tp.append(all_rt[:, :])
+            all_rt = rt_tp
+
         if not isinstance(all_rt, RotoTransCollection):
             raise TypeError("Please send a list of rt to new_rt_set")
 
         self.all_rt = all_rt
 
         for i, rt in enumerate(self.all_rt):
+            if rt.n_frames() is not 1:
+                raise IndexError("RT should be from one frame only")
+
             # Update the end points of the axes and the origin
             pts = vtkPoints()
             pts.InsertNextPoint(rt.translation())
