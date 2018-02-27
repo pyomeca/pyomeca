@@ -9,7 +9,7 @@ import vtk
 import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPalette, QColor
-from vtk.qt4.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
+from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from vtk import vtkInteractorStyleTrackballCamera
 from vtk import vtkPolyData
 from vtk import vtkPoints
