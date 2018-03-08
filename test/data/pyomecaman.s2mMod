@@ -26,6 +26,37 @@ external_forces 0
         mesh   -0.1038    0.0821         0
     endsegment
     
+    // Markers
+        marker  pelv1
+            parent  Pelvis
+            position    -0.1038    0.0821         0
+        endmarker
+        
+        marker  pelv2
+            parent  Pelvis
+            position    0.1038    0.0850         0
+        endmarker
+        
+        marker  pelv3
+            parent  Pelvis
+            position    0.1435    0.0072    0.0351
+        endmarker
+        
+        marker  pelv4
+            parent  Pelvis
+            position    0.0514   -0.0833   -0.0020
+        endmarker
+        
+        marker  pelv5
+            parent  Pelvis
+            position    -0.0514   -0.0838    0.0020
+        endmarker
+        
+        marker  pelv6
+            parent  Pelvis
+            position    -0.1432   -0.0024    0.0344
+        endmarker
+    
 
     // Actuator
         actuator    Pelvis
@@ -114,6 +145,72 @@ external_forces 0
         mesh    -0.16201    -0.12933    0.36322
         mesh    -0.10683    -0.18364    0.34808
     endsegment
+    
+    // Markers
+        marker  tronc1
+            parent Tronc
+            position    0.00279    0.07657    0.14222
+        endmarker
+
+        marker  tronc2
+            parent Tronc
+            position    0.00000    -0.01810    0.08001
+        endmarker
+
+        marker  tronc3
+            parent Tronc
+            position    0.00228    -0.10029    0.08019
+        endmarker
+
+        marker  tronc4
+            parent Tronc
+            position    -0.00311    -0.18990    0.25862
+        endmarker
+
+        marker  tronc5
+            parent Tronc
+            position    -0.10683    -0.18364    0.34808
+        endmarker
+
+        marker  tronc6
+            parent Tronc
+            position    -0.00932    -0.18127    0.38131
+        endmarker
+
+        marker  tronc7
+            parent Tronc
+            position    0.16201    -0.12933    0.36322
+        endmarker
+
+        marker  tronc8
+            parent Tronc
+            position    0.14885    -0.08904    0.36408
+        endmarker
+
+        marker  tronc9
+            parent Tronc
+            position    0.10196    -0.08338    0.36282
+        endmarker
+
+        marker  tronc10
+            parent Tronc
+            position    0.06251    -0.08269    0.36618
+        endmarker
+
+        marker  tronc11
+            parent Tronc
+            position    0.04090    -0.05012    0.34934
+        endmarker
+
+        marker  tronc12
+            parent Tronc
+            position    -0.00075    -0.05573    0.35472
+        endmarker
+
+        marker  tronc13
+            parent Tronc
+            position    -0.00029    -0.00944    0.30907
+        endmarker
 
     // Actuator
         // No acturator for this segment
@@ -145,6 +242,37 @@ external_forces 0
         mesh    -0.07122    -0.04303    0.41862
         mesh    0.00000    -0.11016    0.34513
     endsegment
+
+    // Markers
+        marker  tete1
+            parent Tete
+            position    0.00000    -0.11016    0.34513
+        endmarker
+
+        marker  tete2
+            parent Tete
+            position    0.06129    -0.03875    0.41052
+        endmarker
+
+        marker  tete3
+            parent Tete
+            position    0.06494    -0.04624    0.45690
+        endmarker
+
+        marker  tete4
+            parent Tete
+            position    -0.00353    -0.00558    0.48201
+        endmarker
+
+        marker  tete5
+            parent Tete
+            position    -0.06937    -0.05485    0.46343
+        endmarker
+
+        marker  tete6
+            parent Tete
+            position    -0.07122    -0.04303    0.41862
+        endmarker
 
     // Actuator
         // No acturator for this segment
@@ -195,11 +323,90 @@ external_forces 0
     endsegment
 
     // Markers
-    marker    EpauleD
-        parent    BrasD
-        position    0.00000    -0.00000    0.00000
-        technical 1
-    endmarker
+        marker    brasd1
+            parent    BrasD
+            position    0.06167    0.03307    -0.23832
+        endmarker
+
+        marker    brasd2
+            parent    BrasD
+            position    0.05967    0.04302    -0.15607
+        endmarker
+
+        marker    brasd3
+            parent    BrasD
+            position    0.04582    0.00556    -0.06750
+        endmarker
+
+        marker    brasd4
+            parent    BrasD
+            position    0.00000    0.00000    0.00000
+        endmarker
+
+        marker    brasd5
+            parent    BrasD
+            position    0.02253    -0.01481    -0.14066
+        endmarker
+
+        marker    brasd6
+            parent    BrasD
+            position    -0.00579    0.09093    -0.23307
+        endmarker
+
+        marker    brasd7
+            parent    BrasD
+            position    0.01108    0.05121    -0.28232
+        endmarker
+
+        marker    brasd8
+            parent    BrasD
+            position    0.08015    0.04722    -0.31073
+        endmarker
+
+        marker    brasd9
+            parent    BrasD
+            position    0.02416    0.05529    -0.31175
+        endmarker
+
+        marker    brasd10
+            parent    BrasD
+            position    0.07981    0.12049    -0.29966
+        endmarker
+
+        marker    brasd11
+            parent    BrasD
+            position    0.10790    0.08098    -0.39544
+        endmarker
+
+        marker    brasd12
+            parent    BrasD
+            position    0.09778    0.14432    -0.38695
+        endmarker
+
+        marker    brasd13
+            parent    BrasD
+            position    0.09267    0.12714    -0.47113
+        endmarker
+
+        marker    brasd14
+            parent    BrasD
+            position    0.14483    0.11092    -0.45125
+        endmarker
+
+        marker    brasd15
+            parent    BrasD
+            position    0.13229    0.12429    -0.49310
+        endmarker
+
+        marker    brasd16
+            parent    BrasD
+            position    0.16232    0.12952    -0.50661
+        endmarker
+
+        marker    brasd17
+            parent    BrasD
+            position    0.10240    0.15441    -0.51431
+        endmarker
 
     // Actuator
         actuator    BrasD
@@ -296,11 +503,90 @@ external_forces 0
     endsegment
 
     // Markers
-    marker    EpauleG
-        parent    BrasG
-        position    0.00000    -0.00000    0.00000
-        technical 1
-    endmarker
+        marker    brasg1
+            parent    BrasG
+            position    -0.06167    0.03307    -0.23832
+        endmarker
+
+        marker    brasg2
+            parent    BrasG
+            position    -0.05967    0.04302    -0.15607
+        endmarker
+
+        marker    brasg3
+            parent    BrasG
+            position    -0.04582    0.00556    -0.06750
+        endmarker
+
+        marker    brasg4
+            parent    BrasG
+            position    0.00000    0.00000    0.00000
+        endmarker
+
+        marker    brasg5
+            parent    BrasG
+            position    -0.02253    -0.01481    -0.14066
+        endmarker
+
+        marker    brasg6
+            parent    BrasG
+            position    0.00579    0.09093    -0.23307
+        endmarker
+
+        marker    brasg7
+            parent    BrasG
+            position    -0.01108    0.05121    -0.28232
+        endmarker
+
+        marker    brasg8
+            parent    BrasG
+            position    -0.08015    0.04722    -0.31073
+        endmarker
+
+        marker    brasg9
+            parent    BrasG
+            position    -0.02416    0.05529    -0.31175
+        endmarker
+
+        marker    brasg10
+            parent    BrasG
+            position    -0.07981    0.12049    -0.29966
+        endmarker
+
+        marker    brasg11
+            parent    BrasG
+            position    -0.10790    0.08098    -0.39544
+        endmarker
+
+        marker    brasg12
+            parent    BrasG
+            position    -0.09778    0.14432    -0.38695
+        endmarker
+
+        marker    brasg13
+            parent    BrasG
+            position    -0.09267    0.12714    -0.47113
+        endmarker
+
+        marker    brasg14
+            parent    BrasG
+            position    -0.14483    0.11092    -0.45125
+        endmarker
+
+        marker    brasg15
+            parent    BrasG
+            position    -0.13229    0.12429    -0.49310
+        endmarker
+
+        marker    brasg16
+            parent    BrasG
+            position    -0.16232    0.12952    -0.50661
+        endmarker
+
+        marker    brasg17
+            parent    BrasG
+            position    -0.10240    0.15441    -0.51431
+        endmarker
 
     // Actuator
         actuator    BrasG
@@ -377,7 +663,37 @@ external_forces 0
         mesh    0.00000    0.00000    0.00000
     endsegment
 
-    
+    // Markers
+        marker  cuissed1
+            parent CuisseD
+            position    0.00000    0.00000    0.00000
+        endmarker
+        
+        marker  cuissed2
+            parent CuisseD
+            position    0.10917    0.02169    -0.17854
+        endmarker
+        
+        marker  cuissed3
+            parent CuisseD
+            position    0.10898    0.08260    -0.35937
+        endmarker
+        
+        marker  cuissed4
+            parent CuisseD
+            position    0.00206    0.08093    -0.37628
+        endmarker
+        
+        marker  cuissed5
+            parent CuisseD
+            position    0.02884    -0.02404    -0.28043
+        endmarker
+        
+        marker  cuissed6
+            parent CuisseD
+            position    0.01361    -0.05144    -0.15273
+        endmarker
+        
     
     
 
@@ -439,6 +755,42 @@ external_forces 0
         mesh    0.00952    0.04773    -0.02947
         mesh    0.00000    0.00000    0.00000
     endsegment
+    
+    // Markers
+        marker  jambed1
+            parent JambeD
+            position    0.00000    0.00000    0.00000
+        endmarker
+
+        marker  jambed2
+            parent JambeD
+            position    0.06309    0.00002    -0.12758
+        endmarker
+
+        marker  jambed3
+            parent JambeD
+            position    0.03513    0.06084    -0.34329
+        endmarker
+
+        marker  jambed4
+            parent JambeD
+            position    -0.04094    0.08715    -0.32000
+        endmarker
+
+        marker  jambed5
+            parent JambeD
+            position    -0.00767    -0.00022    -0.26361
+        endmarker
+        
+        marker  jambed6
+            parent JambeD
+            position    -0.00642    0.06737    -0.14626
+        endmarker
+        
+        marker  jambed7
+            parent JambeD
+            position    0.00952    0.04773    -0.02947
+        endmarker
 
     // Actuator
         actuator    JambeD
@@ -504,30 +856,49 @@ external_forces 0
         mesh    0.01175    -0.03816    -0.02629
         mesh    0.06379    0.09487    -0.01280
     endsegment
-
+    
     // Markers
-    marker    ToeD
-        parent    PiedD
-        position    -0.00465    0.15809    0.00611
-        technical 1
-    endmarker
-    marker    TalD
-        parent    PiedD
-        position    0.01175    -0.03816    -0.02629
-        technical 1
-    endmarker
+        marker    piedd1
+            parent    PiedD
+            position    0.06379    0.09487    -0.01280
+        endmarker
+
+        marker    piedd2
+            parent    PiedD
+            position    0.00379    0.07064    0.01668
+        endmarker
+
+        marker    piedd3
+            parent    PiedD
+            position    0.01175    -0.03816    -0.02629
+        endmarker
+
+        marker    piedd4
+            parent    PiedD
+            position    -0.00465    0.15809    0.00611
+        endmarker
+
+        marker    piedd5
+            parent    PiedD
+            position    -0.02264    0.12361    0.00225
+        endmarker
+
+        marker    piedd6
+            parent    PiedD
+            position    -0.04091    -0.01479    -0.03150
+        endmarker
 
     // Contact
-    contact    PiedG_1
-        parent    PiedD
-        position    -0.00465    0.15809    0.00611
-        axis    yz
-    endcontact
-    contact    PiedG_2
-        parent    PiedD
-        position    0.00757    0.01189    -0.01802
-        axis    z
-    endcontact
+        contact    PiedG_1
+            parent    PiedD
+            position    -0.00465    0.15809    0.00611
+            axis    yz
+        endcontact
+        contact    PiedG_2
+            parent    PiedD
+            position    0.00757    0.01189    -0.01802
+            axis    z
+        endcontact
 
 
     // Actuator
@@ -588,6 +959,37 @@ external_forces 0
         mesh    0.00000    0.00000    0.00000
     endsegment
 
+    // Markers
+        marker cuisseg1
+            parent CuisseG
+            position    0.00000    0.00000    0.00000
+        endmarker
+
+        marker cuisseg2
+            parent CuisseG
+            position    -0.10917    0.02169    -0.17854
+        endmarker
+
+        marker cuisseg3
+            parent CuisseG
+            position    -0.10898    0.08260    -0.35937
+        endmarker
+
+        marker cuisseg4
+            parent CuisseG
+            position    -0.00206    0.08093    -0.37628
+        endmarker
+
+        marker cuisseg5
+            parent CuisseG
+            position    -0.02884    -0.02404    -0.28043
+        endmarker
+
+        marker cuisseg6
+            parent CuisseG
+            position    -0.01361    -0.05144    -0.15273
+        endmarker
+
     // Actuator
         actuator    CuisseG
             type    Gauss3p
@@ -647,6 +1049,42 @@ external_forces 0
         mesh    -0.00952    0.04773    -0.02947
         mesh    0.00000    0.00000    0.00000
     endsegment
+    
+    // Markers
+        marker jambeg1
+            parent JambeG
+            position    0.00000    0.00000    0.00000
+        endmarker
+
+        marker jambeg2
+            parent JambeG
+            position    -0.06309    0.00002    -0.12758
+        endmarker
+
+        marker jambeg3
+            parent JambeG
+            position    -0.03513    0.06084    -0.34329
+        endmarker
+
+        marker jambeg4
+            parent JambeG
+            position    0.04094    0.08715    -0.32000
+        endmarker
+
+        marker jambeg5
+            parent JambeG
+            position    0.00767    -0.00022    -0.26361
+        endmarker
+
+        marker jambeg6
+            parent JambeG
+            position    0.00642    0.06737    -0.14626
+        endmarker
+
+        marker jambeg7
+            parent JambeG
+            position    -0.00952    0.04773    -0.02947
+        endmarker
 
     // Actuator
         actuator    JambeG
@@ -716,16 +1154,35 @@ external_forces 0
     endsegment
 
     // Markers
-    marker    ToeG
-        parent    PiedG
-        position    0.00465    0.15809    0.00611
-        technical 1
-    endmarker
-    marker    TalG
-        parent    PiedG
-        position    -0.01175    -0.03816    -0.02629
-        technical 1
-    endmarker
+        marker    piedg1
+            parent    PiedG
+            position    -0.06379    0.09487    -0.01280
+        endmarker
+
+        marker    piedg2
+            parent    PiedG
+            position    -0.00379    0.07064    0.01668
+        endmarker
+
+        marker    piedg3
+            parent    PiedG
+            position    -0.01175    -0.03816    -0.02629
+        endmarker
+
+        marker    piedg4
+            parent    PiedG
+            position    0.00465    0.15809    0.00611
+        endmarker
+
+        marker    piedg5
+            parent    PiedG
+            position    0.02264    0.12361    0.00225
+        endmarker
+
+        marker    piedg6
+            parent    PiedG
+            position    0.04091    -0.01479    -0.03150
+        endmarker
 
     // Contact
     contact    PiedG_1
