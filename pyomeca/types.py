@@ -9,7 +9,7 @@ import numpy as np
 
 
 class FrameDependentNpArray(np.ndarray):
-    def __new__(cls, array=np.ndarray((0, 0, 0))):
+    def __new__(cls, array=np.ndarray((0, 0, 0)), *args, **kwargs):
         """
         Convenient wrapper around np.ndarray for time related data
         Parameters
@@ -23,7 +23,8 @@ class FrameDependentNpArray(np.ndarray):
             raise TypeError('FrameDependentNpArray must be a numpy array')
 
         # Finally, we must return the newly created object:
-        return np.asarray(array).view(cls)
+        cls.current_frame = 0
+        return np.asarray(array).view(cls, *args, **kwargs)
 
     def n_frames(self):
         """
@@ -40,6 +41,13 @@ class FrameDependentNpArray(np.ndarray):
 
     def get_frame(self, f):
         return self[:, :, f]
+
+    def __next__(self):
+        if self.current_frame > self.shape[2]:
+            raise StopIteration
+        else:
+            self.current_frame += 1
+            return self.get_frame(self.current_frame)
 
 
 class RotoTransCollection(list):
@@ -90,7 +98,7 @@ class RotoTransCollection(list):
 
 
 class RotoTrans(FrameDependentNpArray):
-    def __new__(cls, rt=np.eye(4), angles=(0, 0, 0), angle_sequence="", translations=(0, 0, 0)):
+    def __new__(cls, rt=np.eye(4), angles=(0, 0, 0), angle_sequence="", translations=(0, 0, 0), *args, **kwargs):
         """
 
         Parameters
@@ -123,7 +131,7 @@ class RotoTrans(FrameDependentNpArray):
                 rt[3, 3, :] = 1
 
         # Finally, we must return the newly created object:
-        return np.asarray(rt).view(cls)
+        return super(RotoTrans, cls).__new__(cls, array=rt, *args, **kwargs)
 
     def get_euler_angles(self, angle_sequence):
         """
@@ -329,7 +337,7 @@ class RotoTrans(FrameDependentNpArray):
 
 
 class Markers3d(FrameDependentNpArray):
-    def __new__(cls, data=np.ndarray((3, 0, 0)), names=list()):
+    def __new__(cls, data=np.ndarray((3, 0, 0)), names=list(), *args, **kwargs):
         """
         Parameters
         ----------
@@ -338,6 +346,7 @@ class Markers3d(FrameDependentNpArray):
         names : list of string
             name of the marker that correspond to second dimension of the positions matrix
         """
+
         s = data.shape
         if s[0] == 3:
             pos = np.ones((4, s[1], s[2]))
@@ -346,7 +355,7 @@ class Markers3d(FrameDependentNpArray):
             pos = data
         else:
             raise IndexError('Vectors3d must have a length of 3 on the first dimension')
-        return np.asarray(pos).view(cls)
+        return super(Markers3d, cls).__new__(cls, array=pos, *args, **kwargs)
 
     def n_markers(self):
         """
@@ -383,8 +392,25 @@ class Markers3d(FrameDependentNpArray):
         return Markers3d(data=m2)
 
 
+class GeneralizedCoordinate(FrameDependentNpArray):
+    def __new__(cls, q=np.ndarray((0, 0, 0)), *args, **kwargs):
+        """
+        Parameters
+        ----------
+        data : np.ndarray
+            nQxNxF matrix of marker positions
+        """
+
+        # Reshape if the user sent a 2d instead of 3d shape
+        if len(q.shape) == 2:
+            q = np.reshape(q, (q.shape[0], 1, q.shape[1]))
+
+        return super(GeneralizedCoordinate, cls).__new__(cls, array=q, *args, **kwargs)
+
+
 class Analogs3d(FrameDependentNpArray):
-    def __new__(cls, data=np.ndarray((3, 0, 0)), names=list()):
+    def __new__(cls, data=np.ndarray((3, 0, 0)), names=list(), *args, **kwargs):
+
         """
         Parameters
         ----------
@@ -393,4 +419,4 @@ class Analogs3d(FrameDependentNpArray):
         names : list of string
             name of the analogs that correspond to second dimension of the matrix
         """
-        return np.asarray(data).view(cls)
+        return super(Analogs3d, cls).__new__(cls, array=data, *args, **kwargs)
