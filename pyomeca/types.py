@@ -393,7 +393,7 @@ class Markers3d(FrameDependentNpArray):
 
 
 class GeneralizedCoordinate(FrameDependentNpArray):
-    def __new__(cls, q=np.ndarray((0, 0, 0)), *args, **kwargs):
+    def __new__(cls, q=np.ndarray((0, 1, 0)), *args, **kwargs):
         """
         Parameters
         ----------
@@ -404,6 +404,9 @@ class GeneralizedCoordinate(FrameDependentNpArray):
         # Reshape if the user sent a 2d instead of 3d shape
         if len(q.shape) == 2:
             q = np.reshape(q, (q.shape[0], 1, q.shape[1]))
+
+        if q.shape[1] != 1:
+            raise IndexError('Generalized coordinates can''t have multiple columns')
 
         return super(GeneralizedCoordinate, cls).__new__(cls, array=q, *args, **kwargs)
 
