@@ -40,6 +40,17 @@ class FrameDependentNpArray(np.ndarray):
             return s[2]
 
     def get_frame(self, f):
+        """
+        Return the fth frame of the array
+        Parameters
+        ----------
+        f : int
+            index of frame
+
+        Returns
+        -------
+        frame
+        """
         return self[:, :, f]
 
     def __next__(self):
@@ -50,10 +61,56 @@ class FrameDependentNpArray(np.ndarray):
             return self.get_frame(self.current_frame)
 
 
-class RotoTransCollection(list):
+class FrameDependentNpArrayCollection(list):
+    """
+    Collection of time frame array
+    """
+    def get_frame(self, f):
+        """
+        Get fth frame of the collection
+        Parameters
+        ----------
+        f : int
+            Frame to get
+        Returns
+        -------
+        Collection of frame f
+        """
+        coll = FrameDependentNpArrayCollection()
+        for element in self:
+            coll.append(element.get_frame(f))
+        return coll
+
+    def n_segments(self):
+        """
+        Get the number of segments in the collection
+        Returns
+        -------
+        n : int
+        Number of segments in the collection
+        """
+        return len(self)
+
+
+class RotoTransCollection(FrameDependentNpArrayCollection):
     """
     List of RotoTrans
     """
+    def get_frame(self, f):
+        """
+        Get fth frame of the collection
+        Parameters
+        ----------
+        f : int
+            Frame to get
+        Returns
+        -------
+        Collection of frame f
+        """
+        coll = RotoTransCollection()
+        for element in self:
+            coll.append(element.get_frame(f))
+        return coll
 
     def get_rt(self, i):
         """
@@ -69,23 +126,6 @@ class RotoTransCollection(list):
         """
         return self[i]
 
-    def get_frame(self, f):
-        """
-        Get the RotoTransCollection for frame f
-        Parameters
-        ----------
-        f : int
-            Frame to get
-
-        Returns
-        -------
-        RotoTransCollection of frame f
-        """
-        rt_coll = RotoTransCollection()
-        for rt in self:
-            rt_coll.append(rt.get_frame(f))
-        return rt_coll
-
     def n_rt(self):
         """
         Get the number of RotoTrans in the collection
@@ -94,7 +134,7 @@ class RotoTransCollection(list):
         n : int
         Number of RotoTrans in the collection
         """
-        return len(self)
+        return self.n_segments()
 
 
 class RotoTrans(FrameDependentNpArray):
@@ -390,6 +430,40 @@ class Markers3d(FrameDependentNpArray):
             raise ValueError('Size of RT and M must match')
 
         return Markers3d(data=m2)
+
+    def norm(self):
+        square = self[0:3, :, :] ** 2
+        sum_square = np.sum(square, axis=0)
+        norm = np.sqrt(sum_square)
+        return norm
+
+
+class MeshCollection(FrameDependentNpArrayCollection):
+
+
+class Mesh(Markers3d):
+    def __new__(cls, vertex=np.ndarray((3, 0, 0)), triangles=np.ndarray((0, 3)), *args, **kwargs):
+        """
+        Parameters
+        ----------
+        vertex : np.ndarray
+            3xNxF matrix of vertex positions
+        triangles : np.ndarray
+            Nx3 indexes matrix where N is the number of triangles and the row are the vertex to connect
+        names : list of string
+            name of the marker that correspond to second dimension of the positions matrix
+        """
+
+        s = triangles.shape
+        if s[1] != 3:
+            raise NotImplementedError('Mesh only implement triangle connections')
+
+        cls = super(Mesh, cls).__new__(cls, data=vertex, *args, **kwargs)
+        cls.triangles = triangles
+        return cls
+
+    def nb_triangles(self):
+        return self.triangles.shape[0]
 
 
 class GeneralizedCoordinate(FrameDependentNpArray):

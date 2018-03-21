@@ -5,7 +5,6 @@ Visualization toolkit in pyomeca
 
 """
 
-import vtk
 import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPalette, QColor
@@ -13,10 +12,27 @@ from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from vtk import vtkInteractorStyleTrackballCamera
 from vtk import vtkPolyData
 from vtk import vtkPoints
+from vtk import vtkPolyDataMapper
+from vtk import vtkDataSetMapper
+from vtk import vtkPolyLine
 from vtk import vtkLine
 from vtk import vtkCellArray
+from vtk import vtkRegularPolygonSource
+from vtk import vtkSphereSource
 from vtk import vtkUnsignedCharArray
+from vtk import vtkActor
+from vtk import vtkRenderer
+from vtk import vtkTriangleFilter
+from vtk import vtkContourFilter
+from vtk import vtkReverseSense
+from vtk import vtkSurfaceReconstructionFilter
+from vtk import vtkCleanPolyData
+from vtk import vtkDelaunay3D
+from vtk import vtkPolyDataNormals
+from vtk import vtkRuledSurfaceFilter
+from vtk.util.colors import *
 from pyomeca.types import Markers3d
+from pyomeca.types import Mesh
 from pyomeca.types import RotoTransCollection
 from pyomeca.types import RotoTrans
 
@@ -47,7 +63,7 @@ class Window(QtWidgets.QMainWindow):
         self.frame.setLayout(self.vl)
         self.setCentralWidget(self.frame)
 
-        self.ren = vtk.vtkRenderer()
+        self.ren = vtkRenderer()
         self.ren.SetBackground(background_color)
         self.vtkWidget.GetRenderWindow().SetSize(1000, 100)
         self.vtkWidget.GetRenderWindow().AddRenderer(self.ren)
@@ -124,11 +140,15 @@ class Model(QtWidgets.QWidget):
         self.markers_color = markers_color
         self.markers_opacity = markers_opacity
         self.markers_actors = list()
+
         self.all_rt = RotoTransCollection()
         self.n_rt = 0
         self.rt_size = rt_size
         self.rt_actors = list()
         self.parent_window.should_reset_camera = True
+
+        self.mesh = Mesh()
+        self.mesh_actors = list()
 
     def set_markers_color(self, markers_color):
         """
@@ -184,13 +204,13 @@ class Model(QtWidgets.QWidget):
             self.parent_window.ren.RemoveActor(actor)
         self.markers_actors = list()
 
-        # Create the geometry of a point (the coordinate) points = vtk.vtkPoints()
+        # Create the geometry of a point (the coordinate) points = vtkPoints()
         for i in range(markers.n_markers()):
             # Create a mapper
-            mapper = vtk.vtkPolyDataMapper()
+            mapper = vtkPolyDataMapper()
 
             # Create an actor
-            self.markers_actors.append(vtk.vtkActor())
+            self.markers_actors.append(vtkActor())
             self.markers_actors[i].SetMapper(mapper)
 
             self.parent_window.ren.AddActor(self.markers_actors[i])
@@ -213,7 +233,7 @@ class Model(QtWidgets.QWidget):
             raise IndexError("Markers should be from one frame only")
         if markers.n_markers() is not self.markers.n_markers():
             self.new_marker_set(markers)
-            return # Prevent calling update_markers recursively
+            return  # Prevent calling update_markers recursively
         self.markers = markers
 
         for i, actor in enumerate(self.markers_actors):
@@ -221,10 +241,69 @@ class Model(QtWidgets.QWidget):
             mapper = actor.GetMapper()
             self.markers_actors[i].GetProperty().SetColor(self.markers_color)
             self.markers_actors[i].GetProperty().SetOpacity(self.markers_opacity)
-            source = vtk.vtkSphereSource()
+            source = vtkSphereSource()
             source.SetCenter(markers[0:3, i])
             source.SetRadius(self.markers_size)
             mapper.SetInputConnection(source.GetOutputPort())
+
+    def new_mesh_set(self, mesh):
+        if mesh.n_frames() is not 1:
+            raise IndexError("Mesh should be from one frame only")
+        self.mesh = mesh
+
+        # Remove previous actors from the scene
+        for actor in self.mesh_actors:
+            self.parent_window.ren.RemoveActor(actor)
+        self.mesh_actors = list()
+
+        # Create the geometry of a point (the coordinate) points = vtkPoints()
+        for i in range(1):
+            points = vtkPoints()
+            for j in range(self.mesh.n_markers()):
+                points.InsertNextPoint([0, 0, 0])
+
+            # Create an array for each triangle
+            cell = vtkCellArray()
+            for j in range(self.mesh.nb_triangles()):  # For each triangle
+                line = vtkPolyLine()
+                line.GetPointIds().SetNumberOfIds(4)
+                for k in range(len(self.mesh.triangles[i])):  # For each index
+                    line.GetPointIds().SetId(k, mesh.triangles[j, k])
+                line.GetPointIds().SetId(3, mesh.triangles[j, 0])  # Close the triangle
+                cell.InsertNextCell(line)
+            poly_line = vtkPolyData()
+            poly_line.SetPoints(points)
+            poly_line.SetLines(cell)
+            print(cell)
+
+            # Create a mapper
+            mapper = vtkPolyDataMapper()
+            mapper.SetInputData(poly_line)
+
+            # Create an actor
+            self.mesh_actors.append(vtkActor())
+            self.mesh_actors[i].SetMapper(mapper)
+
+            self.parent_window.ren.AddActor(self.mesh_actors[i])
+            self.parent_window.ren.ResetCamera()
+
+        # Update marker position
+        self.update_mesh(self.mesh)
+
+    def update_mesh(self, mesh):
+        if mesh.n_frames() is not 1:
+            raise IndexError("Mesh should be from one frame only")
+        if mesh.n_markers() is not self.mesh.n_markers():
+            self.new_mesh_set(mesh)
+            return  # Prevent calling update_markers recursively
+        self.mesh = mesh
+
+        points = vtkPoints()
+        for i in range(self.mesh.n_markers()):
+            points.InsertNextPoint(self.mesh[0:3, i])
+
+        poly_line = self.mesh_actors[0].GetMapper().GetInput()
+        poly_line.SetPoints(points)
 
     def new_rt_set(self, all_rt):
         """
@@ -296,11 +375,11 @@ class Model(QtWidgets.QWidget):
             lines_poly_data.GetCellData().SetScalars(colors)
 
             # Create a mapper
-            mapper = vtk.vtkPolyDataMapper()
+            mapper = vtkPolyDataMapper()
             mapper.SetInputData(lines_poly_data)
 
             # Create an actor
-            self.rt_actors.append(vtk.vtkActor())
+            self.rt_actors.append(vtkActor())
             self.rt_actors[i].SetMapper(mapper)
             self.rt_actors[i].GetProperty().SetLineWidth(5)
 
