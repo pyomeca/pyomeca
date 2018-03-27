@@ -7,6 +7,8 @@ File IO in pyomeca
 
 import numpy as np
 import pandas as pd
+import csv
+import os
 
 from pyomeca.math import matrix
 from pyomeca.thirdparty import btk
@@ -131,6 +133,33 @@ def read_c3d(file_name, idx=None, names=None, kind='markers', prefix=None, get_m
                        all_names=channel_names,
                        target_names=names)
     return (data, metadata) if get_metadata else data
+
+
+def write_csv(file_name, markers):
+    """
+    Write a csv file from a Markers3d set
+    Parameters
+    ----------
+    file_name : string
+        path of the file to write
+    markers : Markers3d
+        Marker positions to write into the csv file
+    """
+    # Make sure the directory exists, otherwise create it
+    dir_name = os.path.dirname(file_name)
+    if dir_name is '':
+        dir_name = '.'
+
+    if not os.path.isdir(dir_name):
+        os.mkdir(dir_name)
+
+    # Convert markers into 2d matrix
+    markers = matrix.reshape_3d_to_2d_matrix(markers)
+
+    # Write the Markers3d into the csv file
+    with open(file_name, 'w+') as f:
+        writer = csv.writer(f)
+        writer.writerows(markers)
 
 
 def _to_vectors(data, kind, idx, all_names, target_names):
