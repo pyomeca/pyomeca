@@ -5,20 +5,22 @@ Visualization toolkit in pyomeca
 
 """
 
-import vtk
 import sys
+
+import vtk
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPalette, QColor
-from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
-from vtk import vtkInteractorStyleTrackballCamera
-from vtk import vtkPolyData
-from vtk import vtkPoints
-from vtk import vtkLine
 from vtk import vtkCellArray
+from vtk import vtkInteractorStyleTrackballCamera
+from vtk import vtkLine
+from vtk import vtkPoints
+from vtk import vtkPolyData
 from vtk import vtkUnsignedCharArray
+from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
+
 from pyomeca.types import Markers3d
-from pyomeca.types import RotoTransCollection
 from pyomeca.types import RotoTrans
+from pyomeca.types import RotoTransCollection
 
 first = True
 if first:
@@ -89,7 +91,7 @@ class Window(QtWidgets.QMainWindow):
         color : tuple(int)
         """
         self.ren.SetBackground(color)
-        self.setPalette(QPalette(QColor(color[0]*255, color[1]*255, color[2]*255)))
+        self.setPalette(QPalette(QColor(color[0] * 255, color[1] * 255, color[2] * 255)))
 
 
 class Model(QtWidgets.QWidget):
@@ -213,7 +215,7 @@ class Model(QtWidgets.QWidget):
             raise IndexError("Markers should be from one frame only")
         if markers.n_markers() is not self.markers.n_markers():
             self.new_marker_set(markers)
-            return # Prevent calling update_markers recursively
+            return  # Prevent calling update_markers recursively
         self.markers = markers
 
         for i, actor in enumerate(self.markers_actors):
@@ -348,4 +350,3 @@ class Model(QtWidgets.QWidget):
             # Update polydata in mapper
             lines_poly_data = self.rt_actors[i].GetMapper().GetInput()
             lines_poly_data.SetPoints(pts)
-
