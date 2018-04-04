@@ -5,18 +5,21 @@ Visualization toolkit in pyomeca
 
 """
 
-import vtk
 import sys
+
+import vtk
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPalette, QColor
-from vtk.qt4.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
-from vtk import vtkInteractorStyleTrackballCamera
-from vtk import vtkPolyData
-from vtk import vtkPoints
-from vtk import vtkLine
 from vtk import vtkCellArray
+from vtk import vtkInteractorStyleTrackballCamera
+from vtk import vtkLine
+from vtk import vtkPoints
+from vtk import vtkPolyData
 from vtk import vtkUnsignedCharArray
+from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
+
 from pyomeca.types import Markers3d
+from pyomeca.types import RotoTrans
 from pyomeca.types import RotoTransCollection
 
 first = True
@@ -88,7 +91,7 @@ class Window(QtWidgets.QMainWindow):
         color : tuple(int)
         """
         self.ren.SetBackground(color)
-        self.setPalette(QPalette(QColor(color[0]*255, color[1]*255, color[2]*255)))
+        self.setPalette(QPalette(QColor(color[0] * 255, color[1] * 255, color[2] * 255)))
 
 
 class Model(QtWidgets.QWidget):
@@ -124,6 +127,7 @@ class Model(QtWidgets.QWidget):
         self.markers_opacity = markers_opacity
         self.markers_actors = list()
         self.all_rt = RotoTransCollection()
+        self.n_rt = 0
         self.rt_size = rt_size
         self.rt_actors = list()
         self.parent_window.should_reset_camera = True
@@ -193,6 +197,8 @@ class Model(QtWidgets.QWidget):
 
             self.parent_window.ren.AddActor(self.markers_actors[i])
             self.parent_window.ren.ResetCamera()
+
+        # Update marker position
         self.update_markers(self.markers)
 
     def update_markers(self, markers):
@@ -204,10 +210,12 @@ class Model(QtWidgets.QWidget):
             One frame of markers
 
         """
+
         if markers.n_frames() is not 1:
             raise IndexError("Markers should be from one frame only")
         if markers.n_markers() is not self.markers.n_markers():
-            raise IndexError("Numbers of markers should be the same set by new_markers_set")
+            self.new_marker_set(markers)
+            return  # Prevent calling update_markers recursively
         self.markers = markers
 
         for i, actor in enumerate(self.markers_actors):
@@ -229,6 +237,10 @@ class Model(QtWidgets.QWidget):
             One frame of all RotoTrans to draw
 
         """
+        if isinstance(all_rt, RotoTrans):
+            rt_tp = RotoTransCollection()
+            rt_tp.append(all_rt[:, :])
+            all_rt = rt_tp
 
         if not isinstance(all_rt, RotoTransCollection):
             raise TypeError("Please send a list of rt to new_rt_set")
@@ -240,7 +252,7 @@ class Model(QtWidgets.QWidget):
 
         for i, rt in enumerate(all_rt):
             if rt.n_frames() is not 1:
-                raise IndexError("Markers should be from one frame only")
+                raise IndexError("RT should be from one frame only")
 
             # Create the polyline which will hold the actors
             lines_poly_data = vtkPolyData()
@@ -298,6 +310,7 @@ class Model(QtWidgets.QWidget):
             self.parent_window.ren.ResetCamera()
 
         # Set rt orientations
+        self.n_rt = all_rt.n_rt()
         self.update_rt(all_rt)
 
     def update_rt(self, all_rt):
@@ -309,12 +322,24 @@ class Model(QtWidgets.QWidget):
             One frame of all RotoTrans to draw
 
         """
+        if isinstance(all_rt, RotoTrans):
+            rt_tp = RotoTransCollection()
+            rt_tp.append(all_rt[:, :])
+            all_rt = rt_tp
+
+        if all_rt.n_rt() is not self.n_rt:
+            self.new_rt_set(all_rt)
+            return  # Prevent calling update_rt recursively
+
         if not isinstance(all_rt, RotoTransCollection):
             raise TypeError("Please send a list of rt to new_rt_set")
 
         self.all_rt = all_rt
 
         for i, rt in enumerate(self.all_rt):
+            if rt.n_frames() is not 1:
+                raise IndexError("RT should be from one frame only")
+
             # Update the end points of the axes and the origin
             pts = vtkPoints()
             pts.InsertNextPoint(rt.translation())
@@ -325,4 +350,3 @@ class Model(QtWidgets.QWidget):
             # Update polydata in mapper
             lines_poly_data = self.rt_actors[i].GetMapper().GetInput()
             lines_poly_data.SetPoints(pts)
-

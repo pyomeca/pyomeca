@@ -41,6 +41,7 @@ print('\t1. markers in csv')
 # 1.1. 11 first
 m_csv_1 = pyoio.read_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
                          idx=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], prefix=':')
+
 check_array(m_csv_1,
             expected_shape=(4, 11, 580),
             expected_values=[3.18461e+02, -1.69003e+02, 1.05422e+03, 1.00000e+00],
@@ -67,8 +68,8 @@ check_array(m_csv_3,
 m_csv_4 = pyoio.read_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
                          names=['CLAV_post', 'PSISl', 'STERr', 'CLAV_post'], prefix=':')
 check_array(m_csv_4,
-            expected_shape=(4, 3, 580),
-            expected_values=[861.668, 171.53, 227.042, 1.],
+            expected_shape=(4, 4, 580),
+            expected_values=[791.96, 295.588, 682.808, 1.],
             text='\t\t1.4. with names')
 
 # 2. markers in c3d
@@ -101,8 +102,8 @@ check_array(m_c3d_3,
 m_c3d_4, meta = pyoio.read_c3d(MARKERS_ANALOGS_C3D, names=['CLAV_post', 'PSISl', 'STERr', 'CLAV_post'],
                                kind='markers', prefix=':', get_metadata=True)
 check_array(m_c3d_4,
-            expected_shape=(4, 3, 580),
-            expected_values=[861.66766, 171.52963, 227.04192, 1.],
+            expected_shape=(4, 4, 580),
+            expected_values=[791.96002197, 295.58773804, 682.80767822, 1.],
             text='\t\t2.4. with names and metadata')
 
 # 3. analogs in csv
