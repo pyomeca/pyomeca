@@ -1,8 +1,9 @@
 import numpy as np
-from pyomeca.thirdparty import S2MLib
-from pyomeca.types import GeneralizedCoordinate
+
 from pyomeca.show.vtk import Model as PyoModel
 from pyomeca.show.vtk import Window as PyoWindow
+from pyomeca.thirdparty import S2MLib
+from pyomeca.types import GeneralizedCoordinate
 
 # Load
 m = S2MLib.new("data/pyomecaman.s2mMod")
@@ -43,4 +44,4 @@ while window.is_active:
     h_simulated_T.update_markers(T_simulated.get_frame(i))
     h_reconstructed_T.update_markers(T_recons.get_frame(i))
     window.update_frame()
-    i = (i+1) % nb_frames
+    i = (i + 1) % nb_frames

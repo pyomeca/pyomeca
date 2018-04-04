@@ -413,7 +413,6 @@ class GeneralizedCoordinate(FrameDependentNpArray):
 
 class Analogs3d(FrameDependentNpArray):
     def __new__(cls, data=np.ndarray((3, 0, 0)), names=list(), *args, **kwargs):
-
         """
         Parameters
         ----------
