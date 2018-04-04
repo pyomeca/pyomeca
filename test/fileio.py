@@ -41,6 +41,7 @@ print('\t1. markers in csv')
 # 1.1. 11 first
 m_csv_1 = pyoio.read_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
                          idx=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], prefix=':')
+
 check_array(m_csv_1,
             expected_shape=(4, 11, 580),
             expected_values=[3.18461e+02, -1.69003e+02, 1.05422e+03, 1.00000e+00],

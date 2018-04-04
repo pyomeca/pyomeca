@@ -5,10 +5,10 @@ File IO in pyomeca
 
 """
 
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
-import csv
-import os
 
 from pyomeca.math import matrix
 from pyomeca.thirdparty import btk
@@ -145,21 +145,16 @@ def write_csv(file_name, markers):
     markers : Markers3d
         Marker positions to write into the csv file
     """
+    file_name = Path(file_name)
     # Make sure the directory exists, otherwise create it
-    dir_name = os.path.dirname(file_name)
-    if dir_name is '':
-        dir_name = '.'
-
-    if not os.path.isdir(dir_name):
-        os.mkdir(dir_name)
+    if not file_name.parents[0].is_dir():
+        file_name.parents[0].mkdir()
 
     # Convert markers into 2d matrix
     markers = matrix.reshape_3d_to_2d_matrix(markers)
 
     # Write the Markers3d into the csv file
-    with open(file_name, 'w+') as f:
-        writer = csv.writer(f)
-        writer.writerows(markers)
+    pd.DataFrame(markers).to_csv(file_name, index=False, header=False)
 
 
 def _to_vectors(data, kind, idx, all_names, target_names):
