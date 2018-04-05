@@ -6,6 +6,7 @@ Definition of different container in pyomeca
 """
 
 import numpy as np
+from pyomeca.math import matrix
 
 
 class FrameDependentNpArray(np.ndarray):
@@ -361,7 +362,7 @@ class Markers3d(FrameDependentNpArray):
         """
         Returns
         -------
-        Get the number of markers
+        The number of markers
         """
         s = self.shape
         return s[1]
@@ -391,6 +392,16 @@ class Markers3d(FrameDependentNpArray):
 
         return Markers3d(data=m2)
 
+    def to_2d(self):
+        """
+        Takes a Markers3d style matrix and returns a tabular matrix
+        Returns
+        -------
+        Tabular matrix
+        """
+        return matrix.reshape_3d_to_2d_matrix(self, kind='markers')
+
+
 
 class GeneralizedCoordinate(FrameDependentNpArray):
     def __new__(cls, q=np.ndarray((0, 0, 0)), *args, **kwargs):
@@ -419,3 +430,12 @@ class Analogs3d(FrameDependentNpArray):
             name of the analogs that correspond to second dimension of the matrix
         """
         return super(Analogs3d, cls).__new__(cls, array=data, *args, **kwargs)
+
+    def to_2d(self):
+        """
+        Takes a Analogs3d style matrix and returns a tabular matrix
+        Returns
+        -------
+        Tabular matrix
+        """
+        return matrix.reshape_3d_to_2d_matrix(self, kind='analogs')
