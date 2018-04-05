@@ -45,11 +45,11 @@ def reshape_3d_to_2d_matrix(m, kind='markers'):
         Kind of data to read (markers or analogs)
     Returns
     -------
-    tabular matrix
+    Tabular matrix
     """
     s = m.shape
     if kind == 'markers':
-        output = np.reshape(m[0:3, :, :], (3 * m.n_markers(), m.n_frames()), 'F').T
+        output = np.reshape(m[0:3, :, :], (3 * m.get_num_markers(), m.get_num_frames()), 'F').T
     elif kind == 'analogs':
         output = np.squeeze(m.T, axis=2)
     return output

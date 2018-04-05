@@ -6,6 +6,7 @@ Definition of different container in pyomeca
 """
 
 import numpy as np
+
 from pyomeca.math import matrix
 
 
@@ -24,10 +25,16 @@ class FrameDependentNpArray(np.ndarray):
             raise TypeError('FrameDependentNpArray must be a numpy array')
 
         # Finally, we must return the newly created object:
-        cls.current_frame = 0
+        cls._current_frame = 0
+
+        # metadata
+        cls.get_first_frame = []
+        cls.get_last_frame = []
+        cls.get_rate = []
+        cls.get_labels = []
         return np.asarray(array).view(cls, *args, **kwargs)
 
-    def n_frames(self):
+    def get_num_frames(self):
         """
 
         Returns
@@ -44,11 +51,11 @@ class FrameDependentNpArray(np.ndarray):
         return self[:, :, f]
 
     def __next__(self):
-        if self.current_frame > self.shape[2]:
+        if self._current_frame > self.shape[2]:
             raise StopIteration
         else:
-            self.current_frame += 1
-            return self.get_frame(self.current_frame)
+            self._current_frame += 1
+            return self.get_frame(self._current_frame)
 
 
 class RotoTransCollection(list):
@@ -87,7 +94,7 @@ class RotoTransCollection(list):
             rt_coll.append(rt.get_frame(f))
         return rt_coll
 
-    def n_rt(self):
+    def get_num_rt(self):
         """
         Get the number of RotoTrans in the collection
         Returns
@@ -146,7 +153,7 @@ class RotoTrans(FrameDependentNpArray):
         angles : Markers3d
             Euler angles associated with RotoTrans
         """
-        if self.n_frames() > 1:
+        if self.get_num_frames() > 1:
             raise NotImplementedError("get_euler_angles on more than one frame at a time is not implemented yet")
 
         angles = np.ndarray(shape=(len(angle_sequence), 1))
@@ -312,7 +319,7 @@ class RotoTrans(FrameDependentNpArray):
             Transposed RotoTrans matrix ([R.T -R.T*t],[0 0 0 1])
         """
         # Create a matrix with the transposed rotation part
-        rt_t = RotoTrans(rt=np.ndarray((4, 4, self.n_frames())))
+        rt_t = RotoTrans(rt=np.ndarray((4, 4, self.get_num_frames())))
         rt_t[0:3, 0:3, :] = np.transpose(self[0:3, 0:3, :], (1, 0, 2))
 
         # Fill the last column and row with 0 and bottom corner with 1
@@ -321,8 +328,8 @@ class RotoTrans(FrameDependentNpArray):
         rt_t[3, 3, :] = 1
 
         # Transpose the translation part
-        t = Markers3d(data=np.reshape(self[0:3, 3, :], (3, 1, self.n_frames())))
-        rt_t[0:3, 3, :] = t.rotate(-rt_t)[0:3, :].reshape((3, self.n_frames()))
+        t = Markers3d(data=np.reshape(self[0:3, 3, :], (3, 1, self.get_num_frames())))
+        rt_t[0:3, 3, :] = t.rotate(-rt_t)[0:3, :].reshape((3, self.get_num_frames()))
 
         # Return transposed matrix
         return rt_t
@@ -347,7 +354,6 @@ class Markers3d(FrameDependentNpArray):
         names : list of string
             name of the marker that correspond to second dimension of the positions matrix
         """
-
         s = data.shape
         if s[0] == 3:
             pos = np.ones((4, s[1], s[2]))
@@ -358,7 +364,7 @@ class Markers3d(FrameDependentNpArray):
             raise IndexError('Vectors3d must have a length of 3 on the first dimension')
         return super(Markers3d, cls).__new__(cls, array=pos, *args, **kwargs)
 
-    def n_markers(self):
+    def get_num_markers(self):
         """
         Returns
         -------
@@ -402,7 +408,6 @@ class Markers3d(FrameDependentNpArray):
         return matrix.reshape_3d_to_2d_matrix(self, kind='markers')
 
 
-
 class GeneralizedCoordinate(FrameDependentNpArray):
     def __new__(cls, q=np.ndarray((0, 0, 0)), *args, **kwargs):
         """
@@ -429,7 +434,17 @@ class Analogs3d(FrameDependentNpArray):
         names : list of string
             name of the analogs that correspond to second dimension of the matrix
         """
+
         return super(Analogs3d, cls).__new__(cls, array=data, *args, **kwargs)
+
+    def get_num_analogs(self):
+        """
+        Returns
+        -------
+        The number of analogs
+        """
+        s = self.shape
+        return s[1]
 
     def to_2d(self):
         """
