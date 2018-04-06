@@ -1,2 +1,3 @@
 - replace by `Pipfile` by `requirements.txt` and `requirements_dev.txt`
--
+- write test suite for fileio and rototrans
+- add write_csv to fileio test

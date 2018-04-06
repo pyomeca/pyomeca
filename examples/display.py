@@ -12,7 +12,7 @@ from pyomeca.show.vtk import Window as PyoWindow
 from pyomeca.types import RotoTrans, RotoTransCollection
 
 # Path to data
-DATA_FOLDER = Path('.') / 'data'
+DATA_FOLDER = Path('..') / 'tests' / 'data'
 MARKERS_CSV = DATA_FOLDER / 'markers.csv'
 MARKERS_ANALOGS_C3D = DATA_FOLDER / 'markers_analogs.c3d'
 
