@@ -7,11 +7,9 @@ from pathlib import Path
 import numpy as np
 
 from pyomeca import fileio as pyoio
-from pyomeca.math.matrix import define_axes
 from pyomeca.show.vtk import Model as PyoModel
 from pyomeca.show.vtk import Window as PyoWindow
-from pyomeca.types import RotoTrans
-from pyomeca.types import RotoTransCollection
+from pyomeca.types import RotoTrans, RotoTransCollection
 
 # Path to data
 DATA_FOLDER = Path('.') / 'data'
@@ -51,7 +49,7 @@ all_rt_real.append(RotoTrans(angles=[0, 0, 0], angle_sequence="yxz", translation
 all_rt_real.append(RotoTrans(angles=[0, 0, 0], angle_sequence="yxz", translations=d[:, 0, 0]))
 
 # Create some RotoTrans attached to the second model
-one_rt = define_axes(d, [3, 5], [[4, 3], [4, 5]], "zx", "z", [3, 4, 5])
+one_rt = RotoTrans.define_axes(d, [3, 5], [[4, 3], [4, 5]], "zx", "z", [3, 4, 5])
 
 # Animate all this
 i = 0

@@ -4,10 +4,7 @@
 Definition of different container in pyomeca
 
 """
-
 import numpy as np
-
-from pyomeca.math import matrix
 
 
 class FrameDependentNpArray(np.ndarray):
@@ -56,6 +53,29 @@ class FrameDependentNpArray(np.ndarray):
         else:
             self._current_frame += 1
             return self.get_frame(self._current_frame)
+
+    def get_specific_data(self, mark_idx):
+        """
+        # TODO: description
+        Parameters
+        ----------
+        mark_idx : list(int)
+            idx of marker to keep (order is kept in the returned data).
+            If mark_idx has more than one row, output is the mean of the markers over the columns.
+        Returns
+        -------
+        numpy.array
+            extracted data
+        """
+        mark_idx = np.matrix(mark_idx)
+        try:
+            data = self[:, np.array(mark_idx)[0, :], :]
+            for i in range(1, mark_idx.shape[0]):
+                data += self[:, np.array(mark_idx)[i, :], :]
+            data /= mark_idx.shape[0]
+        except IndexError:
+            raise IndexError('extract_markers works only on 3xNxF matrices and mark_idx must be a ixj array')
+        return data
 
 
 class RotoTransCollection(list):
@@ -274,6 +294,91 @@ class RotoTrans(FrameDependentNpArray):
 
         return RotoTrans(rt)
 
+    @staticmethod
+    def define_axes(data_set, idx_axis1, idx_axis2, axes_name, axis_to_recalculate, idx_origin):
+        """
+        This function creates system of axes from axis1 and axis2
+        Parameters
+        ----------
+        data_set : Markers3d
+            Whole data set
+        idx_axis1 : list(int)
+            First column is the beginning of the axis, second is the end. Rows are the markers to be mean
+        idx_axis2 : list(int)
+            First column is the beginning of the axis, second is the end. Rows are the markers to be mean
+        axes_name : str
+            Name of the axis1 and axis2 in that order ("xy", "yx", "xz", ...)
+        axis_to_recalculate : str
+            Which of the 3 axes to recalculate
+        idx_origin : list(int)
+            Markers to be mean to define the origin of the system of axes
+
+        Returns
+        -------
+        System of axes
+        """
+        # Extract mean of each required axis indexes
+        idx_axis1 = np.matrix(idx_axis1)
+        idx_axis2 = np.matrix(idx_axis2)
+
+        axis1 = data_set.get_specific_data(idx_axis1[:, 1]) - data_set.get_specific_data(idx_axis1[:, 0])
+        axis2 = data_set.get_specific_data(idx_axis2[:, 1]) - data_set.get_specific_data(idx_axis2[:, 0])
+        origin = data_set.get_specific_data(np.matrix(idx_origin).reshape((len(idx_origin), 1)))
+
+        axis1 = axis1[0:3, :, :].reshape(3, axis1.shape[2]).T
+        axis2 = axis2[0:3, :, :].reshape(3, axis2.shape[2]).T
+
+        # If we inverse axes_names, inverse axes as well
+        axes_name_tp = ''.join(sorted(axes_name))
+        if axes_name != axes_name_tp:
+            axis1_copy = axis1
+            axis1 = axis2
+            axis2 = axis1_copy
+            axes_name = axes_name_tp
+
+        if axes_name[0] == "x":
+            x = axis1
+            if axes_name[1] == "y":
+                y = axis2
+                z = np.cross(x, y)
+            elif axes_name[1] == "z":
+                z = axis2
+                y = np.cross(z, x)
+            else:
+                raise ValueError("Axes names should be 2 values of ""x"", ""y"" and ""z"" permutations)")
+
+        elif axes_name[0] == "y":
+            y = axis1
+            if axes_name[1] == "z":
+                z = axis2
+                x = np.cross(y, z)
+            else:
+                raise ValueError("Axes names should be 2 values of ""x"", ""y"" and ""z"" permutations)")
+        else:
+            raise ValueError("Axes names should be 2 values of ""x"", ""y"" and ""z"" permutations)")
+
+        # Normalize each vector
+        x = x / np.matrix(np.linalg.norm(x, axis=1)).T
+        y = y / np.matrix(np.linalg.norm(y, axis=1)).T
+        z = z / np.matrix(np.linalg.norm(z, axis=1)).T
+
+        # # Recalculate the temporary axis
+        if axis_to_recalculate == "x":
+            x = np.cross(y, z)
+        elif axis_to_recalculate == "y":
+            y = np.cross(z, x)
+        elif axis_to_recalculate == "z":
+            z = np.cross(x, y)
+        else:
+            raise ValueError("Axis to recalculate must be ""x"", ""y"" or ""z""")
+
+        rt = RotoTrans(rt=np.zeros((4, 4, data_set.shape[2])))
+        rt[0:3, 0, :] = x.T
+        rt[0:3, 1, :] = y.T
+        rt[0:3, 2, :] = z.T
+        rt.set_translation(origin)
+        return rt
+
     def rotation(self):
         """
         Returns
@@ -354,14 +459,21 @@ class Markers3d(FrameDependentNpArray):
         names : list of string
             name of the marker that correspond to second dimension of the positions matrix
         """
-        s = data.shape
-        if s[0] == 3:
-            pos = np.ones((4, s[1], s[2]))
-            pos[0:3, :, :] = data
-        elif s[0] == 4:
-            pos = data
+        if data.ndim == 2:
+            data = Markers3d.from_2d(data)
+
+        if data.ndim == 3:
+            s = data.shape
+            if s[0] == 3:
+                pos = np.ones((4, s[1], s[2]))
+                pos[0:3, :, :] = data
+            elif s[0] == 4:
+                pos = data
+            else:
+                raise IndexError('Vectors3d must have a length of 3 on the first dimension')
         else:
-            raise IndexError('Vectors3d must have a length of 3 on the first dimension')
+            raise TypeError('Data must be 2d or 3d matrix')
+
         return super(Markers3d, cls).__new__(cls, array=pos, *args, **kwargs)
 
     def get_num_markers(self):
@@ -405,7 +517,24 @@ class Markers3d(FrameDependentNpArray):
         -------
         Tabular matrix
         """
-        return matrix.reshape_3d_to_2d_matrix(self, kind='markers')
+        return np.reshape(self[0:3, :, :], (3 * self.get_num_markers(), self.get_num_frames()), 'F').T
+
+    @staticmethod
+    def from_2d(m):
+        """
+        Takes a tabular matrix and returns a Vectors3d
+        Parameters
+        ----------
+        m : np.array
+            A CSV tabular matrix (Fx3*N)
+        Returns
+        -------
+        Vectors3d of data set
+        """
+        s = m.shape
+        if s[1] % 3 != 0:
+            raise IndexError("Number of columns must be divisible by 3")
+        return Markers3d(np.reshape(m.T, (3, int(s[1] / 3), s[0]), 'F'))
 
 
 class GeneralizedCoordinate(FrameDependentNpArray):
@@ -425,7 +554,7 @@ class GeneralizedCoordinate(FrameDependentNpArray):
 
 
 class Analogs3d(FrameDependentNpArray):
-    def __new__(cls, data=np.ndarray((3, 0, 0)), names=list(), *args, **kwargs):
+    def __new__(cls, data=np.ndarray((1, 0, 0)), names=list(), *args, **kwargs):
         """
         Parameters
         ----------
@@ -434,8 +563,18 @@ class Analogs3d(FrameDependentNpArray):
         names : list of string
             name of the analogs that correspond to second dimension of the matrix
         """
+        if data.ndim == 2:
+            data = Analogs3d.from_2d(data)
 
-        return super(Analogs3d, cls).__new__(cls, array=data, *args, **kwargs)
+        if data.ndim == 3:
+            s = data.shape
+            if s[0] != 1:
+                raise IndexError('Analogs3d must have a length of 1 on the first dimension')
+            analog = data
+        else:
+            raise TypeError('Data must be 2d or 3d matrix')
+
+        return super(Analogs3d, cls).__new__(cls, array=analog, *args, **kwargs)
 
     def get_num_analogs(self):
         """
@@ -453,4 +592,18 @@ class Analogs3d(FrameDependentNpArray):
         -------
         Tabular matrix
         """
-        return matrix.reshape_3d_to_2d_matrix(self, kind='analogs')
+        return np.squeeze(self.T, axis=2)
+
+    def from_2d(m):
+        """
+        Takes a tabular matrix and returns a Vectors3d
+        Parameters
+        ----------
+        m : np.array
+            A CSV tabular matrix (Fx3*N)
+        Returns
+        -------
+        Vectors3d of data set
+        """
+        s = m.shape
+        return Analogs3d(np.reshape(m.T, (1, s[1], s[0]), 'F'))

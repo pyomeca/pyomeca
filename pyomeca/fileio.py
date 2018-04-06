@@ -10,8 +10,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from pyomeca.math import matrix
 from pyomeca.thirdparty import btk
+from pyomeca.types import Markers3d, Analogs3d
 
 
 def read_csv(file_name, first_row=None, first_column=0, idx=None, header=None, names=None, kind='markers',
@@ -149,14 +149,10 @@ def write_csv(file_name, markers):
         file_name.parents[0].mkdir()
 
     # Convert markers into 2d matrix
-    markers = matrix.reshape_3d_to_2d_matrix(markers)
+    markers = markers.to_2d()
 
     # Write the Markers3d into the csv file
     pd.DataFrame(markers).to_csv(file_name, index=False, header=False)
-
-
-def write_trc(data):
-    pass
 
 
 def _to_vectors(data, kind, idx, all_names, target_names, metadata=None):
@@ -167,12 +163,12 @@ def _to_vectors(data, kind, idx, all_names, target_names, metadata=None):
         for i, m in enumerate(target_names):
             idx.append([i for i, s in enumerate(all_names) if m in s][0])
     if kind == 'markers':
-        data = matrix.reshape_2d_to_3d_matrix(data, kind='markers')
+        data = Markers3d(data)
     elif kind == 'analogs':
-        data = matrix.reshape_2d_to_3d_matrix(data, kind='analogs')
+        data = Analogs3d(data)
     else:
         raise ValueError('kind should be "markers" or "analogs"')
-    data = extract_markers(data, idx)
+    data = data.get_specific_data(idx)
 
     if metadata:
         data.get_first_frame = metadata['get_first_frame']
@@ -180,30 +176,4 @@ def _to_vectors(data, kind, idx, all_names, target_names, metadata=None):
         data.get_rate = metadata['get_rate']
         if np.array(idx).ndim == 1:
             data.get_labels = [name for i, name in enumerate(all_names) if i in idx]
-    return data
-
-
-def extract_markers(m, mark_idx):
-    """
-    # TODO: description
-    Parameters
-    ----------
-    m : Vectors3D
-        a Fx3*N or 3xNxF matrix of marker position
-    mark_idx : list(int)
-        idx of marker to keep (order is kept in the returned data).
-        If mark_idx has more than one row, output is the mean of the markers over the columns.
-    Returns
-    -------
-    numpy.array
-        extracted data
-    """
-    mark_idx = np.matrix(mark_idx)
-    try:
-        data = m[:, np.array(mark_idx)[0, :], :]
-        for i in range(1, mark_idx.shape[0]):
-            data += m[:, np.array(mark_idx)[i, :], :]
-        data /= mark_idx.shape[0]
-    except IndexError:
-        raise IndexError('extract_markers works only on 3xNxF matrices and mark_idx must be a ixj array')
     return data
