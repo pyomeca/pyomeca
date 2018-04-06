@@ -109,3 +109,6 @@ venv.bak/
 
 # Personnal stuff
 Misc
+
+# pytest
+.pytest_cache
