@@ -4,7 +4,10 @@
 Definition of different container in pyomeca
 
 """
+
 import numpy as np
+
+from pyomeca import fileio as pyoio
 
 
 class FrameDependentNpArray(np.ndarray):
@@ -519,6 +522,18 @@ class Markers3d(FrameDependentNpArray):
         """
         return np.reshape(self[0:3, :, :], (3 * self.get_num_markers(), self.get_num_frames()), 'F').T
 
+    def to_csv(self, file_name, header=False):
+        """
+        Takes a Markers3d style matrix and write a csv file
+        Parameters
+        ----------
+        file_name : Union[str, Path]
+            Path of file
+        header : bool
+            Write header with labels (default False)
+        """
+        pyoio.write_csv(data3d=self, file_name=file_name, header=header, kind='markers')
+
     @staticmethod
     def from_2d(m):
         """
@@ -608,3 +623,15 @@ class Analogs3d(FrameDependentNpArray):
         """
         s = m.shape
         return Analogs3d(np.reshape(m.T, (1, s[1], s[0]), 'F'))
+
+    def to_csv(self, file_name, header=False):
+        """
+        Takes a Analogs style matrix and write a csv file
+        Parameters
+        ----------
+        file_name : Union[str, Path]
+            Path of file
+        header : bool
+            Write header with labels (default False)
+        """
+        pyoio.write_csv(data3d=self, file_name=file_name, header=header, kind='analogs')

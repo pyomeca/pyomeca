@@ -5,7 +5,6 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-
 from pyomeca import fileio as pyoio
 
 # Path to data
@@ -138,3 +137,5 @@ def test_analogs_values(idx, names, expected_values, extension):
         raise ValueError(f'extension should be "csv", "c3d". You provided {extension}')
     d = arr[:, 0, int(arr.shape[2] / 2)]
     np.testing.assert_almost_equal(d, expected_values, decimal=2)
+
+# TODO: write_csv

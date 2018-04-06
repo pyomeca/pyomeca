@@ -1,5 +1,5 @@
 """
-Test and example script for animating models
+Example script for animating models
 """
 
 from pathlib import Path
