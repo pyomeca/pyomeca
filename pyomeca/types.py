@@ -594,6 +594,7 @@ class Analogs3d(FrameDependentNpArray):
         """
         return np.squeeze(self.T, axis=2)
 
+    @staticmethod
     def from_2d(m):
         """
         Takes a tabular matrix and returns a Vectors3d
