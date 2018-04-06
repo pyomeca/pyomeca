@@ -1,5 +1,5 @@
 """
-Unittest and example script for euler to rot and rot to euler
+Test and example script for euler to rot and rot to euler
 """
 import numpy as np
 
