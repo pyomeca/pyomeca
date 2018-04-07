@@ -1,5 +1,5 @@
 [report]
 omit =
     setup.py
-    test/*
+    tests/*
     pyomeca/thirdparty
