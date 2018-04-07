@@ -1,3 +1,8 @@
-- replace by `Pipfile` by `requirements.txt` and `requirements_dev.txt`
 - write test suite for fileio and rototrans
-- add write_csv to fileio test
+- add write_csv to Markers3d and Analogs3d
+- add write_csv test
+- write examples for fileio
+
+- create `env.yml` and `env_dev.yml` (replace Pipfile)
+    - to install dependencies in a clean conda env, run: `conda env create -f env.yml`
+    - to install all dependencies (included dev) in a clean conda env, run: `conda env create -f env_dev.yml`
