@@ -5,8 +5,6 @@ File IO in pyomeca
 
 """
 
-from pathlib import Path
-
 import numpy as np
 import pandas as pd
 
@@ -136,40 +134,6 @@ def read_c3d(file_name, idx=None, names=None, kind='markers', prefix=None):
                        all_names=channel_names,
                        target_names=names,
                        metadata=metadata)
-
-
-def write_csv(data3d, file_name, header=False, kind='markers'):
-    """
-    Write a csv file from a Markers3d or Analogs3d set
-    Parameters
-    ----------
-    file_name : string
-        path of the file to write
-    markers : Union(Markers3d, Analogs3d)
-        data to write into the csv file
-    header : bool
-        Write header with labels (default False)
-    kind : str
-        Kind of data to read (markers or analogs)
-    """
-    file_name = Path(file_name)
-    # Make sure the directory exists, otherwise create it
-    if not file_name.parents[0].is_dir():
-        file_name.parents[0].mkdir()
-
-    # Convert markers into 2d matrix
-    data = pd.DataFrame(data3d.to_2d())
-
-    # Write the Markers3d into the csv file
-    if header:
-        if kind == 'markers':
-            header = [i + axe for i in data3d.get_labels for axe in ['_X', '_Y', '_Z']]
-        elif kind == 'analogs':
-            header = data3d.get_labels
-        else:
-            raise ValueError(f'kind should be "makers" or "analogs". You provided {kind}')
-
-    data.to_csv(file_name, index=False, header=header)
 
 
 def _to_vectors(data, kind, idx, all_names, target_names, metadata=None):

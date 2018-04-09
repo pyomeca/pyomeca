@@ -5,9 +5,10 @@ Definition of different container in pyomeca
 
 """
 
-import numpy as np
+from pathlib import Path
 
-from pyomeca import fileio as pyoio
+import numpy as np
+import pandas as pd
 
 
 class FrameDependentNpArray(np.ndarray):
@@ -79,6 +80,31 @@ class FrameDependentNpArray(np.ndarray):
         except IndexError:
             raise IndexError('extract_markers works only on 3xNxF matrices and mark_idx must be a ixj array')
         return data
+
+    def to_csv(self, file_name, header=False):
+        """
+        Write a csv file from a FrameDependentNpArray
+        Parameters
+        ----------
+        file_name : string
+            path of the file to write
+        header : bool
+            Write header with labels (default False)
+        """
+        file_name = Path(file_name)
+        # Make sure the directory exists, otherwise create it
+        if not file_name.parents[0].is_dir():
+            file_name.parents[0].mkdir()
+
+        # Convert markers into 2d matrix
+        data = pd.DataFrame(self.to_2d())
+
+        # Get the 2d style labels
+        if header:
+            header = self.get_2d_labels()
+
+        # Write into the csv file
+        data.to_csv(file_name, index=False, header=header)
 
 
 class RotoTransCollection(list):
@@ -522,17 +548,14 @@ class Markers3d(FrameDependentNpArray):
         """
         return np.reshape(self[0:3, :, :], (3 * self.get_num_markers(), self.get_num_frames()), 'F').T
 
-    def to_csv(self, file_name, header=False):
+    def get_2d_labels(self):
         """
-        Takes a Markers3d style matrix and write a csv file
-        Parameters
-        ----------
-        file_name : Union[str, Path]
-            Path of file
-        header : bool
-            Write header with labels (default False)
+        Takes a Markers3d style labels and returns 2d style labels
+        Returns
+        -------
+        2d style labels
         """
-        pyoio.write_csv(data3d=self, file_name=file_name, header=header, kind='markers')
+        return [i + axe for i in self.get_labels for axe in ['_X', '_Y', '_Z']]
 
     @staticmethod
     def from_2d(m):
@@ -624,14 +647,11 @@ class Analogs3d(FrameDependentNpArray):
         s = m.shape
         return Analogs3d(np.reshape(m.T, (1, s[1], s[0]), 'F'))
 
-    def to_csv(self, file_name, header=False):
+    def get_2d_labels(self):
         """
-        Takes a Analogs style matrix and write a csv file
-        Parameters
-        ----------
-        file_name : Union[str, Path]
-            Path of file
-        header : bool
-            Write header with labels (default False)
+        Takes a Analogs style labels and returns 2d style labels
+        Returns
+        -------
+        2d style labels
         """
-        pyoio.write_csv(data3d=self, file_name=file_name, header=header, kind='analogs')
+        return self.get_labels

@@ -5,7 +5,6 @@ Example script for animating models
 from pathlib import Path
 
 import numpy as np
-
 from pyomeca import fileio as pyoio
 from pyomeca.show.vtk import Model as PyoModel
 from pyomeca.show.vtk import Window as PyoWindow

@@ -26,7 +26,7 @@ markers_3 = pyoio.read_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
                            names=['CLAV_post', 'PSISl', 'STERr', 'CLAV_post'], prefix=':')
 
 # write a csv file from a Markers3d types
-markers_3.to_csv('../Misc/mtest.csv')
+markers_3.to_csv('../Misc/mtest.csv', header=False)
 
 # read 4 first markers of a c3d file
 markers_4 = pyoio.read_c3d(MARKERS_ANALOGS_C3D, idx=[0, 1, 2, 3],
@@ -43,4 +43,3 @@ analogs_2 = pyoio.read_c3d(MARKERS_ANALOGS_C3D,
 
 # write analogs to a csv file without header
 analogs_2.to_csv('../Misc/atest.csv', header=True)
-

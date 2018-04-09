@@ -13,10 +13,10 @@ EPSILON = 1e-14
 # Define some random data to tests
 ANGLES = np.random.rand(40, 1)
 
-params = [tuple((i, ANGLES, EPSILON)) for i in SEQ]
 
-
-@pytest.mark.parametrize('seq, angles, epsilon', params)
+@pytest.mark.parametrize('seq', SEQ)
+@pytest.mark.parametrize('angles', [ANGLES])
+@pytest.mark.parametrize('epsilon', [EPSILON])
 def test_euler2rot_rot2euler(seq, angles, epsilon):
     """Test euler to RotoTrans and RotoTrans to euler."""
     # Extract the right amount of angle relative to sequence length
