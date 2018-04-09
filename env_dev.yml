@@ -1,8 +1,8 @@
 # create a dev conda environment with: `conda env create -f env_dev.yml`
 name: pyomeca
 channels:
-- conda-forge
 - defaults
+- conda-forge
 dependencies:
 - python=3.6
 - numpy
