@@ -5,8 +5,6 @@ File IO in pyomeca
 
 """
 
-from pathlib import Path
-
 import numpy as np
 import pandas as pd
 
@@ -55,14 +53,18 @@ def read_csv(file_name, first_row=None, first_column=0, idx=None, header=None, n
     column_names = data.columns.tolist()
     if kind == 'markers' and header:
         column_names = [icol.split(prefix)[-1] for icol in column_names if (len(icol) >= 7 and icol[:7] != 'Unnamed')]
-    if not names:
+    metadata = {'get_first_frame': [], 'get_last_frame': [], 'get_rate': [], 'get_labels': []}
+    if names:
+        metadata.update({'get_labels': names})
+    else:
         names = column_names
 
     return _to_vectors(data=data.values,
                        kind=kind,
                        idx=idx,
                        all_names=column_names,
-                       target_names=names)
+                       target_names=names,
+                       metadata=metadata)
 
 
 def read_c3d(file_name, idx=None, names=None, kind='markers', prefix=None):
@@ -107,7 +109,6 @@ def read_c3d(file_name, idx=None, names=None, kind='markers', prefix=None):
         for i, (key, value) in enumerate(flat_data.items()):
             data[:, i * 3: i * 3 + 3] = value
             channel_names.append(key.split(prefix)[-1])
-        metadata.update({'get_all_labels': channel_names})
     elif kind == 'analogs':
         flat_data = {i.GetLabel(): i.GetValues() for i in btk.Iterate(acq.GetAnalogs())}
         metadata = {
@@ -121,8 +122,10 @@ def read_c3d(file_name, idx=None, names=None, kind='markers', prefix=None):
         for i, (key, value) in enumerate(flat_data.items()):
             data[:, i] = value.ravel()
             channel_names.append(key.split(prefix)[-1])
-        metadata.update({'get_all_labels': channel_names})
-    if not names:
+    if names:
+        metadata.update({'get_labels': names})
+    else:
+        metadata.update({'get_labels': []})
         names = channel_names
 
     return _to_vectors(data=data,
@@ -131,28 +134,6 @@ def read_c3d(file_name, idx=None, names=None, kind='markers', prefix=None):
                        all_names=channel_names,
                        target_names=names,
                        metadata=metadata)
-
-
-def write_csv(file_name, markers):
-    """
-    Write a csv file from a Markers3d set
-    Parameters
-    ----------
-    file_name : string
-        path of the file to write
-    markers : Markers3d
-        Marker positions to write into the csv file
-    """
-    file_name = Path(file_name)
-    # Make sure the directory exists, otherwise create it
-    if not file_name.parents[0].is_dir():
-        file_name.parents[0].mkdir()
-
-    # Convert markers into 2d matrix
-    markers = markers.to_2d()
-
-    # Write the Markers3d into the csv file
-    pd.DataFrame(markers).to_csv(file_name, index=False, header=False)
 
 
 def _to_vectors(data, kind, idx, all_names, target_names, metadata=None):
@@ -170,10 +151,11 @@ def _to_vectors(data, kind, idx, all_names, target_names, metadata=None):
         raise ValueError('kind should be "markers" or "analogs"')
     data = data.get_specific_data(idx)
 
-    if metadata:
-        data.get_first_frame = metadata['get_first_frame']
-        data.get_last_frame = metadata['get_last_frame']
-        data.get_rate = metadata['get_rate']
-        if np.array(idx).ndim == 1:
-            data.get_labels = [name for i, name in enumerate(all_names) if i in idx]
+    data.get_first_frame = metadata['get_first_frame']
+    data.get_last_frame = metadata['get_last_frame']
+    data.get_rate = metadata['get_rate']
+    if np.array(idx).ndim == 1 and not metadata['get_labels']:
+        data.get_labels = [name for i, name in enumerate(all_names) if i in idx]
+    elif metadata['get_labels']:
+        data.get_labels = metadata['get_labels']
     return data

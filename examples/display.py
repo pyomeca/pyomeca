@@ -1,17 +1,16 @@
 """
-Test and example script for animating models
+Example script for animating models
 """
 
 from pathlib import Path
 
 import numpy as np
-
 from pyomeca import fileio as pyoio
 from pyomeca.show.vtk import Model as VtkModel, Window as VtkWindow
 from pyomeca.types import RotoTrans, RotoTransCollection, Mesh, MeshCollection
 
 # Path to data
-DATA_FOLDER = Path('.') / 'data'
+DATA_FOLDER = Path('..') / 'tests' / 'data'
 MARKERS_CSV = DATA_FOLDER / 'markers.csv'
 MARKERS_ANALOGS_C3D = DATA_FOLDER / 'markers_analogs.c3d'
 
