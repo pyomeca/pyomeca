@@ -74,6 +74,7 @@ target/
 
 # pyenv
 .python-version
+Pipfile.lock
 
 # celery beat schedule file
 celerybeat-schedule
@@ -107,4 +108,7 @@ venv.bak/
 .idea
 
 # Personnal stuff
-Misc
+Misc/
+
+# pytest
+.pytest_cache
