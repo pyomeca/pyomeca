@@ -5,7 +5,7 @@ from pyomeca.show.vtk import Model as PyoModel
 from pyomeca.show.vtk import Window as PyoWindow
 
 # Load
-m = S2MLib.new("data/pyomecaman.s2mMod")
+m = S2MLib.new("../tests/data/pyomecaman.s2mMod")
 
 # Dynamically get the number of markers
 nb_markers = S2MLib.nb_markers(m)
