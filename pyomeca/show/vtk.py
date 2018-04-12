@@ -6,35 +6,26 @@ Visualization toolkit in pyomeca
 """
 
 import sys
+
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPalette, QColor
-from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from vtk import vtkInteractorStyleTrackballCamera
-from vtk import vtkPolyData
-from vtk import vtkPoints
 from vtk import vtkPolyDataMapper
-from vtk import vtkDataSetMapper
 from vtk import vtkPolyLine
-from vtk import vtkLine
 from vtk import vtkCellArray
-from vtk import vtkRegularPolygonSource
 from vtk import vtkSphereSource
-from vtk import vtkUnsignedCharArray
 from vtk import vtkActor
 from vtk import vtkRenderer
-from vtk import vtkTriangleFilter
-from vtk import vtkContourFilter
-from vtk import vtkReverseSense
-from vtk import vtkSurfaceReconstructionFilter
-from vtk import vtkCleanPolyData
-from vtk import vtkDelaunay3D
-from vtk import vtkPolyDataNormals
-from vtk import vtkRuledSurfaceFilter
-from vtk.util.colors import *
+from vtk import vtkLine
+from vtk import vtkPoints
+from vtk import vtkPolyData
+from vtk import vtkUnsignedCharArray
+from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
+
 from pyomeca.types import Markers3d
 from pyomeca.types import Mesh
-from pyomeca.types import RotoTransCollection
 from pyomeca.types import RotoTrans
+from pyomeca.types import RotoTransCollection
 
 first = True
 if first:
@@ -105,7 +96,7 @@ class Window(QtWidgets.QMainWindow):
         color : tuple(int)
         """
         self.ren.SetBackground(color)
-        self.setPalette(QPalette(QColor(color[0]*255, color[1]*255, color[2]*255)))
+        self.setPalette(QPalette(QColor(color[0] * 255, color[1] * 255, color[2] * 255)))
 
 
 class Model(QtWidgets.QWidget):
@@ -195,7 +186,7 @@ class Model(QtWidgets.QWidget):
             One frame of markers
 
         """
-        if markers.n_frames() is not 1:
+        if markers.get_num_frames() is not 1:
             raise IndexError("Markers should be from one frame only")
         self.markers = markers
 
@@ -204,8 +195,8 @@ class Model(QtWidgets.QWidget):
             self.parent_window.ren.RemoveActor(actor)
         self.markers_actors = list()
 
-        # Create the geometry of a point (the coordinate) points = vtkPoints()
-        for i in range(markers.n_markers()):
+        # Create the geometry of a point (the coordinate) points = vtk.vtkPoints()
+        for i in range(markers.get_num_markers()):
             # Create a mapper
             mapper = vtkPolyDataMapper()
 
@@ -229,9 +220,9 @@ class Model(QtWidgets.QWidget):
 
         """
 
-        if markers.n_frames() is not 1:
+        if markers.get_num_frames() is not 1:
             raise IndexError("Markers should be from one frame only")
-        if markers.n_markers() is not self.markers.n_markers():
+        if markers.get_num_markers() is not self.markers.get_num_markers():
             self.new_marker_set(markers)
             return  # Prevent calling update_markers recursively
         self.markers = markers
@@ -247,7 +238,7 @@ class Model(QtWidgets.QWidget):
             mapper.SetInputConnection(source.GetOutputPort())
 
     def new_mesh_set(self, mesh):
-        if mesh.n_frames() is not 1:
+        if mesh.get_num_frames() is not 1:
             raise IndexError("Mesh should be from one frame only")
         self.mesh = mesh
 
@@ -259,7 +250,7 @@ class Model(QtWidgets.QWidget):
         # Create the geometry of a point (the coordinate) points = vtkPoints()
         for i in range(1):
             points = vtkPoints()
-            for j in range(self.mesh.n_markers()):
+            for j in range(self.mesh.get_num_vertex()):
                 points.InsertNextPoint([0, 0, 0])
 
             # Create an array for each triangle
@@ -291,15 +282,15 @@ class Model(QtWidgets.QWidget):
         self.update_mesh(self.mesh)
 
     def update_mesh(self, mesh):
-        if mesh.n_frames() is not 1:
+        if mesh.get_num_frames() is not 1:
             raise IndexError("Mesh should be from one frame only")
-        if mesh.n_markers() is not self.mesh.n_markers():
+        if mesh.get_num_vertex() is not self.mesh.get_num_vertex():
             self.new_mesh_set(mesh)
             return  # Prevent calling update_markers recursively
         self.mesh = mesh
 
         points = vtkPoints()
-        for i in range(self.mesh.n_markers()):
+        for i in range(self.mesh.get_num_vertex()):
             points.InsertNextPoint(self.mesh[0:3, i])
 
         poly_line = self.mesh_actors[0].GetMapper().GetInput()
@@ -328,7 +319,7 @@ class Model(QtWidgets.QWidget):
         self.rt_actors = list()
 
         for i, rt in enumerate(all_rt):
-            if rt.n_frames() is not 1:
+            if rt.get_num_frames() is not 1:
                 raise IndexError("RT should be from one frame only")
 
             # Create the polyline which will hold the actors
@@ -387,7 +378,7 @@ class Model(QtWidgets.QWidget):
             self.parent_window.ren.ResetCamera()
 
         # Set rt orientations
-        self.n_rt = all_rt.n_rt()
+        self.n_rt = all_rt.get_num_rt()
         self.update_rt(all_rt)
 
     def update_rt(self, all_rt):
@@ -404,7 +395,7 @@ class Model(QtWidgets.QWidget):
             rt_tp.append(all_rt[:, :])
             all_rt = rt_tp
 
-        if all_rt.n_rt() is not self.n_rt:
+        if all_rt.get_num_rt() is not self.n_rt:
             self.new_rt_set(all_rt)
             return  # Prevent calling update_rt recursively
 
@@ -414,7 +405,7 @@ class Model(QtWidgets.QWidget):
         self.all_rt = all_rt
 
         for i, rt in enumerate(self.all_rt):
-            if rt.n_frames() is not 1:
+            if rt.get_num_frames() is not 1:
                 raise IndexError("RT should be from one frame only")
 
             # Update the end points of the axes and the origin
@@ -427,4 +418,3 @@ class Model(QtWidgets.QWidget):
             # Update polydata in mapper
             lines_poly_data = self.rt_actors[i].GetMapper().GetInput()
             lines_poly_data.SetPoints(pts)
-

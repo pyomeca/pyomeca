@@ -41,6 +41,7 @@ print('\t1. markers in csv')
 # 1.1. 11 first
 m_csv_1 = pyoio.read_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
                          idx=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], prefix=':')
+
 check_array(m_csv_1,
             expected_shape=(4, 11, 580),
             expected_values=[3.18461e+02, -1.69003e+02, 1.05422e+03, 1.00000e+00],
@@ -98,8 +99,8 @@ check_array(m_c3d_3,
             text='\t\t2.3. mean of first 3')
 
 # 2.4. with names and metadata
-m_c3d_4, meta = pyoio.read_c3d(MARKERS_ANALOGS_C3D, names=['CLAV_post', 'PSISl', 'STERr', 'CLAV_post'],
-                               kind='markers', prefix=':', get_metadata=True)
+m_c3d_4 = pyoio.read_c3d(MARKERS_ANALOGS_C3D, names=['CLAV_post', 'PSISl', 'STERr', 'CLAV_post'],
+                         kind='markers', prefix=':')
 check_array(m_c3d_4,
             expected_shape=(4, 4, 580),
             expected_values=[791.96002197, 295.58773804, 682.80767822, 1.],
@@ -167,9 +168,9 @@ check_array(a_c3d_3,
             text='\t\t4.3. mean of first 3')
 
 # 4.4. with names and metadata
-a_c3d_4, _ = pyoio.read_c3d(MARKERS_ANALOGS_C3D,
-                            names=['Delt_ant.EMG1', 'Subscap.EMG11', 'Triceps.EMG5', 'Gd_dors.IM EMG13'],
-                            kind='analogs', prefix=':', get_metadata=True)
+a_c3d_4 = pyoio.read_c3d(MARKERS_ANALOGS_C3D,
+                         names=['Delt_ant.EMG1', 'Subscap.EMG11', 'Triceps.EMG5', 'Gd_dors.IM EMG13'],
+                         kind='analogs', prefix=':')
 check_array(a_c3d_4,
             expected_shape=(1, 4, 11600),
             expected_values=[-0.00039],
@@ -196,3 +197,6 @@ compare_arrays(a_csv_2, a_c3d_2, text='\t\tmean of 1st and 4th')
 compare_arrays(a_csv_3, a_c3d_3, text='\t\tmean of first 3')
 # 6.4. with names and metadata
 compare_arrays(a_csv_4, a_c3d_4, text='\t\twith names')
+
+# TODO: test write_csv
+# compare two csv
