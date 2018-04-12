@@ -2,4 +2,4 @@
 omit =
     setup.py
     tests/*
-    pyomeca/thirdparty
+    pyomeca/thirdparty/*
