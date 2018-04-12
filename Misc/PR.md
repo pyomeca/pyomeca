@@ -6,3 +6,10 @@
 - create `env.yml` and `env_dev.yml` (replace Pipfile)
     - to install dependencies in a clean conda env, run: `conda env create -f env.yml`
     - to install all dependencies (included dev) in a clean conda env, run: `conda env create -f env_dev.yml`
+
+- to run test with code coverage
+    ```bash
+    cd Documents/codes/pyomeca
+    conda activate pyomeca
+    python -m pytest --cov=pyomeca tests/
+    ```

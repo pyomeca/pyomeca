@@ -8,8 +8,10 @@ import pytest
 
 from pyomeca import fileio as pyoio
 
-# Path to data
-DATA_FOLDER = Path('.') / 'data'
+# Path
+PROJECT_FOLDER = Path('.')
+DATA_FOLDER = PROJECT_FOLDER / 'tests' / 'data'
+
 MARKERS_CSV = DATA_FOLDER / 'markers.csv'
 MARKERS_ANALOGS_C3D = DATA_FOLDER / 'markers_analogs.c3d'
 ANALOGS_CSV = DATA_FOLDER / 'analogs.csv'
