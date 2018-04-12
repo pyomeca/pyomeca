@@ -23,6 +23,7 @@ from vtk import vtkUnsignedCharArray
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
 from pyomeca.types import Markers3d
+from pyomeca.types import Mesh
 from pyomeca.types import MeshCollection
 from pyomeca.types import RotoTrans
 from pyomeca.types import RotoTransCollection
@@ -138,7 +139,7 @@ class Model(QtWidgets.QWidget):
         self.rt_actors = list()
         self.parent_window.should_reset_camera = True
 
-        self.mesh = MeshCollection()
+        self.all_meshes = MeshCollection()
         self.mesh_actors = list()
 
     def set_markers_color(self, markers_color):
@@ -237,7 +238,7 @@ class Model(QtWidgets.QWidget):
             source.SetRadius(self.markers_size)
             mapper.SetInputConnection(source.GetOutputPort())
 
-    def new_mesh_set(self, mesh):
+    def new_mesh_set(self, all_meshes):
         """
         Define a new mesh set. This function must be called each time the number of meshes change
         Parameters
@@ -246,9 +247,17 @@ class Model(QtWidgets.QWidget):
             One frame of mesh
 
         """
-        if mesh.get_num_frames() is not 1:
+        if isinstance(all_meshes, Mesh):
+            mesh_tp = MeshCollection()
+            mesh_tp.append(all_meshes)
+            all_meshes = mesh_tp
+
+        if all_meshes.get_num_frames() is not 1:
             raise IndexError("Mesh should be from one frame only")
-        self.mesh = mesh
+
+        if not isinstance(all_meshes, MeshCollection):
+            raise TypeError("Please send a list of mesh to update_mesh")
+        self.all_meshes = all_meshes
 
         # Remove previous actors from the scene
         for actor in self.mesh_actors:
@@ -256,17 +265,17 @@ class Model(QtWidgets.QWidget):
         self.mesh_actors = list()
 
         # Create the geometry of a point (the coordinate) points = vtkPoints()
-        for i in range(1):
+        for (i, mesh) in enumerate(self.all_meshes):
             points = vtkPoints()
-            for j in range(self.mesh.get_num_vertex()):
+            for j in range(mesh.get_num_vertex()):
                 points.InsertNextPoint([0, 0, 0])
 
             # Create an array for each triangle
             cell = vtkCellArray()
-            for j in range(self.mesh.nb_triangles()):  # For each triangle
+            for j in range(mesh.get_num_triangles()):  # For each triangle
                 line = vtkPolyLine()
                 line.GetPointIds().SetNumberOfIds(4)
-                for k in range(len(self.mesh.triangles[i])):  # For each index
+                for k in range(len(mesh.triangles[j])):  # For each index
                     line.GetPointIds().SetId(k, mesh.triangles[j, k])
                 line.GetPointIds().SetId(3, mesh.triangles[j, 0])  # Close the triangle
                 cell.InsertNextCell(line)
@@ -286,22 +295,42 @@ class Model(QtWidgets.QWidget):
             self.parent_window.ren.ResetCamera()
 
         # Update marker position
-        self.update_mesh(self.mesh)
+        self.update_mesh(self.all_meshes)
 
-    def update_mesh(self, mesh):
-        if mesh.get_num_frames() is not 1:
+    def update_mesh(self, all_meshes):
+        """
+        Update position of the mesh on the screen (but do not repaint)
+        Parameters
+        ----------
+        all_meshes : MeshCollection
+            One frame of mesh
+
+        """
+        if isinstance(all_meshes, Mesh):
+            mesh_tp = MeshCollection()
+            mesh_tp.append(all_meshes)
+            all_meshes = mesh_tp
+
+        if all_meshes.get_num_frames() is not 1:
             raise IndexError("Mesh should be from one frame only")
-        if mesh.get_num_vertex() is not self.mesh.get_num_vertex():
-            self.new_mesh_set(mesh)
-            return  # Prevent calling update_markers recursively
-        self.mesh = mesh
 
-        points = vtkPoints()
-        for i in range(self.mesh.get_num_vertex()):
-            points.InsertNextPoint(self.mesh[0:3, i])
+        for i in range(len(all_meshes)):
+            if all_meshes.get_mesh(i).get_num_vertex() is not self.all_meshes.get_mesh(i).get_num_vertex():
+                self.new_mesh_set(all_meshes)
+                return  # Prevent calling update_markers recursively
 
-        poly_line = self.mesh_actors[0].GetMapper().GetInput()
-        poly_line.SetPoints(points)
+        if not isinstance(all_meshes, MeshCollection):
+            raise TypeError("Please send a list of mesh to update_mesh")
+
+        self.all_meshes = all_meshes
+
+        for (i, mesh) in enumerate(self.all_meshes):
+            points = vtkPoints()
+            for j in range(mesh.get_num_vertex()):
+                points.InsertNextPoint(mesh[0:3, j])
+
+            poly_line = self.mesh_actors[i].GetMapper().GetInput()
+            poly_line.SetPoints(points)
 
     def new_rt_set(self, all_rt):
         """

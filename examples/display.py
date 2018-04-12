@@ -7,9 +7,8 @@ from pathlib import Path
 import numpy as np
 
 from pyomeca import fileio as pyoio
-from pyomeca.show.vtk import Model as PyoModel
-from pyomeca.show.vtk import Window as PyoWindow
-from pyomeca.types import RotoTrans, RotoTransCollection
+from pyomeca.show.vtk import Model as VtkModel, Window as VtkWindow
+from pyomeca.types import RotoTrans, RotoTransCollection, Mesh, MeshCollection
 
 # Path to data
 DATA_FOLDER = Path('.') / 'data'
@@ -34,14 +33,14 @@ d5 = pyoio.read_c3d(MARKERS_ANALOGS_C3D, idx=[[0], [1], [2]],
                     kind='markers', prefix=':')
 
 # Create a windows with a nice gray background
-vtkWindow = PyoWindow(background_color=(.5, .5, .5))
+vtkWindow = VtkWindow(background_color=(.5, .5, .5))
 
 # Add marker holders to the window
-vtkModelReal = PyoModel(vtkWindow, markers_color=(1, 0, 0), markers_size=10.0, markers_opacity=1)
-vtkModelPred = PyoModel(vtkWindow, markers_color=(0, 0, 0), markers_size=10.0, markers_opacity=.5)
-vtkModelMid = PyoModel(vtkWindow, markers_color=(0, 0, 1), markers_size=10.0, markers_opacity=.5)
-vtkModelByNames = PyoModel(vtkWindow, markers_color=(0, 1, 1), markers_size=10.0, markers_opacity=.5)
-vtkModelFromC3d = PyoModel(vtkWindow, markers_color=(0, 1, 0), markers_size=10.0, markers_opacity=.5)
+vtkModelReal = VtkModel(vtkWindow, markers_color=(1, 0, 0), markers_size=10.0, markers_opacity=1)
+vtkModelPred = VtkModel(vtkWindow, markers_color=(0, 0, 0), markers_size=10.0, markers_opacity=.5)
+vtkModelMid = VtkModel(vtkWindow, markers_color=(0, 0, 1), markers_size=10.0, markers_opacity=.5)
+vtkModelByNames = VtkModel(vtkWindow, markers_color=(0, 1, 1), markers_size=10.0, markers_opacity=.5)
+vtkModelFromC3d = VtkModel(vtkWindow, markers_color=(0, 1, 0), markers_size=10.0, markers_opacity=.5)
 
 # Create some RotoTrans attached to the first model
 all_rt_real = RotoTransCollection()
@@ -50,6 +49,10 @@ all_rt_real.append(RotoTrans(angles=[0, 0, 0], angle_sequence="yxz", translation
 
 # Create some RotoTrans attached to the second model
 one_rt = RotoTrans.define_axes(d, [3, 5], [[4, 3], [4, 5]], "zx", "z", [3, 4, 5])
+
+# Create some mesh (could be from any mesh source)
+meshes = MeshCollection()
+meshes.append(Mesh(vertex=d, triangles=[[0, 1, 5], [0, 1, 6]]))
 
 # Animate all this
 i = 0
@@ -82,6 +85,9 @@ while vtkWindow.is_active:
 
     # Update another system of axes
     vtkModelPred.update_rt(one_rt.get_frame(i))
+
+    # Update the meshing
+    vtkModelReal.update_mesh(meshes.get_frame(i))
 
     # Update window
     vtkWindow.update_frame()

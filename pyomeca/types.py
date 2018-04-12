@@ -21,15 +21,16 @@ class FrameDependentNpArray(np.ndarray):
         if not isinstance(array, np.ndarray):
             raise TypeError('FrameDependentNpArray must be a numpy array')
 
-        # Finally, we must return the newly created object:
-        cls._current_frame = 0
-
         # metadata
-        cls.get_first_frame = []
-        cls.get_last_frame = []
-        cls.get_rate = []
-        cls.get_labels = []
-        return np.asarray(array).view(cls, *args, **kwargs)
+        obj = np.asarray(array).view(cls, *args, **kwargs)
+        obj._current_frame = 0
+        obj.get_first_frame = []
+        obj.get_last_frame = []
+        obj.get_rate = []
+        obj.get_labels = []
+
+        # Finally, we must return the newly created object:
+        return obj
 
     def get_num_frames(self):
         """
@@ -127,12 +128,12 @@ class FrameDependentNpArrayCollection(list):
         The number of frames
         """
         if len(self) > 0:
-            len()
-        s = self[0]
-        if len(s) == 2:
-            return 1
+            if len(self[0].shape) == 2:
+                return 1
+            else:
+                return self[0].shape[2]  # Assume all meshes has the same number of frame, return the first one
         else:
-            return s[2]
+            return -1
 
 
 class RotoTransCollection(FrameDependentNpArrayCollection):
@@ -608,6 +609,9 @@ class MeshCollection(FrameDependentNpArrayCollection):
     """
     List of Mesh
     """
+    def append(self, mesh):
+        return super().append(mesh)
+
     def get_frame(self, f):
         """
         Get fth frame of the collection
@@ -636,6 +640,9 @@ class MeshCollection(FrameDependentNpArrayCollection):
         -------
         All frame of Mesh of index i
         """
+        if i >= len(self):
+            return Mesh()
+
         return self[i]
 
     def get_num_mesh(self):
@@ -656,21 +663,30 @@ class Mesh(Markers3d):
         ----------
         vertex : np.ndarray
             3xNxF matrix of vertex positions
-        triangles : np.ndarray
+        triangles : np.ndarray, list
             Nx3 indexes matrix where N is the number of triangles and the row are the vertex to connect
         names : list of string
             name of the marker that correspond to second dimension of the positions matrix
         """
 
+        if isinstance(triangles, list):
+            triangles = np.array(triangles)
+
         s = triangles.shape
         if s[1] != 3:
-            raise NotImplementedError('Mesh only implement triangle connections')
+            raise NotImplementedError('Mesh only implements triangle connections')
 
-        cls = super(Mesh, cls).__new__(cls, data=vertex, *args, **kwargs)
-        cls.triangles = triangles
-        return cls
+        obj = super(Mesh, cls).__new__(cls, data=vertex, *args, **kwargs)
+        obj.triangles = triangles
+        return obj
 
-    def nb_triangles(self):
+    def __array_finalize__(self, obj):
+        # Allow slicing
+        if obj is None or not isinstance(obj, Mesh):
+            return
+        self.triangles = getattr(obj, 'triangles')
+
+    def get_num_triangles(self):
         return self.triangles.shape[0]
 
     def get_num_vertex(self):
@@ -680,7 +696,6 @@ class Mesh(Markers3d):
         The number of vertex
         """
         return super().get_num_markers()
-
 
 
 class GeneralizedCoordinate(FrameDependentNpArray):
