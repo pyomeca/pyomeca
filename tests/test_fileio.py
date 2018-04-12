@@ -9,7 +9,10 @@ import pytest
 from pyomeca import fileio as pyoio
 
 # Path
-PROJECT_FOLDER = Path('.')
+if Path.cwd().parts[-1] == 'pyomeca':
+    PROJECT_FOLDER = Path('.')
+else:
+    PROJECT_FOLDER = Path('..')
 DATA_FOLDER = PROJECT_FOLDER / 'tests' / 'data'
 
 MARKERS_CSV = DATA_FOLDER / 'markers.csv'
