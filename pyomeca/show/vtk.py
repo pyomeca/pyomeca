@@ -23,7 +23,7 @@ from vtk import vtkUnsignedCharArray
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
 from pyomeca.types import Markers3d
-from pyomeca.types import Mesh
+from pyomeca.types import MeshCollection
 from pyomeca.types import RotoTrans
 from pyomeca.types import RotoTransCollection
 
@@ -138,7 +138,7 @@ class Model(QtWidgets.QWidget):
         self.rt_actors = list()
         self.parent_window.should_reset_camera = True
 
-        self.mesh = Mesh()
+        self.mesh = MeshCollection()
         self.mesh_actors = list()
 
     def set_markers_color(self, markers_color):
@@ -238,6 +238,14 @@ class Model(QtWidgets.QWidget):
             mapper.SetInputConnection(source.GetOutputPort())
 
     def new_mesh_set(self, mesh):
+        """
+        Define a new mesh set. This function must be called each time the number of meshes change
+        Parameters
+        ----------
+        mesh : MeshCollection
+            One frame of mesh
+
+        """
         if mesh.get_num_frames() is not 1:
             raise IndexError("Mesh should be from one frame only")
         self.mesh = mesh

@@ -109,7 +109,7 @@ class FrameDependentNpArrayCollection(list):
             coll.append(element.get_frame(f))
         return coll
 
-    def n_segments(self):
+    def get_num_segments(self):
         """
         Get the number of segments in the collection
         Returns
@@ -118,6 +118,21 @@ class FrameDependentNpArrayCollection(list):
         Number of segments in the collection
         """
         return len(self)
+
+    def get_num_frames(self):
+        """
+
+        Returns
+        -------
+        The number of frames
+        """
+        if len(self) > 0:
+            len()
+        s = self[0]
+        if len(s) == 2:
+            return 1
+        else:
+            return s[2]
 
 
 class RotoTransCollection(FrameDependentNpArrayCollection):
@@ -162,7 +177,7 @@ class RotoTransCollection(FrameDependentNpArrayCollection):
         n : int
         Number of RotoTrans in the collection
         """
-        return self.n_segments()
+        return self.get_num_segments()
 
 
 class RotoTrans(FrameDependentNpArray):
@@ -590,7 +605,48 @@ class Markers3d(FrameDependentNpArray):
 
 
 class MeshCollection(FrameDependentNpArrayCollection):
-    pass
+    """
+    List of Mesh
+    """
+    def get_frame(self, f):
+        """
+        Get fth frame of the collection
+        Parameters
+        ----------
+        f : int
+            Frame to get
+        Returns
+        -------
+        Collection of frame f
+        """
+        coll = MeshCollection()
+        for element in self:
+            coll.append(element.get_frame(f))
+        return coll
+
+    def get_mesh(self, i):
+        """
+        Get a specific Mesh of the collection
+        Parameters
+        ----------
+        i : int
+            Index of the Mesh in the collection
+
+        Returns
+        -------
+        All frame of Mesh of index i
+        """
+        return self[i]
+
+    def get_num_mesh(self):
+        """
+        Get the number of Mesh in the collection
+        Returns
+        -------
+        n : int
+        Number of Mesh in the collection
+        """
+        return self.get_num_segments()
 
 
 class Mesh(Markers3d):
