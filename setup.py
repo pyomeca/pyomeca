@@ -1,12 +1,28 @@
-from distutils.core import setup
+from setuptools import setup
+
+# to install dependencies in a clean conda env, run: `conda env create -f env.yml`
+
+# to install all dependencies (included dev) in a clean conda env, run: `conda env create -f env_dev.yml`
+
+requirements = [
+    'numpy',
+    'pandas',
+    'vtk',
+    'pyqt'
+]
 
 setup(
     name='pyomeca',
     version='2018.01.22',
-    packages=['pyomeca', 'pyomeca.math'],
-    url='pyomeca.org',
-    license='MIT license',
-    author='Pariterre & Romain Martinez',
+    description="Toolbox for biomechanics analysis",
+    author="Romain Martinez & Pariterre",
     author_email='',
-    description='Toolbox for biomechanics analysis'
+    url='https://github.com/pyomeca/pyomeca',
+    license='MIT license',
+    packages=['pyomeca'],
+    install_requires=requirements,
+    keywords='pyomeca',
+    classifiers=[
+        'Programming Language :: Python :: 3.6',
+    ]
 )
