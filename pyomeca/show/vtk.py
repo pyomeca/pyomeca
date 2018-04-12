@@ -177,7 +177,7 @@ class Model(QtWidgets.QWidget):
             One frame of markers
 
         """
-        if markers.n_frames() is not 1:
+        if markers.get_num_frames() is not 1:
             raise IndexError("Markers should be from one frame only")
         self.markers = markers
 
@@ -187,7 +187,7 @@ class Model(QtWidgets.QWidget):
         self.markers_actors = list()
 
         # Create the geometry of a point (the coordinate) points = vtk.vtkPoints()
-        for i in range(markers.n_markers()):
+        for i in range(markers.get_num_markers()):
             # Create a mapper
             mapper = vtk.vtkPolyDataMapper()
 
@@ -211,9 +211,9 @@ class Model(QtWidgets.QWidget):
 
         """
 
-        if markers.n_frames() is not 1:
+        if markers.get_num_frames() is not 1:
             raise IndexError("Markers should be from one frame only")
-        if markers.n_markers() is not self.markers.n_markers():
+        if markers.get_num_markers() is not self.markers.get_num_markers():
             self.new_marker_set(markers)
             return  # Prevent calling update_markers recursively
         self.markers = markers
@@ -251,7 +251,7 @@ class Model(QtWidgets.QWidget):
         self.rt_actors = list()
 
         for i, rt in enumerate(all_rt):
-            if rt.n_frames() is not 1:
+            if rt.get_num_frames() is not 1:
                 raise IndexError("RT should be from one frame only")
 
             # Create the polyline which will hold the actors
@@ -310,7 +310,7 @@ class Model(QtWidgets.QWidget):
             self.parent_window.ren.ResetCamera()
 
         # Set rt orientations
-        self.n_rt = all_rt.n_rt()
+        self.n_rt = all_rt.get_num_rt()
         self.update_rt(all_rt)
 
     def update_rt(self, all_rt):
@@ -327,7 +327,7 @@ class Model(QtWidgets.QWidget):
             rt_tp.append(all_rt[:, :])
             all_rt = rt_tp
 
-        if all_rt.n_rt() is not self.n_rt:
+        if all_rt.get_num_rt() is not self.n_rt:
             self.new_rt_set(all_rt)
             return  # Prevent calling update_rt recursively
 
@@ -337,7 +337,7 @@ class Model(QtWidgets.QWidget):
         self.all_rt = all_rt
 
         for i, rt in enumerate(self.all_rt):
-            if rt.n_frames() is not 1:
+            if rt.get_num_frames() is not 1:
                 raise IndexError("RT should be from one frame only")
 
             # Update the end points of the axes and the origin
