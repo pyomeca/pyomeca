@@ -25,15 +25,16 @@ class FrameDependentNpArray(np.ndarray):
         if not isinstance(array, np.ndarray):
             raise TypeError('FrameDependentNpArray must be a numpy array')
 
-        # Finally, we must return the newly created object:
-        cls._current_frame = 0
-
         # metadata
-        cls.get_first_frame = []
-        cls.get_last_frame = []
-        cls.get_rate = []
-        cls.get_labels = []
-        return np.asarray(array).view(cls, *args, **kwargs)
+        obj = np.asarray(array).view(cls, *args, **kwargs)
+        obj._current_frame = 0
+        obj.get_first_frame = []
+        obj.get_last_frame = []
+        obj.get_rate = []
+        obj.get_labels = []
+
+        # Finally, we must return the newly created object:
+        return obj
 
     def get_num_frames(self):
         """
@@ -49,6 +50,17 @@ class FrameDependentNpArray(np.ndarray):
             return s[2]
 
     def get_frame(self, f):
+        """
+        Return the fth frame of the array
+        Parameters
+        ----------
+        f : int
+            index of frame
+
+        Returns
+        -------
+        frame
+        """
         return self[:, :, f]
 
     def __next__(self):
@@ -107,10 +119,71 @@ class FrameDependentNpArray(np.ndarray):
         data.to_csv(file_name, index=False, header=header)
 
 
-class RotoTransCollection(list):
+class FrameDependentNpArrayCollection(list):
+    """
+    Collection of time frame array
+    """
+    def get_frame(self, f):
+        """
+        Get fth frame of the collection
+        Parameters
+        ----------
+        f : int
+            Frame to get
+        Returns
+        -------
+        Collection of frame f
+        """
+        coll = FrameDependentNpArrayCollection()
+        for element in self:
+            coll.append(element.get_frame(f))
+        return coll
+
+    def get_num_segments(self):
+        """
+        Get the number of segments in the collection
+        Returns
+        -------
+        n : int
+        Number of segments in the collection
+        """
+        return len(self)
+
+    def get_num_frames(self):
+        """
+
+        Returns
+        -------
+        The number of frames
+        """
+        if len(self) > 0:
+            if len(self[0].shape) == 2:
+                return 1
+            else:
+                return self[0].shape[2]  # Assume all meshes has the same number of frame, return the first one
+        else:
+            return -1
+
+
+class RotoTransCollection(FrameDependentNpArrayCollection):
     """
     List of RotoTrans
     """
+    def get_frame(self, f):
+        """
+        Get fth frame of the collection
+        Parameters
+        ----------
+        f : int
+            Frame to get
+        Returns
+        -------
+        Collection of frame f
+        """
+        coll = RotoTransCollection()
+        for element in self:
+            coll.append(element.get_frame(f))
+        return coll
 
     def get_rt(self, i):
         """
@@ -126,23 +199,6 @@ class RotoTransCollection(list):
         """
         return self[i]
 
-    def get_frame(self, f):
-        """
-        Get the RotoTransCollection for frame f
-        Parameters
-        ----------
-        f : int
-            Frame to get
-
-        Returns
-        -------
-        RotoTransCollection of frame f
-        """
-        rt_coll = RotoTransCollection()
-        for rt in self:
-            rt_coll.append(rt.get_frame(f))
-        return rt_coll
-
     def get_num_rt(self):
         """
         Get the number of RotoTrans in the collection
@@ -151,7 +207,7 @@ class RotoTransCollection(list):
         n : int
         Number of RotoTrans in the collection
         """
-        return len(self)
+        return self.get_num_segments()
 
 
 class RotoTrans(FrameDependentNpArray):
@@ -539,6 +595,18 @@ class Markers3d(FrameDependentNpArray):
 
         return Markers3d(data=m2)
 
+    def norm(self):
+        """
+        Compute the Euclidean norm of vectors
+        Returns:
+        -------
+        Norm
+        """
+        square = self[0:3, :, :] ** 2
+        sum_square = np.sum(square, axis=0)
+        norm = np.sqrt(sum_square)
+        return norm
+
     def to_2d(self):
         """
         Takes a Markers3d style matrix and returns a tabular matrix
@@ -575,8 +643,101 @@ class Markers3d(FrameDependentNpArray):
         return Markers3d(np.reshape(m.T, (3, int(s[1] / 3), s[0]), 'F'))
 
 
+class MeshCollection(FrameDependentNpArrayCollection):
+    """
+    List of Mesh
+    """
+    def append(self, mesh):
+        return super().append(mesh)
+
+    def get_frame(self, f):
+        """
+        Get fth frame of the collection
+        Parameters
+        ----------
+        f : int
+            Frame to get
+        Returns
+        -------
+        Collection of frame f
+        """
+        coll = MeshCollection()
+        for element in self:
+            coll.append(element.get_frame(f))
+        return coll
+
+    def get_mesh(self, i):
+        """
+        Get a specific Mesh of the collection
+        Parameters
+        ----------
+        i : int
+            Index of the Mesh in the collection
+
+        Returns
+        -------
+        All frame of Mesh of index i
+        """
+        if i >= len(self):
+            return Mesh()
+
+        return self[i]
+
+    def get_num_mesh(self):
+        """
+        Get the number of Mesh in the collection
+        Returns
+        -------
+        n : int
+        Number of Mesh in the collection
+        """
+        return self.get_num_segments()
+
+
+class Mesh(Markers3d):
+    def __new__(cls, vertex=np.ndarray((3, 0, 0)), triangles=np.ndarray((0, 3)), *args, **kwargs):
+        """
+        Parameters
+        ----------
+        vertex : np.ndarray
+            3xNxF matrix of vertex positions
+        triangles : np.ndarray, list
+            Nx3 indexes matrix where N is the number of triangles and the row are the vertex to connect
+        names : list of string
+            name of the marker that correspond to second dimension of the positions matrix
+        """
+
+        if isinstance(triangles, list):
+            triangles = np.array(triangles)
+
+        s = triangles.shape
+        if s[1] != 3:
+            raise NotImplementedError('Mesh only implements triangle connections')
+
+        obj = super(Mesh, cls).__new__(cls, data=vertex, *args, **kwargs)
+        obj.triangles = triangles
+        return obj
+
+    def __array_finalize__(self, obj):
+        # Allow slicing
+        if obj is None or not isinstance(obj, Mesh):
+            return
+        self.triangles = getattr(obj, 'triangles')
+
+    def get_num_triangles(self):
+        return self.triangles.shape[0]
+
+    def get_num_vertex(self):
+        """
+        Returns
+        -------
+        The number of vertex
+        """
+        return super().get_num_markers()
+
+
 class GeneralizedCoordinate(FrameDependentNpArray):
-    def __new__(cls, q=np.ndarray((0, 0, 0)), *args, **kwargs):
+    def __new__(cls, q=np.ndarray((0, 1, 0)), *args, **kwargs):
         """
         Parameters
         ----------
@@ -587,6 +748,9 @@ class GeneralizedCoordinate(FrameDependentNpArray):
         # Reshape if the user sent a 2d instead of 3d shape
         if len(q.shape) == 2:
             q = np.reshape(q, (q.shape[0], 1, q.shape[1]))
+
+        if q.shape[1] != 1:
+            raise IndexError('Generalized coordinates can''t have multiple columns')
 
         return super(GeneralizedCoordinate, cls).__new__(cls, array=q, *args, **kwargs)
 
