@@ -265,7 +265,6 @@ class Model(QtWidgets.QWidget):
             poly_line = vtkPolyData()
             poly_line.SetPoints(points)
             poly_line.SetLines(cell)
-            print(cell)
 
             # Create a mapper
             mapper = vtkPolyDataMapper()
