@@ -36,6 +36,17 @@ class FrameDependentNpArray(np.ndarray):
         # Finally, we must return the newly created object:
         return obj
 
+    def __array_finalize__(self, obj):
+        # Allow slicing
+        if obj is None or not isinstance(obj, Mesh):
+            return
+        super().__array_finalize__(obj)
+        self._current_frame = getattr(obj, '_current_frame')
+        self._current_frame = getattr(obj, 'get_first_frame')
+        self._current_frame = getattr(obj, 'get_last_frame')
+        self._current_frame = getattr(obj, 'get_rate')
+        self._current_frame = getattr(obj, 'get_labels')
+
     def get_num_frames(self):
         """
 
@@ -722,6 +733,7 @@ class Mesh(Markers3d):
         # Allow slicing
         if obj is None or not isinstance(obj, Mesh):
             return
+        super().__array_finalize__(obj)
         self.triangles = getattr(obj, 'triangles')
 
     def get_num_triangles(self):
