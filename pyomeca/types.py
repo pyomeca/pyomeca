@@ -36,6 +36,17 @@ class FrameDependentNpArray(np.ndarray):
 
         return obj
 
+    def __array_finalize__(self, obj):
+        # Allow slicing
+        if obj is None or not isinstance(obj, Mesh):
+            return
+        super().__array_finalize__(obj)
+        self._current_frame = getattr(obj, '_current_frame')
+        self._current_frame = getattr(obj, 'get_first_frame')
+        self._current_frame = getattr(obj, 'get_last_frame')
+        self._current_frame = getattr(obj, 'get_rate')
+        self._current_frame = getattr(obj, 'get_labels')
+
     def get_num_frames(self):
         """
 
@@ -247,6 +258,12 @@ class RotoTrans(FrameDependentNpArray):
 
         # Finally, we must return the newly created object:
         return super(RotoTrans, cls).__new__(cls, array=rt, *args, **kwargs)
+
+    def __array_finalize__(self, obj):
+        # Allow slicing
+        if obj is None or not isinstance(obj, Mesh):
+            return
+        super().__array_finalize__(obj)
 
     def get_euler_angles(self, angle_sequence):
         """
@@ -563,6 +580,12 @@ class Markers3d(FrameDependentNpArray):
 
         return super(Markers3d, cls).__new__(cls, array=pos, *args, **kwargs)
 
+    def __array_finalize__(self, obj):
+        # Allow slicing
+        if obj is None or not isinstance(obj, Mesh):
+            return
+        super().__array_finalize__(obj)
+
     def get_num_markers(self):
         """
         Returns
@@ -725,6 +748,7 @@ class Mesh(Markers3d):
         # Allow slicing
         if obj is None or not isinstance(obj, Mesh):
             return
+        super().__array_finalize__(obj)
         self.triangles = getattr(obj, 'triangles')
 
     def get_num_triangles(self):
@@ -757,6 +781,12 @@ class GeneralizedCoordinate(FrameDependentNpArray):
 
         return super(GeneralizedCoordinate, cls).__new__(cls, array=q, *args, **kwargs)
 
+    def __array_finalize__(self, obj):
+        # Allow slicing
+        if obj is None or not isinstance(obj, Mesh):
+            return
+        super().__array_finalize__(obj)
+
 
 class Analogs3d(FrameDependentNpArray):
     def __new__(cls, data=np.ndarray((1, 0, 0)), names=list(), *args, **kwargs):
@@ -780,6 +810,12 @@ class Analogs3d(FrameDependentNpArray):
             raise TypeError('Data must be 2d or 3d matrix')
 
         return super(Analogs3d, cls).__new__(cls, array=analog, *args, **kwargs)
+
+    def __array_finalize__(self, obj):
+        # Allow slicing
+        if obj is None or not isinstance(obj, Mesh):
+            return
+        super().__array_finalize__(obj)
 
     def get_num_analogs(self):
         """
