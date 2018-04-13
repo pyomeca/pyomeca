@@ -32,8 +32,8 @@ class FrameDependentNpArray(np.ndarray):
         obj.get_last_frame = []
         obj.get_rate = []
         obj.get_labels = []
+        obj.get_unit = []
 
-        # Finally, we must return the newly created object:
         return obj
 
     def get_num_frames(self):
@@ -61,7 +61,7 @@ class FrameDependentNpArray(np.ndarray):
         -------
         frame
         """
-        return self[:, :, f]
+        return self[..., f]
 
     def __next__(self):
         if self._current_frame > self.shape[2]:
@@ -123,6 +123,7 @@ class FrameDependentNpArrayCollection(list):
     """
     Collection of time frame array
     """
+
     def get_frame(self, f):
         """
         Get fth frame of the collection
@@ -169,6 +170,7 @@ class RotoTransCollection(FrameDependentNpArrayCollection):
     """
     List of RotoTrans
     """
+
     def get_frame(self, f):
         """
         Get fth frame of the collection
@@ -647,6 +649,7 @@ class MeshCollection(FrameDependentNpArrayCollection):
     """
     List of Mesh
     """
+
     def append(self, mesh):
         return super().append(mesh)
 
