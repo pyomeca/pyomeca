@@ -27,25 +27,24 @@ class FrameDependentNpArray(np.ndarray):
 
         # metadata
         obj = np.asarray(array).view(cls, *args, **kwargs)
-        obj._current_frame = 0
-        obj.get_first_frame = []
-        obj.get_last_frame = []
-        obj.get_rate = []
-        obj.get_labels = []
-        obj.get_unit = []
-
+        obj.__array_finalize__(array)
         return obj
 
     def __array_finalize__(self, obj):
         # Allow slicing
-        if obj is None or not isinstance(obj, Mesh):
-            return
-        super().__array_finalize__(obj)
-        self._current_frame = getattr(obj, '_current_frame')
-        self._current_frame = getattr(obj, 'get_first_frame')
-        self._current_frame = getattr(obj, 'get_last_frame')
-        self._current_frame = getattr(obj, 'get_rate')
-        self._current_frame = getattr(obj, 'get_labels')
+        if obj is None or not isinstance(obj, FrameDependentNpArray):
+            self._current_frame = 0
+            self.get_first_frame = []
+            self.get_last_frame = []
+            self.get_rate = []
+            self.get_labels = []
+            self.get_unit = []
+        else:
+            self._current_frame = getattr(obj, '_current_frame')
+            self.get_first_frame = getattr(obj, 'get_first_frame')
+            self.get_last_frame = getattr(obj, 'get_last_frame')
+            self.get_rate = getattr(obj, 'get_rate')
+            self.get_labels = getattr(obj, 'get_labels')
 
     def get_num_frames(self):
         """
@@ -260,10 +259,10 @@ class RotoTrans(FrameDependentNpArray):
         return super(RotoTrans, cls).__new__(cls, array=rt, *args, **kwargs)
 
     def __array_finalize__(self, obj):
-        # Allow slicing
-        if obj is None or not isinstance(obj, Mesh):
-            return
         super().__array_finalize__(obj)
+        # Allow slicing
+        if obj is None or not isinstance(obj, RotoTrans):
+            return
 
     def get_euler_angles(self, angle_sequence):
         """
@@ -564,7 +563,7 @@ class Markers3d(FrameDependentNpArray):
             name of the marker that correspond to second dimension of the positions matrix
         """
         if data.ndim == 2:
-            data = Markers3d.from_2d(data)
+            data = np.array(Markers3d.from_2d(data))
 
         if data.ndim == 3:
             s = data.shape
@@ -581,10 +580,10 @@ class Markers3d(FrameDependentNpArray):
         return super(Markers3d, cls).__new__(cls, array=pos, *args, **kwargs)
 
     def __array_finalize__(self, obj):
-        # Allow slicing
-        if obj is None or not isinstance(obj, Mesh):
-            return
         super().__array_finalize__(obj)
+        # Allow slicing
+        if obj is None or not isinstance(obj, Markers3d):
+            return
 
     def get_num_markers(self):
         """
@@ -745,10 +744,10 @@ class Mesh(Markers3d):
         return obj
 
     def __array_finalize__(self, obj):
+        super().__array_finalize__(obj)
         # Allow slicing
         if obj is None or not isinstance(obj, Mesh):
             return
-        super().__array_finalize__(obj)
         self.triangles = getattr(obj, 'triangles')
 
     def get_num_triangles(self):
@@ -782,10 +781,10 @@ class GeneralizedCoordinate(FrameDependentNpArray):
         return super(GeneralizedCoordinate, cls).__new__(cls, array=q, *args, **kwargs)
 
     def __array_finalize__(self, obj):
-        # Allow slicing
-        if obj is None or not isinstance(obj, Mesh):
-            return
         super().__array_finalize__(obj)
+        # Allow slicing
+        if obj is None or not isinstance(obj, GeneralizedCoordinate):
+            return
 
 
 class Analogs3d(FrameDependentNpArray):
@@ -812,10 +811,10 @@ class Analogs3d(FrameDependentNpArray):
         return super(Analogs3d, cls).__new__(cls, array=analog, *args, **kwargs)
 
     def __array_finalize__(self, obj):
-        # Allow slicing
-        if obj is None or not isinstance(obj, Mesh):
-            return
         super().__array_finalize__(obj)
+        # Allow slicing
+        if obj is None or not isinstance(obj, Analogs3d):
+            return
 
     def get_num_analogs(self):
         """
