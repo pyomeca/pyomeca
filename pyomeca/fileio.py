@@ -53,7 +53,7 @@ def read_csv(file_name, first_row=None, first_column=0, idx=None, header=None, n
     column_names = data.columns.tolist()
     if kind == 'markers' and header:
         column_names = [icol.split(prefix)[-1] for icol in column_names if (len(icol) >= 7 and icol[:7] != 'Unnamed')]
-    metadata = {'get_first_frame': [], 'get_last_frame': [], 'get_rate': [], 'get_labels': []}
+    metadata = {'get_first_frame': [], 'get_last_frame': [], 'get_rate': [], 'get_labels': [], 'get_unit': []}
     if names:
         metadata.update({'get_labels': names})
     else:
@@ -103,7 +103,8 @@ def read_c3d(file_name, idx=None, names=None, kind='markers', prefix=None):
             'get_num_frames': acq.GetPointFrameNumber(),
             'get_first_frame': acq.GetFirstFrame(),
             'get_last_frame': acq.GetLastFrame(),
-            'get_rate': acq.GetPointFrequency()
+            'get_rate': acq.GetPointFrequency(),
+            'get_unit': acq.GetPointUnit()
         }
         data = np.full([metadata['get_num_frames'], 3 * metadata['get_num_markers']], np.nan)
         for i, (key, value) in enumerate(flat_data.items()):
@@ -116,7 +117,8 @@ def read_c3d(file_name, idx=None, names=None, kind='markers', prefix=None):
             'get_num_frames': acq.GetAnalogFrameNumber(),
             'get_first_frame': acq.GetFirstFrame(),
             'get_last_frame': acq.GetLastFrame(),
-            'get_rate': acq.GetAnalogFrequency()
+            'get_rate': acq.GetAnalogFrequency(),
+            'get_unit': []
         }
         data = np.full([metadata['get_num_frames'], metadata['get_num_analogs']], np.nan)
         for i, (key, value) in enumerate(flat_data.items()):
@@ -154,6 +156,7 @@ def _to_vectors(data, kind, idx, all_names, target_names, metadata=None):
     data.get_first_frame = metadata['get_first_frame']
     data.get_last_frame = metadata['get_last_frame']
     data.get_rate = metadata['get_rate']
+    data.get_unit = metadata['get_unit']
     if np.array(idx).ndim == 1 and not metadata['get_labels']:
         data.get_labels = [name for i, name in enumerate(all_names) if i in idx]
     elif metadata['get_labels']:
