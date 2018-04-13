@@ -45,6 +45,7 @@ class FrameDependentNpArray(np.ndarray):
             self.get_last_frame = getattr(obj, 'get_last_frame')
             self.get_rate = getattr(obj, 'get_rate')
             self.get_labels = getattr(obj, 'get_labels')
+            self.get_unit = getattr(obj, 'get_unit')
 
     def get_num_frames(self):
         """
