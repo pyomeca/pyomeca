@@ -39,6 +39,15 @@ class FrameDependentNpArray(np.ndarray):
             self.get_labels = getattr(obj, 'get_labels')
             self.get_unit = getattr(obj, 'get_unit')
 
+    def __next__(self):
+        if self._current_frame > self.shape[2]:
+            raise StopIteration
+        else:
+            self._current_frame += 1
+            return self.get_frame(self._current_frame)
+
+    # --- Get metadata methods
+
     def get_num_frames(self):
         """
 
@@ -66,35 +75,9 @@ class FrameDependentNpArray(np.ndarray):
         """
         return self[..., f]
 
-    def __next__(self):
-        if self._current_frame > self.shape[2]:
-            raise StopIteration
-        else:
-            self._current_frame += 1
-            return self.get_frame(self._current_frame)
+    # --- Fileio methods (from_*)
 
-    def get_specific_data(self, mark_idx):
-        """
-        # TODO: description
-        Parameters
-        ----------
-        mark_idx : list(int)
-            idx of marker to keep (order is kept in the returned data).
-            If mark_idx has more than one row, output is the mean of the markers over the columns.
-        Returns
-        -------
-        numpy.array
-            extracted data
-        """
-        mark_idx = np.matrix(mark_idx)
-        try:
-            data = self[:, np.array(mark_idx)[0, :], :]
-            for i in range(1, mark_idx.shape[0]):
-                data += self[:, np.array(mark_idx)[i, :], :]
-            data /= mark_idx.shape[0]
-        except IndexError:
-            raise IndexError('extract_markers works only on 3xNxF matrices and mark_idx must be a ixj array')
-        return data
+    # --- Fileio methods (to_*)
 
     def to_csv(self, file_name, header=False):
         """
@@ -121,11 +104,36 @@ class FrameDependentNpArray(np.ndarray):
         # Write into the csv file
         data.to_csv(file_name, index=False, header=header)
 
+    def get_specific_data(self, idx):
+        """
+        # TODO: description
+        Parameters
+        ----------
+        idx : list(int)
+            idx of marker to keep (order is kept in the returned data).
+            If idx has more than one row, output is the mean of the markers over the columns.
+        Returns
+        -------
+        numpy.array
+            extracted data
+        """
+        idx = np.matrix(idx)
+        try:
+            data = self[:, np.array(idx)[0, :], :]
+            for i in range(1, idx.shape[0]):
+                data += self[:, np.array(idx)[i, :], :]
+            data /= idx.shape[0]
+        except IndexError:
+            raise IndexError('get_specific_data works only on 3xNxF matrices and idx must be a ixj array')
+        return data
+
 
 class FrameDependentNpArrayCollection(list):
     """
     Collection of time frame array
     """
+
+    # --- Get metadata methods
 
     def get_frame(self, f):
         """

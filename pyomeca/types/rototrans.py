@@ -45,6 +45,8 @@ class RotoTrans(FrameDependentNpArray):
         if obj is None or not isinstance(obj, RotoTrans):
             return
 
+    # --- Linear algebra methods
+
     def get_euler_angles(self, angle_sequence):
         """
 

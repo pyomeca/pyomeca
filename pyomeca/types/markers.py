@@ -35,6 +35,8 @@ class Markers3d(FrameDependentNpArray):
         if obj is None or not isinstance(obj, Markers3d):
             return
 
+    # --- Get metadata methods
+
     def get_num_markers(self):
         """
         Returns
@@ -43,6 +45,47 @@ class Markers3d(FrameDependentNpArray):
         """
         s = self.shape
         return s[1]
+
+    def get_2d_labels(self):
+        """
+        Takes a Markers3d style labels and returns 2d style labels
+        Returns
+        -------
+        2d style labels
+        """
+        return [i + axe for i in self.get_labels for axe in ['_X', '_Y', '_Z']]
+
+    # --- Fileio methods (from_*)
+
+    @staticmethod
+    def from_2d(m):
+        """
+        Takes a tabular matrix and returns a Vectors3d
+        Parameters
+        ----------
+        m : np.array
+            A CSV tabular matrix (Fx3*N)
+        Returns
+        -------
+        Vectors3d of data set
+        """
+        s = m.shape
+        if s[1] % 3 != 0:
+            raise IndexError("Number of columns must be divisible by 3")
+        return Markers3d(np.reshape(m.T, (3, int(s[1] / 3), s[0]), 'F'))
+
+    # --- Fileio methods (to_*)
+
+    def to_2d(self):
+        """
+        Takes a Markers3d style matrix and returns a tabular matrix
+        Returns
+        -------
+        Tabular matrix
+        """
+        return np.reshape(self[0:3, :, :], (3 * self.get_num_markers(), self.get_num_frames()), 'F').T
+
+    # --- Linear algebra methods
 
     def rotate(self, rt):
         """
@@ -80,38 +123,3 @@ class Markers3d(FrameDependentNpArray):
         sum_square = np.sum(square, axis=0)
         norm = np.sqrt(sum_square)
         return norm
-
-    def to_2d(self):
-        """
-        Takes a Markers3d style matrix and returns a tabular matrix
-        Returns
-        -------
-        Tabular matrix
-        """
-        return np.reshape(self[0:3, :, :], (3 * self.get_num_markers(), self.get_num_frames()), 'F').T
-
-    def get_2d_labels(self):
-        """
-        Takes a Markers3d style labels and returns 2d style labels
-        Returns
-        -------
-        2d style labels
-        """
-        return [i + axe for i in self.get_labels for axe in ['_X', '_Y', '_Z']]
-
-    @staticmethod
-    def from_2d(m):
-        """
-        Takes a tabular matrix and returns a Vectors3d
-        Parameters
-        ----------
-        m : np.array
-            A CSV tabular matrix (Fx3*N)
-        Returns
-        -------
-        Vectors3d of data set
-        """
-        s = m.shape
-        if s[1] % 3 != 0:
-            raise IndexError("Number of columns must be divisible by 3")
-        return Markers3d(np.reshape(m.T, (3, int(s[1] / 3), s[0]), 'F'))

@@ -31,6 +31,8 @@ class Analogs3d(FrameDependentNpArray):
         if obj is None or not isinstance(obj, Analogs3d):
             return
 
+    # --- Get metadata methods
+
     def get_num_analogs(self):
         """
         Returns
@@ -40,14 +42,16 @@ class Analogs3d(FrameDependentNpArray):
         s = self.shape
         return s[1]
 
-    def to_2d(self):
+    def get_2d_labels(self):
         """
-        Takes a Analogs3d style matrix and returns a tabular matrix
+        Takes a Analogs style labels and returns 2d style labels
         Returns
         -------
-        Tabular matrix
+        2d style labels
         """
-        return np.squeeze(self.T, axis=2)
+        return self.get_labels
+
+    # --- Fileio methods (from_*)
 
     @staticmethod
     def from_2d(m):
@@ -64,11 +68,13 @@ class Analogs3d(FrameDependentNpArray):
         s = m.shape
         return Analogs3d(np.reshape(m.T, (1, s[1], s[0]), 'F'))
 
-    def get_2d_labels(self):
+    # --- Fileio methods (to_*)
+
+    def to_2d(self):
         """
-        Takes a Analogs style labels and returns 2d style labels
+        Takes a Analogs3d style matrix and returns a tabular matrix
         Returns
         -------
-        2d style labels
+        Tabular matrix
         """
-        return self.get_labels
+        return np.squeeze(self.T, axis=2)

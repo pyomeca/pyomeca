@@ -34,6 +34,8 @@ class Mesh(Markers3d):
             return
         self.triangles = getattr(obj, 'triangles')
 
+    # --- Get metadata methods
+
     def get_num_triangles(self):
         return self.triangles.shape[0]
 
@@ -86,6 +88,8 @@ class MeshCollection(FrameDependentNpArrayCollection):
             return Mesh()
 
         return self[i]
+
+    # --- Get metadata methods
 
     def get_num_mesh(self):
         """
