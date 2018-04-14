@@ -9,7 +9,8 @@ import numpy as np
 import pandas as pd
 
 from pyomeca.thirdparty import btk
-from pyomeca.types import Markers3d, Analogs3d
+from pyomeca.types.markers import Markers3d
+from pyomeca.types.analogs import Analogs3d
 
 
 def read_csv(file_name, first_row=None, first_column=0, idx=None, header=None, names=None, kind='markers',
