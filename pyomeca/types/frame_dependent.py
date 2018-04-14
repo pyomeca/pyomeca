@@ -133,7 +133,6 @@ class FrameDependentNpArray(np.ndarray):
 
         return cls._to_vectors(data=data.values, idx=idx, all_names=column_names, target_names=names, metadata=metadata)
 
-    #########################
     @classmethod
     def from_c3d(cls, filename, idx=None, names=None, prefix=None):
         """
@@ -204,8 +203,6 @@ class FrameDependentNpArray(np.ndarray):
                                all_names=channel_names,
                                target_names=names,
                                metadata=metadata)
-
-    #########################
 
     @classmethod
     def _to_vectors(cls, data, idx, all_names, target_names, metadata=None):
