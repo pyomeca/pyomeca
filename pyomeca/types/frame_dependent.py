@@ -2,6 +2,8 @@ import numpy as np
 from pathlib import Path
 import pandas as pd
 
+from pyomeca import signal as pyosignal
+
 from pyomeca.thirdparty import btk
 
 
@@ -283,6 +285,14 @@ class FrameDependentNpArray(np.ndarray):
     @staticmethod
     def get_2d_labels():
         raise ValueError('get_2d_labels should be called from a child class (e.g. Markers3d, Analogs3d, etc.)')
+
+    # --- Signal processing methods
+
+    def rectify(self):
+        return pyosignal.rectify(self)
+
+    def moving_rms(self, window_size):
+        return pyosignal.moving_rms(self, window_size, method='filtfilt')
 
 
 class FrameDependentNpArrayCollection(list):
