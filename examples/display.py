@@ -5,10 +5,10 @@ Example script for animating models
 from pathlib import Path
 
 import numpy as np
-from pyomeca import fileio as pyoio
 from pyomeca.show.vtk import Model as VtkModel, Window as VtkWindow
 from pyomeca.types.rototrans import RotoTrans, RotoTransCollection
 from pyomeca.types.mesh import Mesh, MeshCollection
+from pyomeca.types.markers import Markers3d
 
 # Path to data
 DATA_FOLDER = Path('..') / 'tests' / 'data'
@@ -17,20 +17,20 @@ MARKERS_ANALOGS_C3D = DATA_FOLDER / 'markers_analogs.c3d'
 
 # Load data
 # all markers
-d = pyoio.read_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
-                   idx=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], prefix=':')
+d = Markers3d.from_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
+                       idx=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], prefix=':')
 # mean of 1st and 4th
-d2 = pyoio.read_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
-                    idx=[[0, 1, 2], [0, 4, 2]], prefix=':')
+d2 = Markers3d.from_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
+                        idx=[[0, 1, 2], [0, 4, 2]], prefix=':')
 # mean of first 3 markers
-d3 = pyoio.read_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
-                    idx=[[0], [1], [2]], prefix=':')
-d4 = pyoio.read_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
-                    names=['CLAV_post', 'PSISl', 'STERr', 'CLAV_post'], prefix=':')
+d3 = Markers3d.from_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
+                        idx=[[0], [1], [2]], prefix=':')
+
+d4 = Markers3d.from_csv(MARKERS_CSV, first_row=5, first_column=2, header=2,
+                        names=['CLAV_post', 'PSISl', 'STERr', 'CLAV_post'], prefix=':')
 
 # mean of first 3 markers in c3d file
-d5 = pyoio.read_c3d(MARKERS_ANALOGS_C3D, idx=[[0], [1], [2]],
-                    kind='markers', prefix=':')
+d5 = Markers3d.from_c3d(MARKERS_ANALOGS_C3D, idx=[[0], [1], [2]], prefix=':')
 
 # Create a windows with a nice gray background
 vtkWindow = VtkWindow(background_color=(.5, .5, .5))
