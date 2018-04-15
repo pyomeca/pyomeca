@@ -1,8 +1,9 @@
 import numpy as np
 
 from S2MLib import pyorbdl
-from pyomeca.types import GeneralizedCoordinate
-from pyomeca.types import Markers3d
+
+from pyomeca.types.markers import Markers3d
+from pyomeca.types.generalized_coordinates import GeneralizedCoordinate
 
 
 def new(path):

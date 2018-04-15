@@ -4,7 +4,7 @@ Test for euler to rot and rot to euler
 import numpy as np
 import pytest
 
-from pyomeca.types import RotoTrans
+from pyomeca.types.rototrans import RotoTrans
 
 # Define all the possible angle_sequence to tests
 SEQ = ["x", "y", "z", "xy", "xz", "yx", "yz", "zx", "zy", "xyz", "xzy", "yxz", "yzx", "zxy", "zyx", "zyzz"]
