@@ -5,7 +5,10 @@ Definition of different container in pyomeca
 
 """
 
+from pathlib import Path
+
 import numpy as np
+import pandas as pd
 
 
 class FrameDependentNpArray(np.ndarray):
@@ -22,11 +25,29 @@ class FrameDependentNpArray(np.ndarray):
         if not isinstance(array, np.ndarray):
             raise TypeError('FrameDependentNpArray must be a numpy array')
 
-        # Finally, we must return the newly created object:
-        cls.current_frame = 0
-        return np.asarray(array).view(cls, *args, **kwargs)
+        # metadata
+        obj = np.asarray(array).view(cls, *args, **kwargs)
+        obj.__array_finalize__(array)
+        return obj
 
-    def n_frames(self):
+    def __array_finalize__(self, obj):
+        # Allow slicing
+        if obj is None or not isinstance(obj, FrameDependentNpArray):
+            self._current_frame = 0
+            self.get_first_frame = []
+            self.get_last_frame = []
+            self.get_rate = []
+            self.get_labels = []
+            self.get_unit = []
+        else:
+            self._current_frame = getattr(obj, '_current_frame')
+            self.get_first_frame = getattr(obj, 'get_first_frame')
+            self.get_last_frame = getattr(obj, 'get_last_frame')
+            self.get_rate = getattr(obj, 'get_rate')
+            self.get_labels = getattr(obj, 'get_labels')
+            self.get_unit = getattr(obj, 'get_unit')
+
+    def get_num_frames(self):
         """
 
         Returns
@@ -40,20 +61,142 @@ class FrameDependentNpArray(np.ndarray):
             return s[2]
 
     def get_frame(self, f):
-        return self[:, :, f]
+        """
+        Return the fth frame of the array
+        Parameters
+        ----------
+        f : int
+            index of frame
+
+        Returns
+        -------
+        frame
+        """
+        return self[..., f]
 
     def __next__(self):
-        if self.current_frame > self.shape[2]:
+        if self._current_frame > self.shape[2]:
             raise StopIteration
         else:
-            self.current_frame += 1
-            return self.get_frame(self.current_frame)
+            self._current_frame += 1
+            return self.get_frame(self._current_frame)
+
+    def get_specific_data(self, mark_idx):
+        """
+        # TODO: description
+        Parameters
+        ----------
+        mark_idx : list(int)
+            idx of marker to keep (order is kept in the returned data).
+            If mark_idx has more than one row, output is the mean of the markers over the columns.
+        Returns
+        -------
+        numpy.array
+            extracted data
+        """
+        mark_idx = np.matrix(mark_idx)
+        try:
+            data = self[:, np.array(mark_idx)[0, :], :]
+            for i in range(1, mark_idx.shape[0]):
+                data += self[:, np.array(mark_idx)[i, :], :]
+            data /= mark_idx.shape[0]
+        except IndexError:
+            raise IndexError('extract_markers works only on 3xNxF matrices and mark_idx must be a ixj array')
+        return data
+
+    def to_csv(self, file_name, header=False):
+        """
+        Write a csv file from a FrameDependentNpArray
+        Parameters
+        ----------
+        file_name : string
+            path of the file to write
+        header : bool
+            Write header with labels (default False)
+        """
+        file_name = Path(file_name)
+        # Make sure the directory exists, otherwise create it
+        if not file_name.parents[0].is_dir():
+            file_name.parents[0].mkdir()
+
+        # Convert markers into 2d matrix
+        data = pd.DataFrame(self.to_2d())
+
+        # Get the 2d style labels
+        if header:
+            header = self.get_2d_labels()
+
+        # Write into the csv file
+        data.to_csv(file_name, index=False, header=header)
 
 
-class RotoTransCollection(list):
+class FrameDependentNpArrayCollection(list):
+    """
+    Collection of time frame array
+    """
+
+    def get_frame(self, f):
+        """
+        Get fth frame of the collection
+        Parameters
+        ----------
+        f : int
+            Frame to get
+        Returns
+        -------
+        Collection of frame f
+        """
+        coll = FrameDependentNpArrayCollection()
+        for element in self:
+            coll.append(element.get_frame(f))
+        return coll
+
+    def get_num_segments(self):
+        """
+        Get the number of segments in the collection
+        Returns
+        -------
+        n : int
+        Number of segments in the collection
+        """
+        return len(self)
+
+    def get_num_frames(self):
+        """
+
+        Returns
+        -------
+        The number of frames
+        """
+        if len(self) > 0:
+            if len(self[0].shape) == 2:
+                return 1
+            else:
+                return self[0].shape[2]  # Assume all meshes has the same number of frame, return the first one
+        else:
+            return -1
+
+
+class RotoTransCollection(FrameDependentNpArrayCollection):
     """
     List of RotoTrans
     """
+
+    def get_frame(self, f):
+        """
+        Get fth frame of the collection
+        Parameters
+        ----------
+        f : int
+            Frame to get
+        Returns
+        -------
+        Collection of frame f
+        """
+        coll = RotoTransCollection()
+        for element in self:
+            coll.append(element.get_frame(f))
+        return coll
 
     def get_rt(self, i):
         """
@@ -69,24 +212,7 @@ class RotoTransCollection(list):
         """
         return self[i]
 
-    def get_frame(self, f):
-        """
-        Get the RotoTransCollection for frame f
-        Parameters
-        ----------
-        f : int
-            Frame to get
-
-        Returns
-        -------
-        RotoTransCollection of frame f
-        """
-        rt_coll = RotoTransCollection()
-        for rt in self:
-            rt_coll.append(rt.get_frame(f))
-        return rt_coll
-
-    def n_rt(self):
+    def get_num_rt(self):
         """
         Get the number of RotoTrans in the collection
         Returns
@@ -94,7 +220,7 @@ class RotoTransCollection(list):
         n : int
         Number of RotoTrans in the collection
         """
-        return len(self)
+        return self.get_num_segments()
 
 
 class RotoTrans(FrameDependentNpArray):
@@ -133,6 +259,12 @@ class RotoTrans(FrameDependentNpArray):
         # Finally, we must return the newly created object:
         return super(RotoTrans, cls).__new__(cls, array=rt, *args, **kwargs)
 
+    def __array_finalize__(self, obj):
+        super().__array_finalize__(obj)
+        # Allow slicing
+        if obj is None or not isinstance(obj, RotoTrans):
+            return
+
     def get_euler_angles(self, angle_sequence):
         """
 
@@ -145,7 +277,7 @@ class RotoTrans(FrameDependentNpArray):
         angles : Markers3d
             Euler angles associated with RotoTrans
         """
-        if self.n_frames() > 1:
+        if self.get_num_frames() > 1:
             raise NotImplementedError("get_euler_angles on more than one frame at a time is not implemented yet")
 
         angles = np.ndarray(shape=(len(angle_sequence), 1))
@@ -266,6 +398,91 @@ class RotoTrans(FrameDependentNpArray):
 
         return RotoTrans(rt)
 
+    @staticmethod
+    def define_axes(data_set, idx_axis1, idx_axis2, axes_name, axis_to_recalculate, idx_origin):
+        """
+        This function creates system of axes from axis1 and axis2
+        Parameters
+        ----------
+        data_set : Markers3d
+            Whole data set
+        idx_axis1 : list(int)
+            First column is the beginning of the axis, second is the end. Rows are the markers to be mean
+        idx_axis2 : list(int)
+            First column is the beginning of the axis, second is the end. Rows are the markers to be mean
+        axes_name : str
+            Name of the axis1 and axis2 in that order ("xy", "yx", "xz", ...)
+        axis_to_recalculate : str
+            Which of the 3 axes to recalculate
+        idx_origin : list(int)
+            Markers to be mean to define the origin of the system of axes
+
+        Returns
+        -------
+        System of axes
+        """
+        # Extract mean of each required axis indexes
+        idx_axis1 = np.matrix(idx_axis1)
+        idx_axis2 = np.matrix(idx_axis2)
+
+        axis1 = data_set.get_specific_data(idx_axis1[:, 1]) - data_set.get_specific_data(idx_axis1[:, 0])
+        axis2 = data_set.get_specific_data(idx_axis2[:, 1]) - data_set.get_specific_data(idx_axis2[:, 0])
+        origin = data_set.get_specific_data(np.matrix(idx_origin).reshape((len(idx_origin), 1)))
+
+        axis1 = axis1[0:3, :, :].reshape(3, axis1.shape[2]).T
+        axis2 = axis2[0:3, :, :].reshape(3, axis2.shape[2]).T
+
+        # If we inverse axes_names, inverse axes as well
+        axes_name_tp = ''.join(sorted(axes_name))
+        if axes_name != axes_name_tp:
+            axis1_copy = axis1
+            axis1 = axis2
+            axis2 = axis1_copy
+            axes_name = axes_name_tp
+
+        if axes_name[0] == "x":
+            x = axis1
+            if axes_name[1] == "y":
+                y = axis2
+                z = np.cross(x, y)
+            elif axes_name[1] == "z":
+                z = axis2
+                y = np.cross(z, x)
+            else:
+                raise ValueError("Axes names should be 2 values of ""x"", ""y"" and ""z"" permutations)")
+
+        elif axes_name[0] == "y":
+            y = axis1
+            if axes_name[1] == "z":
+                z = axis2
+                x = np.cross(y, z)
+            else:
+                raise ValueError("Axes names should be 2 values of ""x"", ""y"" and ""z"" permutations)")
+        else:
+            raise ValueError("Axes names should be 2 values of ""x"", ""y"" and ""z"" permutations)")
+
+        # Normalize each vector
+        x = x / np.matrix(np.linalg.norm(x, axis=1)).T
+        y = y / np.matrix(np.linalg.norm(y, axis=1)).T
+        z = z / np.matrix(np.linalg.norm(z, axis=1)).T
+
+        # # Recalculate the temporary axis
+        if axis_to_recalculate == "x":
+            x = np.cross(y, z)
+        elif axis_to_recalculate == "y":
+            y = np.cross(z, x)
+        elif axis_to_recalculate == "z":
+            z = np.cross(x, y)
+        else:
+            raise ValueError("Axis to recalculate must be ""x"", ""y"" or ""z""")
+
+        rt = RotoTrans(rt=np.zeros((4, 4, data_set.shape[2])))
+        rt[0:3, 0, :] = x.T
+        rt[0:3, 1, :] = y.T
+        rt[0:3, 2, :] = z.T
+        rt.set_translation(origin)
+        return rt
+
     def rotation(self):
         """
         Returns
@@ -311,7 +528,7 @@ class RotoTrans(FrameDependentNpArray):
             Transposed RotoTrans matrix ([R.T -R.T*t],[0 0 0 1])
         """
         # Create a matrix with the transposed rotation part
-        rt_t = RotoTrans(rt=np.ndarray((4, 4, self.n_frames())))
+        rt_t = RotoTrans(rt=np.ndarray((4, 4, self.get_num_frames())))
         rt_t[0:3, 0:3, :] = np.transpose(self[0:3, 0:3, :], (1, 0, 2))
 
         # Fill the last column and row with 0 and bottom corner with 1
@@ -320,8 +537,8 @@ class RotoTrans(FrameDependentNpArray):
         rt_t[3, 3, :] = 1
 
         # Transpose the translation part
-        t = Markers3d(data=np.reshape(self[0:3, 3, :], (3, 1, self.n_frames())))
-        rt_t[0:3, 3, :] = t.rotate(-rt_t)[0:3, :].reshape((3, self.n_frames()))
+        t = Markers3d(data=np.reshape(self[0:3, 3, :], (3, 1, self.get_num_frames())))
+        rt_t[0:3, 3, :] = t.rotate(-rt_t)[0:3, :].reshape((3, self.get_num_frames()))
 
         # Return transposed matrix
         return rt_t
@@ -346,22 +563,34 @@ class Markers3d(FrameDependentNpArray):
         names : list of string
             name of the marker that correspond to second dimension of the positions matrix
         """
+        if data.ndim == 2:
+            data = np.array(Markers3d.from_2d(data))
 
-        s = data.shape
-        if s[0] == 3:
-            pos = np.ones((4, s[1], s[2]))
-            pos[0:3, :, :] = data
-        elif s[0] == 4:
-            pos = data
+        if data.ndim == 3:
+            s = data.shape
+            if s[0] == 3:
+                pos = np.ones((4, s[1], s[2]))
+                pos[0:3, :, :] = data
+            elif s[0] == 4:
+                pos = data
+            else:
+                raise IndexError('Vectors3d must have a length of 3 on the first dimension')
         else:
-            raise IndexError('Vectors3d must have a length of 3 on the first dimension')
+            raise TypeError('Data must be 2d or 3d matrix')
+
         return super(Markers3d, cls).__new__(cls, array=pos, *args, **kwargs)
 
-    def n_markers(self):
+    def __array_finalize__(self, obj):
+        super().__array_finalize__(obj)
+        # Allow slicing
+        if obj is None or not isinstance(obj, Markers3d):
+            return
+
+    def get_num_markers(self):
         """
         Returns
         -------
-        Get the number of markers
+        The number of markers
         """
         s = self.shape
         return s[1]
@@ -391,6 +620,148 @@ class Markers3d(FrameDependentNpArray):
 
         return Markers3d(data=m2)
 
+    def norm(self):
+        """
+        Compute the Euclidean norm of vectors
+        Returns:
+        -------
+        Norm
+        """
+        square = self[0:3, :, :] ** 2
+        sum_square = np.sum(square, axis=0)
+        norm = np.sqrt(sum_square)
+        return norm
+
+    def to_2d(self):
+        """
+        Takes a Markers3d style matrix and returns a tabular matrix
+        Returns
+        -------
+        Tabular matrix
+        """
+        return np.reshape(self[0:3, :, :], (3 * self.get_num_markers(), self.get_num_frames()), 'F').T
+
+    def get_2d_labels(self):
+        """
+        Takes a Markers3d style labels and returns 2d style labels
+        Returns
+        -------
+        2d style labels
+        """
+        return [i + axe for i in self.get_labels for axe in ['_X', '_Y', '_Z']]
+
+    @staticmethod
+    def from_2d(m):
+        """
+        Takes a tabular matrix and returns a Vectors3d
+        Parameters
+        ----------
+        m : np.array
+            A CSV tabular matrix (Fx3*N)
+        Returns
+        -------
+        Vectors3d of data set
+        """
+        s = m.shape
+        if s[1] % 3 != 0:
+            raise IndexError("Number of columns must be divisible by 3")
+        return Markers3d(np.reshape(m.T, (3, int(s[1] / 3), s[0]), 'F'))
+
+
+class MeshCollection(FrameDependentNpArrayCollection):
+    """
+    List of Mesh
+    """
+
+    def append(self, mesh):
+        return super().append(mesh)
+
+    def get_frame(self, f):
+        """
+        Get fth frame of the collection
+        Parameters
+        ----------
+        f : int
+            Frame to get
+        Returns
+        -------
+        Collection of frame f
+        """
+        coll = MeshCollection()
+        for element in self:
+            coll.append(element.get_frame(f))
+        return coll
+
+    def get_mesh(self, i):
+        """
+        Get a specific Mesh of the collection
+        Parameters
+        ----------
+        i : int
+            Index of the Mesh in the collection
+
+        Returns
+        -------
+        All frame of Mesh of index i
+        """
+        if i >= len(self):
+            return Mesh()
+
+        return self[i]
+
+    def get_num_mesh(self):
+        """
+        Get the number of Mesh in the collection
+        Returns
+        -------
+        n : int
+        Number of Mesh in the collection
+        """
+        return self.get_num_segments()
+
+
+class Mesh(Markers3d):
+    def __new__(cls, vertex=np.ndarray((3, 0, 0)), triangles=np.ndarray((0, 3)), *args, **kwargs):
+        """
+        Parameters
+        ----------
+        vertex : np.ndarray
+            3xNxF matrix of vertex positions
+        triangles : np.ndarray, list
+            Nx3 indexes matrix where N is the number of triangles and the row are the vertex to connect
+        names : list of string
+            name of the marker that correspond to second dimension of the positions matrix
+        """
+
+        if isinstance(triangles, list):
+            triangles = np.array(triangles)
+
+        s = triangles.shape
+        if s[1] != 3:
+            raise NotImplementedError('Mesh only implements triangle connections')
+
+        obj = super(Mesh, cls).__new__(cls, data=vertex, *args, **kwargs)
+        obj.triangles = triangles
+        return obj
+
+    def __array_finalize__(self, obj):
+        super().__array_finalize__(obj)
+        # Allow slicing
+        if obj is None or not isinstance(obj, Mesh):
+            return
+        self.triangles = getattr(obj, 'triangles')
+
+    def get_num_triangles(self):
+        return self.triangles.shape[0]
+
+    def get_num_vertex(self):
+        """
+        Returns
+        -------
+        The number of vertex
+        """
+        return super().get_num_markers()
+
 
 class GeneralizedCoordinate(FrameDependentNpArray):
     def __new__(cls, q=np.ndarray((0, 1, 0)), *args, **kwargs):
@@ -410,9 +781,15 @@ class GeneralizedCoordinate(FrameDependentNpArray):
 
         return super(GeneralizedCoordinate, cls).__new__(cls, array=q, *args, **kwargs)
 
+    def __array_finalize__(self, obj):
+        super().__array_finalize__(obj)
+        # Allow slicing
+        if obj is None or not isinstance(obj, GeneralizedCoordinate):
+            return
+
 
 class Analogs3d(FrameDependentNpArray):
-    def __new__(cls, data=np.ndarray((3, 0, 0)), names=list(), *args, **kwargs):
+    def __new__(cls, data=np.ndarray((1, 0, 0)), names=list(), *args, **kwargs):
         """
         Parameters
         ----------
@@ -421,4 +798,63 @@ class Analogs3d(FrameDependentNpArray):
         names : list of string
             name of the analogs that correspond to second dimension of the matrix
         """
-        return super(Analogs3d, cls).__new__(cls, array=data, *args, **kwargs)
+        if data.ndim == 2:
+            data = Analogs3d.from_2d(data)
+
+        if data.ndim == 3:
+            s = data.shape
+            if s[0] != 1:
+                raise IndexError('Analogs3d must have a length of 1 on the first dimension')
+            analog = data
+        else:
+            raise TypeError('Data must be 2d or 3d matrix')
+
+        return super(Analogs3d, cls).__new__(cls, array=analog, *args, **kwargs)
+
+    def __array_finalize__(self, obj):
+        super().__array_finalize__(obj)
+        # Allow slicing
+        if obj is None or not isinstance(obj, Analogs3d):
+            return
+
+    def get_num_analogs(self):
+        """
+        Returns
+        -------
+        The number of analogs
+        """
+        s = self.shape
+        return s[1]
+
+    def to_2d(self):
+        """
+        Takes a Analogs3d style matrix and returns a tabular matrix
+        Returns
+        -------
+        Tabular matrix
+        """
+        return np.squeeze(self.T, axis=2)
+
+    @staticmethod
+    def from_2d(m):
+        """
+        Takes a tabular matrix and returns a Vectors3d
+        Parameters
+        ----------
+        m : np.array
+            A CSV tabular matrix (Fx3*N)
+        Returns
+        -------
+        Vectors3d of data set
+        """
+        s = m.shape
+        return Analogs3d(np.reshape(m.T, (1, s[1], s[0]), 'F'))
+
+    def get_2d_labels(self):
+        """
+        Takes a Analogs style labels and returns 2d style labels
+        Returns
+        -------
+        2d style labels
+        """
+        return self.get_labels

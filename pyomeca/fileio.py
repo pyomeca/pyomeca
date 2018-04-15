@@ -8,8 +8,8 @@ File IO in pyomeca
 import numpy as np
 import pandas as pd
 
-from pyomeca.math import matrix
 from pyomeca.thirdparty import btk
+from pyomeca.types import Markers3d, Analogs3d
 
 
 def read_csv(file_name, first_row=None, first_column=0, idx=None, header=None, names=None, kind='markers',
@@ -53,17 +53,21 @@ def read_csv(file_name, first_row=None, first_column=0, idx=None, header=None, n
     column_names = data.columns.tolist()
     if kind == 'markers' and header:
         column_names = [icol.split(prefix)[-1] for icol in column_names if (len(icol) >= 7 and icol[:7] != 'Unnamed')]
-    if not names:
+    metadata = {'get_first_frame': [], 'get_last_frame': [], 'get_rate': [], 'get_labels': [], 'get_unit': []}
+    if names:
+        metadata.update({'get_labels': names})
+    else:
         names = column_names
 
     return _to_vectors(data=data.values,
                        kind=kind,
                        idx=idx,
                        all_names=column_names,
-                       target_names=names)
+                       target_names=names,
+                       metadata=metadata)
 
 
-def read_c3d(file_name, idx=None, names=None, kind='markers', prefix=None, get_metadata=False):
+def read_c3d(file_name, idx=None, names=None, kind='markers', prefix=None):
     """
     Read c3d data and convert to Vectors3d format
     Parameters
@@ -78,8 +82,6 @@ def read_c3d(file_name, idx=None, names=None, kind='markers', prefix=None, get_m
         Kind of data to read (markers or analogs)
     prefix : str
         Prefix to remove in the header
-    get_metadata : bool
-        Return a dict with metadata if True
 
     Returns
     -------
@@ -96,44 +98,47 @@ def read_c3d(file_name, idx=None, names=None, kind='markers', prefix=None, get_m
 
     if kind == 'markers':
         flat_data = {i.GetLabel(): i.GetValues() for i in btk.Iterate(acq.GetPoints())}
-        metadata = {'n_points': acq.GetPointNumber(), 'n_frames': acq.GetPointFrameNumber()}
-        if get_metadata:
-            metadata.update({
-                'first_frame': acq.GetFirstFrame(),
-                'last_frame': acq.GetLastFrame(),
-                'point_rate': acq.GetPointFrequency()
-            })
-        data = np.full([metadata['n_frames'], 3 * metadata['n_points']], np.nan)
+        metadata = {
+            'get_num_markers': acq.GetPointNumber(),
+            'get_num_frames': acq.GetPointFrameNumber(),
+            'get_first_frame': acq.GetFirstFrame(),
+            'get_last_frame': acq.GetLastFrame(),
+            'get_rate': acq.GetPointFrequency(),
+            'get_unit': acq.GetPointUnit()
+        }
+        data = np.full([metadata['get_num_frames'], 3 * metadata['get_num_markers']], np.nan)
         for i, (key, value) in enumerate(flat_data.items()):
             data[:, i * 3: i * 3 + 3] = value
             channel_names.append(key.split(prefix)[-1])
-        metadata.update({'all_marker_names': channel_names})
     elif kind == 'analogs':
         flat_data = {i.GetLabel(): i.GetValues() for i in btk.Iterate(acq.GetAnalogs())}
-        metadata = {'n_analogs': acq.GetAnalogNumber(), 'n_frames': acq.GetAnalogFrameNumber()}
-        if get_metadata:
-            metadata.update({
-                'first_frame': acq.GetFirstFrame(),
-                'last_frame': acq.GetLastFrame(),
-                'analog_rate': acq.GetAnalogFrequency()
-            })
-        data = np.full([metadata['n_frames'], metadata['n_analogs']], np.nan)
+        metadata = {
+            'get_num_analogs': acq.GetAnalogNumber(),
+            'get_num_frames': acq.GetAnalogFrameNumber(),
+            'get_first_frame': acq.GetFirstFrame(),
+            'get_last_frame': acq.GetLastFrame(),
+            'get_rate': acq.GetAnalogFrequency(),
+            'get_unit': []
+        }
+        data = np.full([metadata['get_num_frames'], metadata['get_num_analogs']], np.nan)
         for i, (key, value) in enumerate(flat_data.items()):
             data[:, i] = value.ravel()
             channel_names.append(key.split(prefix)[-1])
-        metadata.update({'all_channel_names': channel_names})
-    if not names:
+    if names:
+        metadata.update({'get_labels': names})
+    else:
+        metadata.update({'get_labels': []})
         names = channel_names
 
-    data = _to_vectors(data=data,
+    return _to_vectors(data=data,
                        kind=kind,
                        idx=idx,
                        all_names=channel_names,
-                       target_names=names)
-    return (data, metadata) if get_metadata else data
+                       target_names=names,
+                       metadata=metadata)
 
 
-def _to_vectors(data, kind, idx, all_names, target_names):
+def _to_vectors(data, kind, idx, all_names, target_names, metadata=None):
     data[data == 0.0] = np.nan  # because nan are replace by 0.0 sometimes
     if not idx:
         # find names in column_names
@@ -141,36 +146,19 @@ def _to_vectors(data, kind, idx, all_names, target_names):
         for i, m in enumerate(target_names):
             idx.append([i for i, s in enumerate(all_names) if m in s][0])
     if kind == 'markers':
-        data = matrix.reshape_2d_to_3d_matrix(data)
+        data = Markers3d(data)
     elif kind == 'analogs':
-        data = matrix.reshape_2d_to_3d_matrix(data, kind='analogs')
+        data = Analogs3d(data)
     else:
         raise ValueError('kind should be "markers" or "analogs"')
-    data = extract_markers(data, idx)
-    return data
+    data = data.get_specific_data(idx)
 
-
-def extract_markers(m, mark_idx):
-    """
-    # TODO: description
-    Parameters
-    ----------
-    m : Vectors3D
-        a Fx3*N or 3xNxF matrix of marker position
-    mark_idx : list(int)
-        idx of marker to keep (order is kept in the returned data).
-        If mark_idx has more than one row, output is the mean of the markers over the columns.
-    Returns
-    -------
-    numpy.array
-        extracted data
-    """
-    mark_idx = np.matrix(mark_idx)
-    try:
-        data = m[:, np.array(mark_idx)[0, :], :]
-        for i in range(1, mark_idx.shape[0]):
-            data += m[:, np.array(mark_idx)[i, :], :]
-        data /= mark_idx.shape[0]
-    except IndexError:
-        raise IndexError('extract_markers works only on 3xNxF matrices and mark_idx must be a ixj array')
+    data.get_first_frame = metadata['get_first_frame']
+    data.get_last_frame = metadata['get_last_frame']
+    data.get_rate = metadata['get_rate']
+    data.get_unit = metadata['get_unit']
+    if np.array(idx).ndim == 1 and not metadata['get_labels']:
+        data.get_labels = [name for i, name in enumerate(all_names) if i in idx]
+    elif metadata['get_labels']:
+        data.get_labels = metadata['get_labels']
     return data

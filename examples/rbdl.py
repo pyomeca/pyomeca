@@ -6,7 +6,7 @@ from pyomeca.thirdparty import S2MLib
 from pyomeca.types import GeneralizedCoordinate
 
 # Load
-m = S2MLib.new("data/pyomecaman.s2mMod")
+m = S2MLib.new("../tests/data/pyomecaman.s2mMod")
 
 # Dynamically get the number of markers
 nb_markers = S2MLib.nb_markers(m)
