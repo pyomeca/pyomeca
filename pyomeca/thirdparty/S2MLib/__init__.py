@@ -1,6 +1,6 @@
 import numpy as np
 
-from pyomeca.thirdparty.S2MLib import pyorbdl
+from S2MLib import pyorbdl
 from pyomeca.types import GeneralizedCoordinate
 from pyomeca.types import Markers3d
 
