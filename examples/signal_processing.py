@@ -18,7 +18,7 @@ mv_rms = {
     # standard filtfilt method
     'filt': pyosignal.moving_rms(a, window_size=WINDOW_SIZE),
     # with the Analogs3d's method
-    'filt2': a.moving_rms(window_size=WINDOW_SIZE),
+    'filt_method': a.moving_rms(window_size=WINDOW_SIZE),
     # with the convolution method (works only for one dimensional array)
     'conv': pyosignal.moving_rms(a.squeeze(), window_size=WINDOW_SIZE, method='convolution'),
 }
@@ -38,7 +38,7 @@ mv_mu = {
     # standard filtfilt method
     'filtfilt': pyosignal.moving_average(b, window_size=WINDOW_SIZE, method='filtfilt'),
     # with the Analogs3d's method
-    'filtfilt2': b.moving_average(window_size=WINDOW_SIZE),
+    'filtfilt_method': b.moving_average(window_size=WINDOW_SIZE),
     'cumsum': pyosignal.moving_average(b, window_size=WINDOW_SIZE, method='cumsum'),
     'conv': pyosignal.moving_average(b.squeeze(), window_size=WINDOW_SIZE, method='convolution')
 }
@@ -49,5 +49,19 @@ ax.plot(mv_mu['cumsum'].squeeze(), 'r-', label='with cumsum')
 ax.plot(mv_mu['filtfilt'].squeeze(), 'b-', label='with filtfilt')
 ax.plot(mv_mu['conv'].squeeze(), 'g-', label='with conv')
 ax.set_title(f'Moving average (window = {WINDOW_SIZE})')
+ax.legend(fontsize=12)
+plt.show()
+
+# --- Moving median (sharper response to abrupt changes than the moving average)
+mv_med = {
+    'fct': pyosignal.moving_median(b, window_size=WINDOW_SIZE - 1),
+    'method': b.moving_median(window_size=WINDOW_SIZE - 1)
+}
+
+_, ax = plt.subplots(nrows=1, ncols=1)
+ax.plot(b.squeeze(), 'k-', label='raw')
+ax.plot(mv_med['fct'].squeeze(), 'r-', label='moving median')
+ax.plot(mv_mu['filtfilt'].squeeze(), 'b-', label='moving average')
+ax.set_title(f'Moving median (window = {WINDOW_SIZE - 1})')
 ax.legend(fontsize=12)
 plt.show()

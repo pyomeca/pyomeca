@@ -4,7 +4,8 @@ Signal processing in pyomeca
 
 """
 import numpy as np
-from scipy.signal import filtfilt, lfilter
+from scipy.signal import filtfilt, medfilt
+import warnings
 
 
 def rectify(x):
@@ -79,7 +80,33 @@ def moving_average(x, window_size, method='filtfilt'):
         return filtfilt(np.ones(window_size) / window_size, 1, x)
     else:
         raise ValueError(f'method should be filtfilt, cumsum or convolution. You provided {method}')
-#
+
+
+def moving_median(x, window_size):
+    """
+    Moving median (has a sharper response to abrupt changes than the moving average)
+    Parameters
+    ----------
+    x : np.ndarray
+        vector or matrix of data
+    window_size : Union[int, float]
+        Window size (use around [3, 11])
+    Returns
+    -------
+    Moving average of `x` with window size `window_size`
+    """
+    if window_size % 2 == 0:
+        raise ValueError(f'window_size should be odd. Add or substract 1. You provided {window_size}')
+    if x.ndim == 3:
+        window_size = [1, 1, window_size]
+    elif x.ndim == 2:
+        window_size = [1, window_size]
+    elif x.ndim == 1:
+        pass
+    else:
+        raise ValueError(f'x.dim should be 1, 2 or 3. You provided an array with {x.dim} dimensions.')
+    return medfilt(x, window_size)
+
 # def high_pass():
 #     pass
 #

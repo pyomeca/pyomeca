@@ -297,6 +297,9 @@ class FrameDependentNpArray(np.ndarray):
     def moving_average(self, window_size, method='filtfilt'):
         return pyosignal.moving_average(self, window_size, method)
 
+    def moving_median(self, window_size):
+        return pyosignal.moving_median(self, window_size)
+
 
 class FrameDependentNpArrayCollection(list):
     """
