@@ -9,6 +9,8 @@ dependencies:
 - pandas
 - vtk
 - pyqt
+- boost
+- eigen
 # dev deps
 - pytest
 - pytest-cov
