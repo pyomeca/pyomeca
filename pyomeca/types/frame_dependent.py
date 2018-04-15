@@ -291,8 +291,11 @@ class FrameDependentNpArray(np.ndarray):
     def rectify(self):
         return pyosignal.rectify(self)
 
-    def moving_rms(self, window_size):
-        return pyosignal.moving_rms(self, window_size, method='filtfilt')
+    def moving_rms(self, window_size, method='filtfilt'):
+        return pyosignal.moving_rms(self, window_size, method)
+
+    def moving_average(self, window_size, method='filtfilt'):
+        return pyosignal.moving_average(self, window_size, method)
 
 
 class FrameDependentNpArrayCollection(list):
