@@ -291,6 +291,9 @@ class FrameDependentNpArray(np.ndarray):
     def rectify(self):
         return pyosignal.rectify(self)
 
+    def center(self):
+        return pyosignal.center(self)
+
     def moving_rms(self, window_size, method='filtfilt'):
         return pyosignal.moving_rms(self, window_size, method)
 
@@ -299,6 +302,9 @@ class FrameDependentNpArray(np.ndarray):
 
     def moving_median(self, window_size):
         return pyosignal.moving_median(self, window_size)
+
+    def low_pass(self, freq, order, cutoff):
+        return pyosignal.low_pass(self, freq, order, cutoff)
 
 
 class FrameDependentNpArrayCollection(list):

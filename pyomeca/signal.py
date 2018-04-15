@@ -4,8 +4,7 @@ Signal processing in pyomeca
 
 """
 import numpy as np
-from scipy.signal import filtfilt, medfilt
-import warnings
+from scipy.signal import filtfilt, medfilt, butter
 
 
 def rectify(x):
@@ -17,9 +16,23 @@ def rectify(x):
         vector or matrix of data
     Returns
     -------
-    np.array
+    Rectified x
     """
     return np.abs(x)
+
+
+def center(x):
+    """
+    Center a signal (i.e., subtract the mean)
+    Parameters
+    ----------
+    x : np.ndarray
+        vector or matrix of data
+    Returns
+    -------
+    Centered x
+    """
+    return x - x.mean()
 
 
 def moving_rms(x, window_size, method='filtfilt'):
@@ -104,20 +117,36 @@ def moving_median(x, window_size):
     elif x.ndim == 1:
         pass
     else:
-        raise ValueError(f'x.dim should be 1, 2 or 3. You provided an array with {x.dim} dimensions.')
+        raise ValueError(f'x.dim should be 1, 2 or 3. You provided an array with {x.ndim} dimensions.')
     return medfilt(x, window_size)
 
-# def high_pass():
-#     pass
-#
-#
-# def band_pass():
-#     pass
-#
-#
-# def band_stop():
-#     pass
-#
-# def frame_interpolation():
-#     pass
-#
+
+def low_pass(x, freq, order, cutoff):
+    """
+    Low-pass Butterworth filter
+    Parameters
+    ----------
+    x : np.ndarray
+        vector or matrix of data
+    freq : Union(Int, Float)
+        Sample frequency
+    order : Int
+        Order of the filter
+    cutoff : Int
+        Cut-off frequency
+    Returns
+    -------
+    Filtered `x`
+    """
+    nyquist = freq / 2
+    b, a = butter(N=order, Wn=cutoff / nyquist, btype='low')
+    return filtfilt(b, a, x)
+
+# todo:
+# band pass
+# band stop
+# high pass
+# fft
+# frame_interpolation
+# residual_analysis (bmc)
+# ensemble_average (bmc)
