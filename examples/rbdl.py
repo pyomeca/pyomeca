@@ -1,6 +1,6 @@
 import numpy as np
 from pyomeca.thirdparty import S2MLib
-from pyomeca.types import GeneralizedCoordinate
+from pyomeca.types.generalized_coordinates import GeneralizedCoordinate
 from pyomeca.show.vtk import Model as PyoModel
 from pyomeca.show.vtk import Window as PyoWindow
 

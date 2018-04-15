@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 
 Visualization toolkit in pyomeca
@@ -22,11 +21,9 @@ from vtk import vtkPolyData
 from vtk import vtkUnsignedCharArray
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
-from pyomeca.types import Markers3d
-from pyomeca.types import Mesh
-from pyomeca.types import MeshCollection
-from pyomeca.types import RotoTrans
-from pyomeca.types import RotoTransCollection
+from pyomeca.types.mesh import Mesh, MeshCollection
+from pyomeca.types.rototrans import RotoTrans, RotoTransCollection
+from pyomeca.types.markers import Markers3d
 
 first = True
 if first:
@@ -245,6 +242,7 @@ class Model(QtWidgets.QWidget):
         ----------
         mesh : MeshCollection
             One frame of mesh
+            :param all_meshes:
 
         """
         if isinstance(all_meshes, Mesh):
