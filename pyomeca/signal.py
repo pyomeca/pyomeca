@@ -40,6 +40,50 @@ def center(x):
     return x - x.mean()
 
 
+def normalization(x, ref=None, scale=100):
+    """
+    Normalize a signal against `ref` (x's max if empty) on a scale of `scale`
+
+    Parameters
+    ----------
+    x : np.ndarray
+        vector or matrix of data
+    ref : Union(int, float)
+        reference value
+    scale
+        Scale on which to express x (100 by default)
+
+    Returns
+    -------
+    x normalized
+    """
+    if not ref:
+        ref = x.max()
+    return x / (ref / scale)
+
+
+def time_normalization(x, time_vector=np.linspace(0, 100, 101), axis=-1):
+    """
+    Time normalization used fot he temporal alignment of data
+
+    Parameters
+    ----------
+    x : np.ndarray
+        vector or matrix of data
+    time_vector : np.ndarray
+        desired time vector (0 to 100 by step of 1 by default)
+    axis : int
+        specifies the axis along which to interpolate. Interpolation defaults to the last axis (over frames)
+
+    Returns
+    -------
+    Time normalized x
+    """
+    original_time_vector = np.linspace(time_vector[0], time_vector[-1], x.shape[axis])
+    f_out = interp1d(original_time_vector, x, axis=axis)
+    return f_out(time_vector)
+
+
 def moving_rms(x, window_size, method='filtfilt'):
     """
     Moving root mean square
@@ -232,7 +276,7 @@ def high_pass(x, freq, order, cutoff):
     return filtfilt(b, a, x)
 
 
-def fft(x, freq, only_positive=True):
+def fft(x, freq, only_positive=True, axis=-1):
     """
     Performs a discrete Fourier Transform and return amplitudes and frequencies
 
@@ -244,12 +288,14 @@ def fft(x, freq, only_positive=True):
         Sample frequency
     only_positive : bool
         Returns only the positives frequencies if true (True by default)
+    axis : int
+        specifies the axis along which to performs the FFT. Performs defaults to the last axis (over frames)
 
     Returns
     -------
 
     """
-    n = x.size
+    n = x.shape[axis]
     yfft = fftpack.fft(x, n)
     freqs = fftpack.fftfreq(n, 1. / freq)
 
@@ -260,50 +306,6 @@ def fft(x, freq, only_positive=True):
     else:
         amp = np.abs(yfft) / n
     return amp, freqs
-
-
-def normalization(x, ref=None, scale=100):
-    """
-    Normalize a signal against `ref` (x's max if empty) on a scale of `scale`
-
-    Parameters
-    ----------
-    x : np.ndarray
-        vector or matrix of data
-    ref : Union(int, float)
-        reference value
-    scale
-        Scale on which to express x (100 by default)
-
-    Returns
-    -------
-    x normalized
-    """
-    if not ref:
-        ref = x.max()
-    return x / (ref / scale)
-
-
-def time_normalization(x, time_vector=np.linspace(0, 100, 101), axis=-1):
-    """
-    Time normalization used fot he temporal alignment of data
-
-    Parameters
-    ----------
-    x : np.ndarray
-        vector or matrix of data
-    time_vector : np.ndarray
-        desired time vector (0 to 100 by step of 1 by default)
-    axis : int
-        specifies the axis along which to interpolate. Interpolation defaults to the last axis (over frames)
-
-    Returns
-    -------
-    Time normalized x
-    """
-    original_time_vector = np.linspace(time_vector[0], time_vector[-1], x.size)
-    f_out = interp1d(original_time_vector, x, axis=axis)
-    return f_out(time_vector)
 
 # todo:
 # residual_analysis (bmc)
