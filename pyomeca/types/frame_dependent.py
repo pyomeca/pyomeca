@@ -324,6 +324,9 @@ class FrameDependentNpArray(np.ndarray):
     def high_pass(self, freq, order, cutoff):
         raise ValueError(not_implemented_in_parent)
 
+    def time_normalization(self, time_vector=np.linspace(0, 100, 101), axis=-1):
+        raise ValueError(not_implemented_in_parent)
+
 
 class FrameDependentNpArrayCollection(list):
     """

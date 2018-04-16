@@ -102,3 +102,6 @@ class Analogs3d(FrameDependentNpArray):
 
     def high_pass(self, freq, order, cutoff):
         return Analogs3d(pyosignal.high_pass(self, freq, order, cutoff))
+
+    def time_normalization(self, time_vector=np.linspace(0, 100, 101), axis=-1):
+        return Analogs3d(pyosignal.time_normalization(self, time_vector, axis=axis))

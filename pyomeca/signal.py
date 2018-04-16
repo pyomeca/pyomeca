@@ -4,6 +4,7 @@ Signal processing in pyomeca
 
 import numpy as np
 from scipy import fftpack
+from scipy.interpolate import interp1d
 from scipy.signal import filtfilt, medfilt, butter
 
 
@@ -282,8 +283,28 @@ def normalization(x, ref=None, scale=100):
         ref = x.max()
     return x / (ref / scale)
 
+
+def time_normalization(x, time_vector=np.linspace(0, 100, 101), axis=-1):
+    """
+    Time normalization used fot he temporal alignment of data
+
+    Parameters
+    ----------
+    x : np.ndarray
+        vector or matrix of data
+    time_vector : np.ndarray
+        desired time vector (0 to 100 by step of 1 by default)
+    axis : int
+        specifies the axis along which to interpolate. Interpolation defaults to the last axis (over frames)
+
+    Returns
+    -------
+    Time normalized x
+    """
+    original_time_vector = np.linspace(time_vector[0], time_vector[-1], x.size)
+    f_out = interp1d(original_time_vector, x, axis=axis)
+    return f_out(time_vector)
+
 # todo:
-# normalization
-# frame_interpolation
 # residual_analysis (bmc)
 # ensemble_average (bmc)

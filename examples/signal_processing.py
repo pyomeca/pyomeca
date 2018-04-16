@@ -131,6 +131,10 @@ ax.set_title(f'High-pass Butterworth filter')
 ax.legend(fontsize=12)
 plt.show()
 
+# --- Time normalization
+
+time_normalized = pyosignal.time_normalization(a, time_vector=np.linspace(0, 100, 101))
+
 # --- EMG: a complete example
 
 emg = a \
@@ -138,7 +142,8 @@ emg = a \
     .band_pass(freq=a.get_rate, order=4, cutoff=[10, 425]) \
     .rectify() \
     .low_pass(freq=a.get_rate, order=4, cutoff=5) \
-    .normalization()
+    .normalization() \
+    .time_normalization()
 
 _, ax = plt.subplots(nrows=2, ncols=1)
 ax[0].plot(a.squeeze(), 'k-')

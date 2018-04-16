@@ -109,6 +109,9 @@ class Markers3d(FrameDependentNpArray):
     def high_pass(self, freq, order, cutoff):
         return Markers3d(pyosignal.high_pass(self, freq, order, cutoff))
 
+    def time_normalization(self, time_vector=np.linspace(0, 100, 101), axis=-1):
+        return Markers3d(pyosignal.time_normalization(self, time_vector, axis=axis))
+
     # --- Linear algebra methods
 
     def rotate(self, rt):
