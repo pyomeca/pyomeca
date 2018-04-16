@@ -110,6 +110,21 @@ ax.set_title(f'Band-pass Butterworth filter')
 ax.legend(fontsize=12)
 plt.show()
 
+# --- Band-stop filter (useful to remove the 50Hz noise for example)
+
+# with the function
+band_stop = pyosignal.band_stop(a, freq=a.get_rate, order=2, cutoff=[49.9, 50.1])
+
+# with the method
+band_stop_2 = a.band_stop(freq=a.get_rate, order=4, cutoff=[49.9, 50.1])
+
+_, ax = plt.subplots(nrows=1, ncols=1)
+ax.plot(a.squeeze(), 'k-', label='raw')
+ax.plot(band_stop.squeeze(), 'r-', label='band-stop @ 49.9-50.1Hz', alpha=0.7)
+ax.set_title(f'Band-stop Butterworth filter')
+ax.legend(fontsize=12)
+plt.show()
+
 # # --- EMG: a complete example
 # # first we center the data
 # b = pyosignal.center(a)

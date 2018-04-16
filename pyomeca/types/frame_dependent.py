@@ -309,6 +309,9 @@ class FrameDependentNpArray(np.ndarray):
     def band_pass(self, freq, order, cutoff):
         return pyosignal.band_pass(self, freq, order, cutoff)
 
+    def band_stop(self, freq, order, cutoff):
+        return pyosignal.band_stop(self, freq, order, cutoff)
+
 
 class FrameDependentNpArrayCollection(list):
     """
