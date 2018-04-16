@@ -1,20 +1,21 @@
 """"
-
 Signal processing in pyomeca
-
 """
+
 import numpy as np
-from scipy.signal import filtfilt, medfilt, butter
 from scipy import fftpack
+from scipy.signal import filtfilt, medfilt, butter
 
 
 def rectify(x):
     """
     Rectify a signal (i.e., get absolute values)
+
     Parameters
     ----------
     x : np.ndarray
         vector or matrix of data
+
     Returns
     -------
     Rectified x
@@ -25,10 +26,12 @@ def rectify(x):
 def center(x):
     """
     Center a signal (i.e., subtract the mean)
+
     Parameters
     ----------
     x : np.ndarray
         vector or matrix of data
+
     Returns
     -------
     Centered x
@@ -39,16 +42,18 @@ def center(x):
 def moving_rms(x, window_size, method='filtfilt'):
     """
     Moving root mean square
+
     Parameters
     ----------
     x : np.ndarray
         vector or matrix of data
-    window_size : Union[int, float]
+    window_size : Union(int, float)
         Window size
     method : str
         method to use:
             - 'convolution': faster and behaves better to abrupt changes, but works only for one dimensional array.
             - 'filtfilt': the go-to solution.
+
     Returns
     -------
     Moving root mean square of `x` with window size `window_size`
@@ -67,17 +72,19 @@ def moving_rms(x, window_size, method='filtfilt'):
 def moving_average(x, window_size, method='filtfilt'):
     """
     Moving average
+
     Parameters
     ----------
     x : np.ndarray
         vector or matrix of data
-    window_size : Union[int, float]
+    window_size : Union(int, float)
         Window size
     method : str
         method to use:
             - 'cumsum': fastest method.
             - 'convolution': produces a result without a lag between the input and the output.
             - 'filtfilt': The go-to method.
+
     Returns
     -------
     Moving average of `x` with window size `window_size`
@@ -99,12 +106,14 @@ def moving_average(x, window_size, method='filtfilt'):
 def moving_median(x, window_size):
     """
     Moving median (has a sharper response to abrupt changes than the moving average)
+
     Parameters
     ----------
     x : np.ndarray
         vector or matrix of data
-    window_size : Union[int, float]
+    window_size : Union(int, float)
         Window size (use around [3, 11])
+
     Returns
     -------
     Moving average of `x` with window size `window_size`
@@ -125,16 +134,18 @@ def moving_median(x, window_size):
 def low_pass(x, freq, order, cutoff):
     """
     Low-pass Butterworth filter
+
     Parameters
     ----------
     x : np.ndarray
         vector or matrix of data
-    freq : Union(Int, Float)
+    freq : Union(int, float)
         Sample frequency
     order : Int
         Order of the filter
     cutoff : Int
         Cut-off frequency
+
     Returns
     -------
     Filtered `x`
@@ -148,16 +159,18 @@ def low_pass(x, freq, order, cutoff):
 def band_pass(x, freq, order, cutoff):
     """
     Band-pass Butterworth filter
+
     Parameters
     ----------
     x : np.ndarray
         vector or matrix of data
-    freq : Union(Int, Float)
+    freq : Union(int, float)
         Sample frequency
     order : Int
         Order of the filter
     cutoff : List-like
         Cut-off frequencies ([lower, upper])
+
     Returns
     -------
     Filtered `x`
@@ -171,16 +184,18 @@ def band_pass(x, freq, order, cutoff):
 def band_stop(x, freq, order, cutoff):
     """
     Band-stop Butterworth filter
+
     Parameters
     ----------
     x : np.ndarray
         vector or matrix of data
-    freq : Union(Int, Float)
+    freq : Union(int, float)
         Sample frequency
     order : Int
         Order of the filter
     cutoff : List-like
         Cut-off frequencies ([lower, upper])
+
     Returns
     -------
     Filtered `x`
@@ -194,16 +209,18 @@ def band_stop(x, freq, order, cutoff):
 def high_pass(x, freq, order, cutoff):
     """
     Band-stop Butterworth filter
+
     Parameters
     ----------
     x : np.ndarray
         vector or matrix of data
-    freq : Union(Int, Float)
+    freq : Union(int, float)
         Sample frequency
     order : Int
         Order of the filter
     cutoff : List-like
         Cut-off frequencies ([lower, upper])
+
     Returns
     -------
     Filtered `x`
@@ -215,6 +232,22 @@ def high_pass(x, freq, order, cutoff):
 
 
 def fft(x, freq, only_positive=True):
+    """
+    Performs a discrete Fourier Transform and return amplitudes and frequencies
+
+    Parameters
+    ----------
+    x : np.ndarray
+        vector or matrix of data
+    freq : Union(int, float)
+        Sample frequency
+    only_positive : bool
+        Returns only the positives frequencies if true (True by default)
+
+    Returns
+    -------
+
+    """
     n = x.size
     yfft = fftpack.fft(x, n)
     freqs = fftpack.fftfreq(n, 1. / freq)
@@ -227,8 +260,30 @@ def fft(x, freq, only_positive=True):
         amp = np.abs(yfft) / n
     return amp, freqs
 
+
+def normalization(x, ref=None, scale=100):
+    """
+    Normalize a signal against `ref` (x's max if empty) on a scale of `scale`
+
+    Parameters
+    ----------
+    x : np.ndarray
+        vector or matrix of data
+    ref : Union(int, float)
+        reference value
+    scale
+        Scale on which to express x (100 by default)
+
+    Returns
+    -------
+    x normalized
+    """
+    if not ref:
+        ref = x.max()
+    return x / (ref / scale)
+
 # todo:
-# fft
+# normalization
 # frame_interpolation
 # residual_analysis (bmc)
 # ensemble_average (bmc)

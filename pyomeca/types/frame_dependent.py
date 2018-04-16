@@ -294,8 +294,12 @@ class FrameDependentNpArray(np.ndarray):
     def center(self):
         return pyosignal.center(self)
 
+    def normalization(self, ref=None, scale=100):
+        return pyosignal.normalization(self, ref, scale)
+
     def fft(self, freq, only_positive=True):
-        return pyosignal.fft(self, freq, only_positive)
+        amp, freqs = pyosignal.fft(self, freq, only_positive)
+        return amp, freqs
 
     # TODO: find to way to call the following methods from the parent class?
 
