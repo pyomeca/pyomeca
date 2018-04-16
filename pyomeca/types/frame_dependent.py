@@ -1,9 +1,9 @@
-import numpy as np
 from pathlib import Path
+
+import numpy as np
 import pandas as pd
 
 from pyomeca import signal as pyosignal
-
 from pyomeca.thirdparty import btk
 
 
@@ -305,6 +305,9 @@ class FrameDependentNpArray(np.ndarray):
 
     def low_pass(self, freq, order, cutoff):
         return pyosignal.low_pass(self, freq, order, cutoff)
+
+    def band_pass(self, freq, order, cutoff):
+        return pyosignal.band_pass(self, freq, order, cutoff)
 
 
 class FrameDependentNpArrayCollection(list):

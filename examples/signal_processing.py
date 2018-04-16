@@ -1,9 +1,10 @@
-from pyomeca import signal as pyosignal
-from pyomeca.types.analogs import Analogs3d
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
+
+from pyomeca import signal as pyosignal
+from pyomeca.types.analogs import Analogs3d
 
 # Path to data
 DATA_FOLDER = Path('..') / 'tests' / 'data'
@@ -16,8 +17,8 @@ a = Analogs3d.from_c3d(MARKERS_ANALOGS_C3D, names=['EMG1'])
 b = a + 2 * a.mean()
 _, ax = plt.subplots(nrows=1, ncols=1)
 ax.plot(b.squeeze(), 'k-', label='raw')
-ax.plot(b.center().squeeze(), 'b-', label='centered', alpha=0.5)
-ax.plot(b.rectify().squeeze(), 'r-', label='rectified (abs)', alpha=0.5)
+ax.plot(b.center().squeeze(), 'b-', label='centered', alpha=0.7)
+ax.plot(b.rectify().squeeze(), 'r-', label='rectified (abs)', alpha=0.7)
 ax.set_title(f'Rectify and center')
 ax.legend(fontsize=12)
 plt.show()
@@ -84,12 +85,28 @@ t = np.arange(0, 1, .01)
 w = 2 * np.pi * 1
 y = np.sin(w * t) + 0.1 * np.sin(10 * w * t)
 
+# with the function
 low_pass = pyosignal.low_pass(y, freq=freq, order=2, cutoff=5)
 
 _, ax = plt.subplots(nrows=1, ncols=1)
 ax.plot(y, 'k-', label='raw')
 ax.plot(low_pass, 'r-', label='low-pass @ 5Hz')
 ax.set_title(f'Low-pass Butterworth filter')
+ax.legend(fontsize=12)
+plt.show()
+
+# --- Band-pass filter
+
+# with the function
+band_pass = pyosignal.band_pass(a, freq=a.get_rate, order=4, cutoff=[10, 200])
+
+# with the method
+band_pass_2 = a.band_pass(freq=a.get_rate, order=4, cutoff=[10, 200])
+
+_, ax = plt.subplots(nrows=1, ncols=1)
+ax.plot(a.squeeze(), 'k-', label='raw')
+ax.plot(band_pass.squeeze(), 'r-', label='band-pass @ 10-200Hz', alpha=0.7)
+ax.set_title(f'Band-pass Butterworth filter')
 ax.legend(fontsize=12)
 plt.show()
 

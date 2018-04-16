@@ -139,11 +139,34 @@ def low_pass(x, freq, order, cutoff):
     Filtered `x`
     """
     nyquist = freq / 2
-    b, a = butter(N=order, Wn=cutoff / nyquist, btype='low')
+    corrected_freq = np.array(cutoff) / nyquist
+    b, a = butter(N=order, Wn=corrected_freq, btype='low')
+    return filtfilt(b, a, x)
+
+
+def band_pass(x, freq, order, cutoff):
+    """
+    Low-pass Butterworth filter
+    Parameters
+    ----------
+    x : np.ndarray
+        vector or matrix of data
+    freq : Union(Int, Float)
+        Sample frequency
+    order : Int
+        Order of the filter
+    cutoff : List-like
+        Cut-off frequencies ([lower, upper])
+    Returns
+    -------
+    Filtered `x`
+    """
+    nyquist = freq / 2
+    corrected_freq = np.array(cutoff) / nyquist
+    b, a = butter(N=order, Wn=corrected_freq, btype='bandpass')
     return filtfilt(b, a, x)
 
 # todo:
-# band pass
 # band stop
 # high pass
 # fft
