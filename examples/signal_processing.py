@@ -26,6 +26,8 @@ amp_, freqs_ = a \
     .band_pass(freq=a.get_rate, order=4, cutoff=[10, 200]) \
     .band_stop(freq=a.get_rate, order=4, cutoff=[49.9, 50.1]) \
     .high_pass(freq=a.get_rate, order=4, cutoff=30) \
+    .time_normalization() \
+    .normalization() \
     .fft(freq=a.get_rate)
 
 # --- Rectify and center
@@ -135,6 +137,10 @@ plt.show()
 
 time_normalized = pyosignal.time_normalization(a, time_vector=np.linspace(0, 100, 101))
 
+# --- Amplitude normalization
+
+amp_normalized = pyosignal.normalization(a)
+
 # --- EMG: a complete example
 
 emg = a \
@@ -177,13 +183,19 @@ emg_without_low_pass = a \
     .band_pass(freq=a.get_rate, order=4, cutoff=[10, 425]) \
     .rectify()
 
+emg_with_a_low_pass = a \
+    .center() \
+    .band_pass(freq=a.get_rate, order=4, cutoff=[10, 425]) \
+    .rectify() \
+    .low_pass(freq=a.get_rate, order=4, cutoff=5)
+
 amp_a, freqs_a = pyosignal.fft(emg_without_low_pass.squeeze(), freq=freq)
 # compare with low-pass filtered data
-amp_a_filtered, freqs_a_filtered = pyosignal.fft(emg.squeeze(), freq=a.get_rate)
+amp_a_filtered, freqs_a_filtered = pyosignal.fft(emg_with_a_low_pass.squeeze(), freq=a.get_rate)
 
 _, ax = plt.subplots(nrows=2, ncols=1)
 ax[0].plot(emg_without_low_pass.squeeze(), 'k-', label='raw', alpha=0.7)
-ax[0].plot(emg.squeeze(), 'r-', label='low-pass @ 5Hz', alpha=0.7)
+ax[0].plot(emg_with_a_low_pass.squeeze(), 'r-', label='low-pass @ 5Hz', alpha=0.7)
 ax[0].set_title('Raw data')
 ax[0].legend(fontsize=12)
 
