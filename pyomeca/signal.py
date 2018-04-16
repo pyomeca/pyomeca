@@ -24,7 +24,7 @@ def rectify(x):
     return np.abs(x)
 
 
-def center(x):
+def center(x, axis=-1):
     """
     Center a signal (i.e., subtract the mean)
 
@@ -32,12 +32,18 @@ def center(x):
     ----------
     x : np.ndarray
         vector or matrix of data
-
+    axis : int, optional
+        axis along which the means are computed. The default is to compute
+        the mean on the last axis.
     Returns
     -------
     Centered x
     """
-    return x - x.mean()
+    mu = np.nanmean(x, axis=axis)
+    while x.ndim > mu.ndim:
+        # add one dimension if the input is a 3d matrix
+        mu = np.expand_dims(mu, axis=-1)
+    return x - mu
 
 
 def normalization(x, ref=None, scale=100):
