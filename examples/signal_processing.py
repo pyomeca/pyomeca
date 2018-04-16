@@ -125,6 +125,21 @@ ax.set_title(f'Band-stop Butterworth filter')
 ax.legend(fontsize=12)
 plt.show()
 
+# --- High-pass filter
+
+# with the function
+high_pass = pyosignal.high_pass(a, freq=a.get_rate, order=2, cutoff=100)
+
+# with the method
+high_pass_2 = a.high_pass(freq=a.get_rate, order=4, cutoff=30)
+
+_, ax = plt.subplots(nrows=1, ncols=1)
+ax.plot(a.squeeze(), 'k-', label='raw')
+ax.plot(high_pass.squeeze(), 'r-', label='high-pass @ 30Hz', alpha=0.7)
+ax.set_title(f'High-pass Butterworth filter')
+ax.legend(fontsize=12)
+plt.show()
+
 # # --- EMG: a complete example
 # # first we center the data
 # b = pyosignal.center(a)
