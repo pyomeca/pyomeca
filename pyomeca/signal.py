@@ -4,7 +4,7 @@ Signal processing in pyomeca
 
 import numpy as np
 from scipy import fftpack
-from scipy.interpolate import interp1d
+from scipy.interpolate import interp1d, UnivariateSpline
 from scipy.signal import filtfilt, medfilt, butter
 
 
@@ -40,7 +40,7 @@ def center(x, axis=-1):
     Centered x
     """
     mu = np.nanmean(x, axis=axis)
-    while x.ndim > mu.ndim:
+    if x.ndim > mu.ndim:
         # add one dimension if the input is a 3d matrix
         mu = np.expand_dims(mu, axis=-1)
     return x - mu
@@ -64,13 +64,14 @@ def normalization(x, ref=None, scale=100):
     x normalized
     """
     if not ref:
-        ref = x.max()
+        ref = np.nanmax(x, axis=-1)
+        ref = np.expand_dims(ref, axis=-1)
     return x / (ref / scale)
 
 
 def time_normalization(x, time_vector=np.linspace(0, 100, 101), axis=-1):
     """
-    Time normalization used fot he temporal alignment of data
+    Time normalization used for temporal alignment of data
 
     Parameters
     ----------
@@ -86,8 +87,35 @@ def time_normalization(x, time_vector=np.linspace(0, 100, 101), axis=-1):
     Time normalized x
     """
     original_time_vector = np.linspace(time_vector[0], time_vector[-1], x.shape[axis])
-    f_out = interp1d(original_time_vector, x, axis=axis)
-    return f_out(time_vector)
+    f = interp1d(original_time_vector, x, axis=axis)
+    return f(time_vector)
+
+
+def fill_values(x, axis=-1):
+    """
+    Fill values. Warning: this function can be used only for very small gaps in your data.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        vector or matrix of data
+    axis : int
+        specifies the axis along which to interpolate. Interpolation defaults to the last axis (over frames)
+
+    Returns
+    -------
+    Filled x
+    """
+    original_time_vector = np.arange(0, x.shape[axis])
+    x = x.copy()
+
+    def fct(m):
+        w = np.isnan(m)
+        m[w] = 0
+        f = UnivariateSpline(original_time_vector, m, w=~w)
+        return f(original_time_vector)
+
+    return np.apply_along_axis(fct, axis=axis, arr=x)
 
 
 def moving_rms(x, window_size, method='filtfilt'):
@@ -141,6 +169,8 @@ def moving_average(x, window_size, method='filtfilt'):
     Moving average of `x` with window size `window_size`
     """
     if method == 'cumsum':
+        if x.ndim > 2:
+            raise ValueError(f'moving_average with cumsum take only one or two dimensions array')
         xsum = np.cumsum(x)
         xsum[window_size:] = xsum[window_size:] - xsum[:-window_size]
         return xsum[window_size - 1:] / window_size

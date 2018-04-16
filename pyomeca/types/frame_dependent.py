@@ -327,6 +327,8 @@ class FrameDependentNpArray(np.ndarray):
     def time_normalization(self, time_vector=np.linspace(0, 100, 101), axis=-1):
         raise ValueError(not_implemented_in_parent)
 
+    def fill_values(self, axis=-1):
+        raise ValueError(not_implemented_in_parent)
 
 class FrameDependentNpArrayCollection(list):
     """

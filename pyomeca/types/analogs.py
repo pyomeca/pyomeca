@@ -105,3 +105,6 @@ class Analogs3d(FrameDependentNpArray):
 
     def time_normalization(self, time_vector=np.linspace(0, 100, 101), axis=-1):
         return Analogs3d(pyosignal.time_normalization(self, time_vector, axis=axis))
+
+    def fill_values(self, axis=-1):
+        return Analogs3d(pyosignal.fill_values(self, axis))

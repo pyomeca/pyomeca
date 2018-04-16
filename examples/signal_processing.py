@@ -64,7 +64,7 @@ b = Analogs3d(a.moving_rms(window_size=10))
 mv_mu = {
     # standard filtfilt method
     'filtfilt': pyosignal.moving_average(b, window_size=WINDOW_SIZE, method='filtfilt'),
-    'cumsum': pyosignal.moving_average(b, window_size=WINDOW_SIZE, method='cumsum'),
+    'cumsum': pyosignal.moving_average(b.squeeze(), window_size=WINDOW_SIZE, method='cumsum'),
     'conv': pyosignal.moving_average(b.squeeze(), window_size=WINDOW_SIZE, method='convolution')
 }
 
