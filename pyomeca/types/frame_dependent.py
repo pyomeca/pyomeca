@@ -6,6 +6,8 @@ import pandas as pd
 from pyomeca import signal as pyosignal
 from pyomeca.thirdparty import btk
 
+not_implemented_in_parent = 'This method should be called from a child class (e.g. Markers3d, Analogs3d, etc.)'
+
 
 class FrameDependentNpArray(np.ndarray):
     def __new__(cls, array=np.ndarray((0, 0, 0)), *args, **kwargs):
@@ -278,13 +280,11 @@ class FrameDependentNpArray(np.ndarray):
         # Write into the csv file
         data.to_csv(file_name, index=False, header=header)
 
-    @staticmethod
-    def to_2d():
-        raise ValueError('to_2d should be called from a child class (e.g. Markers3d, Analogs3d, etc.)')
+    def to_2d(self):
+        raise ValueError(not_implemented_in_parent)
 
-    @staticmethod
-    def get_2d_labels():
-        raise ValueError('get_2d_labels should be called from a child class (e.g. Markers3d, Analogs3d, etc.)')
+    def get_2d_labels(self):
+        raise ValueError(not_implemented_in_parent)
 
     # --- Signal processing methods
 
@@ -300,25 +300,25 @@ class FrameDependentNpArray(np.ndarray):
     # TODO: find to way to call the following methods from the parent class?
 
     def moving_rms(self, window_size, method='filtfilt'):
-        return pyosignal.moving_rms(self, window_size, method)
+        raise ValueError(not_implemented_in_parent)
 
     def moving_average(self, window_size, method='filtfilt'):
-        return pyosignal.moving_average(self, window_size, method)
+        raise ValueError(not_implemented_in_parent)
 
     def moving_median(self, window_size):
-        return pyosignal.moving_median(self, window_size)
+        raise ValueError(not_implemented_in_parent)
 
     def low_pass(self, freq, order, cutoff):
-        return pyosignal.low_pass(self, freq, order, cutoff)
+        raise ValueError(not_implemented_in_parent)
 
     def band_pass(self, freq, order, cutoff):
-        return pyosignal.band_pass(self, freq, order, cutoff)
+        raise ValueError(not_implemented_in_parent)
 
     def band_stop(self, freq, order, cutoff):
-        return pyosignal.band_stop(self, freq, order, cutoff)
+        raise ValueError(not_implemented_in_parent)
 
     def high_pass(self, freq, order, cutoff):
-        return pyosignal.high_pass(self, freq, order, cutoff)
+        raise ValueError(not_implemented_in_parent)
 
 
 class FrameDependentNpArrayCollection(list):

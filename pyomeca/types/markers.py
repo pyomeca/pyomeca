@@ -1,5 +1,6 @@
 from pyomeca.types.frame_dependent import FrameDependentNpArray
 import numpy as np
+from pyomeca import signal as pyosignal
 
 
 class Markers3d(FrameDependentNpArray):
@@ -84,6 +85,29 @@ class Markers3d(FrameDependentNpArray):
         Tabular matrix
         """
         return np.reshape(self[0:3, :, :], (3 * self.get_num_markers(), self.get_num_frames()), 'F').T
+
+    # --- Signal processing methods
+
+    def moving_rms(self, window_size, method='filtfilt'):
+        return Markers3d(pyosignal.moving_rms(self, window_size, method))
+
+    def moving_average(self, window_size, method='filtfilt'):
+        return Markers3d(pyosignal.moving_average(self, window_size, method))
+
+    def moving_median(self, window_size):
+        return Markers3d(pyosignal.moving_median(self, window_size))
+
+    def low_pass(self, freq, order, cutoff):
+        return Markers3d(pyosignal.low_pass(self, freq, order, cutoff))
+
+    def band_pass(self, freq, order, cutoff):
+        return Markers3d(pyosignal.band_pass(self, freq, order, cutoff))
+
+    def band_stop(self, freq, order, cutoff):
+        return Markers3d(pyosignal.band_stop(self, freq, order, cutoff))
+
+    def high_pass(self, freq, order, cutoff):
+        return Markers3d(pyosignal.high_pass(self, freq, order, cutoff))
 
     # --- Linear algebra methods
 
