@@ -5,6 +5,7 @@ Signal processing in pyomeca
 """
 import numpy as np
 from scipy.signal import filtfilt, medfilt, butter
+from scipy import fftpack
 
 
 def rectify(x):
@@ -211,6 +212,20 @@ def high_pass(x, freq, order, cutoff):
     corrected_freq = np.array(cutoff) / nyquist
     b, a = butter(N=order, Wn=corrected_freq, btype='high')
     return filtfilt(b, a, x)
+
+
+def fft(x, freq, only_positive=True):
+    n = x.size
+    yfft = fftpack.fft(x, n)
+    freqs = fftpack.fftfreq(n, 1. / freq)
+
+    if only_positive:
+        amp = 2 * np.abs(yfft) / n
+        amp = amp[:int(np.floor(n / 2))]
+        freqs = freqs[:int(np.floor(n / 2))]
+    else:
+        amp = np.abs(yfft) / n
+    return amp, freqs
 
 # todo:
 # fft

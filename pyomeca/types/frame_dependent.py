@@ -294,6 +294,11 @@ class FrameDependentNpArray(np.ndarray):
     def center(self):
         return pyosignal.center(self)
 
+    def fft(self, freq, only_positive=True):
+        return pyosignal.fft(self, freq, only_positive)
+
+    # TODO: find to way to call the following methods from the parent class?
+
     def moving_rms(self, window_size, method='filtfilt'):
         return pyosignal.moving_rms(self, window_size, method)
 
