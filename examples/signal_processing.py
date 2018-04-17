@@ -257,3 +257,21 @@ norm = b \
 pyoplot.plot_vector3d(norm)
 plt.show()
 
+# --- Onset detection
+two_norm = np.hstack((norm, norm / 4))
+
+# threshold = mean during the first second
+idx = pyosignal.detect_onset(two_norm,
+                             threshold=np.nanmean(norm[..., :int(b.get_rate)]),
+                             above=int(b.get_rate) / 2,
+                             below=3,
+                             threshold2=np.nanmean(norm[..., :int(b.get_rate)]) * 2,
+                             above2=5)
+
+_, ax = plt.subplots(nrows=1, ncols=1)
+pyoplot.plot_vector3d(two_norm, ax=ax)
+for (inf, sup) in idx:
+    ax.axvline(x=inf, color='r', lw=2, ls='--')
+    ax.axvline(x=sup, color='r', lw=2, ls='--')
+ax.set_title('Onset detection')
+plt.show()

@@ -366,6 +366,57 @@ def norm(x, axis=(0, 1)):
     return np.linalg.norm(x, axis=axis)
 
 
+def detect_onset(x, threshold=0, above=1, below=0, threshold2=None, above2=1):
+    """
+    Detects onset in vector data. Inspired by Marcos Duarte's works.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        vector of data (must be 1D)
+    threshold : double, optional
+        minimum amplitude to detect
+    above : double, optional
+        minimum sample of continuous samples above `threshold` to detect
+    below : double, optional
+        minimum sample of continuous samples below `threshold` to ignore
+    threshold2 : double, None, optional
+        minimum amplitude of `above2` values in `x` to detect.
+    above2
+        minimum sample of continuous samples above `threshold2` to detect
+
+    Returns
+    -------
+    idx : np.ndarray
+        onset events
+
+    """
+    if x.ndim > 1:
+        raise ValueError(f'detect_onset works only for vector (ndim < 2). Your data have {x.ndim} dimensions.')
+    x[np.isnan(x)] = -np.inf
+    idx = np.argwhere(x >= threshold).ravel()
+
+    if np.any(idx):
+        # initial & final indexes of almost continuous data
+        idx = np.vstack(
+            (idx[np.diff(np.hstack((-np.inf, idx))) > below + 1],
+             idx[np.diff(np.hstack((idx, np.inf))) > below + 1])
+        ).T
+        # indexes of almost continuous data longer or equal to `above`
+        idx = idx[idx[:, 1] - idx[:, 0] >= above - 1, :]
+
+        if np.any(idx) and threshold2:
+            # minimum amplitude of above2 values in x
+            ic = np.ones(idx.shape[0], dtype=bool)
+            for irow in range(idx.shape[0]):
+                if np.count_nonzero(x[idx[irow, 0]: idx[irow, 1] + 1] >= threshold2) < above2:
+                    ic[irow] = False
+            idx = idx[ic, :]
+
+    if not np.any(idx):
+        idx = np.array([])
+    return idx
+
 # todo:
 # residual_analysis (bmc)
 # ensemble_average (bmc)
