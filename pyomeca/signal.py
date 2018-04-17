@@ -144,7 +144,7 @@ def moving_rms(x, window_size, method='filtfilt'):
     """
     if method == 'convolution':
         if x.ndim > 1:
-            raise ValueError(f'moving_rms with convolution take only one dimension array')
+            raise ValueError('moving_rms with convolution take only one dimension array')
         window = 2 * window_size + 1
         return np.sqrt(np.convolve(x * x, np.ones(window) / window, 'same'))
     elif method == 'filtfilt':
@@ -175,13 +175,13 @@ def moving_average(x, window_size, method='filtfilt'):
     """
     if method == 'cumsum':
         if x.ndim > 2:
-            raise ValueError(f'moving_average with cumsum take only one or two dimensions array')
+            raise ValueError('moving_average with cumsum take only one or two dimensions array')
         xsum = np.cumsum(x)
         xsum[window_size:] = xsum[window_size:] - xsum[:-window_size]
         return xsum[window_size - 1:] / window_size
     elif method == 'convolution':
         if x.ndim > 1:
-            raise ValueError(f'moving_average with convolution take only one dimension array')
+            raise ValueError('moving_average with convolution take only one dimension array')
         return np.convolve(x, np.ones(window_size) / window_size, 'same')
     elif method == 'filtfilt':
         return filtfilt(np.ones(window_size) / window_size, 1, x)
@@ -205,7 +205,7 @@ def moving_median(x, window_size):
     Moving average of `x` with window size `window_size`
     """
     if window_size % 2 == 0:
-        raise ValueError(f'window_size should be odd. Add or substract 1. You provided {window_size}')
+        raise ValueError(f'window_size should be odd. Add or subtract 1. You provided {window_size}')
     if x.ndim == 3:
         window_size = [1, 1, window_size]
     elif x.ndim == 2:
