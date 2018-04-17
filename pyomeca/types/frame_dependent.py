@@ -1,8 +1,12 @@
-import numpy as np
 from pathlib import Path
+
+import numpy as np
 import pandas as pd
 
+from pyomeca import signal as pyosignal
 from pyomeca.thirdparty import btk
+
+not_implemented_in_parent = 'This method should be called from a child class (e.g. Markers3d, Analogs3d, etc.)'
 
 
 class FrameDependentNpArray(np.ndarray):
@@ -276,14 +280,55 @@ class FrameDependentNpArray(np.ndarray):
         # Write into the csv file
         data.to_csv(file_name, index=False, header=header)
 
-    @staticmethod
-    def to_2d():
-        raise ValueError('to_2d should be called from a child class (e.g. Markers3d, Analogs3d, etc.)')
+    def to_2d(self):
+        raise ValueError(not_implemented_in_parent)
 
-    @staticmethod
-    def get_2d_labels():
-        raise ValueError('get_2d_labels should be called from a child class (e.g. Markers3d, Analogs3d, etc.)')
+    def get_2d_labels(self):
+        raise ValueError(not_implemented_in_parent)
 
+    # --- Signal processing methods
+
+    def rectify(self):
+        return pyosignal.rectify(self)
+
+    def center(self):
+        return pyosignal.center(self)
+
+    def normalization(self, ref=None, scale=100):
+        return pyosignal.normalization(self, ref, scale)
+
+    def fft(self, freq, only_positive=True):
+        amp, freqs = pyosignal.fft(self, freq, only_positive)
+        return amp, freqs
+
+    # TODO: find to way to call the following methods from the parent class?
+
+    def moving_rms(self, window_size, method='filtfilt'):
+        raise ValueError(not_implemented_in_parent)
+
+    def moving_average(self, window_size, method='filtfilt'):
+        raise ValueError(not_implemented_in_parent)
+
+    def moving_median(self, window_size):
+        raise ValueError(not_implemented_in_parent)
+
+    def low_pass(self, freq, order, cutoff):
+        raise ValueError(not_implemented_in_parent)
+
+    def band_pass(self, freq, order, cutoff):
+        raise ValueError(not_implemented_in_parent)
+
+    def band_stop(self, freq, order, cutoff):
+        raise ValueError(not_implemented_in_parent)
+
+    def high_pass(self, freq, order, cutoff):
+        raise ValueError(not_implemented_in_parent)
+
+    def time_normalization(self, time_vector=np.linspace(0, 100, 101), axis=-1):
+        raise ValueError(not_implemented_in_parent)
+
+    def fill_values(self, axis=-1):
+        raise ValueError(not_implemented_in_parent)
 
 class FrameDependentNpArrayCollection(list):
     """
