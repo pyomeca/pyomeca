@@ -3,6 +3,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from pyomeca import plot as pyoplot
 from pyomeca import signal as pyosignal
 from pyomeca.thirdparty import btk
 
@@ -286,6 +287,11 @@ class FrameDependentNpArray(np.ndarray):
     def get_2d_labels(self):
         raise ValueError(not_implemented_in_parent)
 
+    # --- Plot method
+
+    def plot(self, x=None, idx=None, ax=None, fmt='k', lw=1, label=None, alpha=1):
+        return pyoplot.plot_vector3d(self, x, idx, ax, fmt, lw, label, alpha)
+
     # --- Signal processing methods
 
     def rectify(self):
@@ -329,6 +335,7 @@ class FrameDependentNpArray(np.ndarray):
 
     def fill_values(self, axis=-1):
         raise ValueError(not_implemented_in_parent)
+
 
 class FrameDependentNpArrayCollection(list):
     """

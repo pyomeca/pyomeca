@@ -1,1 +1,1 @@
-__all__ = ["types", "show", "thirdparty", "signal"]
+__all__ = ["types", "show", "thirdparty", "signal", "plot"]
