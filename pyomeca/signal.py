@@ -42,7 +42,7 @@ def center(x, axis=-1):
     mu = np.nanmean(x, axis=axis)
     if x.ndim > mu.ndim:
         # add one dimension if the input is a 3d matrix
-        mu = np.expand_dims(mu, axis=-1)
+        mu = mu[None]
     return x - mu
 
 
@@ -65,7 +65,8 @@ def normalization(x, ref=None, scale=100):
     """
     if not ref:
         ref = np.nanmax(x, axis=-1)
-        ref = np.expand_dims(ref, axis=-1)
+        # add one dimension
+        ref = ref[None]
     return x / (ref / scale)
 
 
@@ -110,6 +111,7 @@ def fill_values(x, axis=-1):
     x = x.copy()
 
     def fct(m):
+        """Simple function to interpolate along an axis"""
         w = np.isnan(m)
         m[w] = 0
         f = UnivariateSpline(original_time_vector, m, w=~w)
@@ -346,3 +348,5 @@ def fft(x, freq, only_positive=True, axis=-1):
 # todo:
 # residual_analysis (bmc)
 # ensemble_average (bmc)
+# tests
+# examples in docstring
