@@ -418,7 +418,7 @@ def detect_onset(x, threshold=0, above=1, below=0, threshold2=None, above2=1):
     return idx
 
 # todo:
-# residual_analysis (bmc)
-# ensemble_average (bmc)
+# residual_analysis
+# ensemble_average
 # tests
 # examples in docstring

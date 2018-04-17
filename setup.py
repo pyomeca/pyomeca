@@ -8,6 +8,7 @@ requirements = [
     'numpy',
     'pandas',
     'scipy',
+    'matplotlib',
     'vtk',
     'pyqt'
 ]
