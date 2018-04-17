@@ -297,8 +297,8 @@ class FrameDependentNpArray(np.ndarray):
     def rectify(self):
         return pyosignal.rectify(self)
 
-    def center(self):
-        return pyosignal.center(self)
+    def center(self, mu=None, axis=-1):
+        return pyosignal.center(self, mu, axis)
 
     def normalization(self, ref=None, scale=100):
         return pyosignal.normalization(self, ref, scale)
