@@ -348,6 +348,24 @@ def fft(x, freq, only_positive=True, axis=-1):
         amp = np.abs(yfft) / n
     return amp, freqs
 
+
+def norm(x, axis=(0, 1)):
+    """
+    Compute the matrix norm. Same as np.sqrt(np.sum(np.power(x, 2), axis=0))
+
+    Parameters
+    ----------
+    x : np.ndarray
+        vector or matrix of data
+    axis : int, tuple
+        specifies the axis along which to compute the norm
+    Returns
+    -------
+
+    """
+    return np.linalg.norm(x, axis=axis)
+
+
 # todo:
 # residual_analysis (bmc)
 # ensemble_average (bmc)

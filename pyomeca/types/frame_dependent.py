@@ -307,6 +307,9 @@ class FrameDependentNpArray(np.ndarray):
         amp, freqs = pyosignal.fft(self, freq, only_positive)
         return amp, freqs
 
+    def norm(self, axis=(0, 1)):
+        return pyosignal.norm(self, axis)
+
     # TODO: find to way to call the following methods from the parent class?
 
     def moving_rms(self, window_size, method='filtfilt'):

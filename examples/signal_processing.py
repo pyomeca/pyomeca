@@ -244,3 +244,16 @@ ax[1].set_title('Frequency domain')
 ax[1].legend(fontsize=12)
 
 plt.show()
+
+# --- Norm
+
+b = Analogs3d.from_c3d(MARKERS_ANALOGS_C3D, idx=[0, 1, 2, 3, 4, 5])
+
+# offset on one second, then compute the norm
+norm = b \
+    .center(mu=np.nanmean(b[..., :int(b.get_rate)], axis=-1), axis=-1) \
+    .norm()
+
+pyoplot.plot_vector3d(norm)
+plt.show()
+
