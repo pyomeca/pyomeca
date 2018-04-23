@@ -1,5 +1,5 @@
-from pyomeca.types.markers import Markers3d
-from pyomeca.types.frame_dependent import FrameDependentNpArrayCollection
+from pyomeca.obj.markers import Markers3d
+from pyomeca.obj.frame_dependent import FrameDependentNpArrayCollection
 import numpy as np
 
 

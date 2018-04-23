@@ -21,9 +21,9 @@ from vtk import vtkPolyData
 from vtk import vtkUnsignedCharArray
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
-from pyomeca.types.mesh import Mesh, MeshCollection
-from pyomeca.types.rototrans import RotoTrans, RotoTransCollection
-from pyomeca.types.markers import Markers3d
+from pyomeca.obj.mesh import Mesh, MeshCollection
+from pyomeca.obj.rototrans import RotoTrans, RotoTransCollection
+from pyomeca.obj.markers import Markers3d
 
 first = True
 if first:
