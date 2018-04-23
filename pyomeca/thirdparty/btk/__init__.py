@@ -5,15 +5,13 @@
 # the SWIG interface file instead.
 
 
-
-
 """
 Biomechanical ToolKit (BTK) for Python
 High level classes and functions to open, edit and modify biomechanical acquisitions.
 """
 
-
 from sys import version_info
+
 if version_info >= (2, 6, 0):
     def swig_import_helper():
         from os.path import dirname
@@ -30,6 +28,8 @@ if version_info >= (2, 6, 0):
             finally:
                 fp.close()
             return _mod
+
+
     _btk = swig_import_helper()
     del swig_import_helper
 else:
@@ -75,6 +75,7 @@ def _swig_getattr_nondynamic(self, class_type, name, static=1):
     else:
         raise AttributeError(name)
 
+
 def _swig_getattr(self, class_type, name):
     return _swig_getattr_nondynamic(self, class_type, name, 0)
 
@@ -86,14 +87,16 @@ def _swig_repr(self):
         strthis = ""
     return "<%s.%s; %s >" % (self.__class__.__module__, self.__class__.__name__, strthis,)
 
+
 try:
     _object = object
     _newclass = 1
 except AttributeError:
     class _object:
         pass
-    _newclass = 0
 
+
+    _newclass = 0
 
 
 def Iterate(c):
@@ -110,6 +113,7 @@ def Iterate(c):
         yield i.value()
         i.incr()
 
+
 class SwigPyIterator(_object):
     """Proxy of C++ swig::SwigPyIterator class."""
 
@@ -120,6 +124,7 @@ class SwigPyIterator(_object):
 
     def __init__(self, *args, **kwargs):
         raise AttributeError("No constructor defined - class is abstract")
+
     __repr__ = _swig_repr
     __swig_destroy__ = _btk.delete_SwigPyIterator
     __del__ = lambda self: None
@@ -128,82 +133,67 @@ class SwigPyIterator(_object):
         """value(self) -> PyObject *"""
         return _btk.SwigPyIterator_value(self)
 
-
-    def incr(self, n: 'size_t'=1) -> "swig::SwigPyIterator *":
+    def incr(self, n: 'size_t' = 1) -> "swig::SwigPyIterator *":
         """
         incr(self, n=1) -> SwigPyIterator
         incr(self) -> SwigPyIterator
         """
         return _btk.SwigPyIterator_incr(self, n)
 
-
-    def decr(self, n: 'size_t'=1) -> "swig::SwigPyIterator *":
+    def decr(self, n: 'size_t' = 1) -> "swig::SwigPyIterator *":
         """
         decr(self, n=1) -> SwigPyIterator
         decr(self) -> SwigPyIterator
         """
         return _btk.SwigPyIterator_decr(self, n)
 
-
     def distance(self, x: 'SwigPyIterator') -> "ptrdiff_t":
         """distance(self, x) -> ptrdiff_t"""
         return _btk.SwigPyIterator_distance(self, x)
-
 
     def equal(self, x: 'SwigPyIterator') -> "bool":
         """equal(self, x) -> bool"""
         return _btk.SwigPyIterator_equal(self, x)
 
-
     def copy(self) -> "swig::SwigPyIterator *":
         """copy(self) -> SwigPyIterator"""
         return _btk.SwigPyIterator_copy(self)
-
 
     def next(self) -> "PyObject *":
         """next(self) -> PyObject *"""
         return _btk.SwigPyIterator_next(self)
 
-
     def __next__(self) -> "PyObject *":
         """__next__(self) -> PyObject *"""
         return _btk.SwigPyIterator___next__(self)
-
 
     def previous(self) -> "PyObject *":
         """previous(self) -> PyObject *"""
         return _btk.SwigPyIterator_previous(self)
 
-
     def advance(self, n: 'ptrdiff_t') -> "swig::SwigPyIterator *":
         """advance(self, n) -> SwigPyIterator"""
         return _btk.SwigPyIterator_advance(self, n)
-
 
     def __eq__(self, x: 'SwigPyIterator') -> "bool":
         """__eq__(self, x) -> bool"""
         return _btk.SwigPyIterator___eq__(self, x)
 
-
     def __ne__(self, x: 'SwigPyIterator') -> "bool":
         """__ne__(self, x) -> bool"""
         return _btk.SwigPyIterator___ne__(self, x)
-
 
     def __iadd__(self, n: 'ptrdiff_t') -> "swig::SwigPyIterator &":
         """__iadd__(self, n) -> SwigPyIterator"""
         return _btk.SwigPyIterator___iadd__(self, n)
 
-
     def __isub__(self, n: 'ptrdiff_t') -> "swig::SwigPyIterator &":
         """__isub__(self, n) -> SwigPyIterator"""
         return _btk.SwigPyIterator___isub__(self, n)
 
-
     def __add__(self, n: 'ptrdiff_t') -> "swig::SwigPyIterator *":
         """__add__(self, n) -> SwigPyIterator"""
         return _btk.SwigPyIterator___add__(self, n)
-
 
     def __sub__(self, *args) -> "ptrdiff_t":
         """
@@ -214,8 +204,11 @@ class SwigPyIterator(_object):
 
     def __iter__(self):
         return self
+
+
 SwigPyIterator_swigregister = _btk.SwigPyIterator_swigregister
 SwigPyIterator_swigregister(SwigPyIterator)
+
 
 class btkEvent(_object):
     """
@@ -318,7 +311,6 @@ class btkEvent(_object):
         """
         return _btk.btkEvent_Clone(self)
 
-
     def __deref__(self) -> "btkEvent_impl *":
         """__deref__(self) -> btkEvent_impl *"""
         return _btk.btkEvent___deref__(self)
@@ -334,7 +326,6 @@ class btkEvent(_object):
         """
         return _btk.btkEvent_GetLabel(self)
 
-
     def SetLabel(self, arg2: 'std::string const &') -> "void":
         """
         SetLabel(self, string)
@@ -342,7 +333,6 @@ class btkEvent(_object):
         Sets the event's label.
         """
         return _btk.btkEvent_SetLabel(self, arg2)
-
 
     def GetDescription(self) -> "std::string const &":
         """
@@ -352,7 +342,6 @@ class btkEvent(_object):
         """
         return _btk.btkEvent_GetDescription(self)
 
-
     def SetDescription(self, arg2: 'std::string const &') -> "void":
         """
         SetDescription(self, string)
@@ -360,7 +349,6 @@ class btkEvent(_object):
         Sets the event's description.
         """
         return _btk.btkEvent_SetDescription(self, arg2)
-
 
     def GetContext(self) -> "std::string const &":
         """
@@ -370,7 +358,6 @@ class btkEvent(_object):
         """
         return _btk.btkEvent_GetContext(self)
 
-
     def SetContext(self, arg2: 'std::string const &') -> "void":
         """
         SetContext(self, string)
@@ -378,7 +365,6 @@ class btkEvent(_object):
         Sets the event's context.
         """
         return _btk.btkEvent_SetContext(self, arg2)
-
 
     def GetSubject(self) -> "std::string const &":
         """
@@ -388,7 +374,6 @@ class btkEvent(_object):
         """
         return _btk.btkEvent_GetSubject(self)
 
-
     def SetSubject(self, arg2: 'std::string const &') -> "void":
         """
         SetSubject(self, string)
@@ -396,7 +381,6 @@ class btkEvent(_object):
         Sets the event's subject.
         """
         return _btk.btkEvent_SetSubject(self, arg2)
-
 
     def GetTime(self) -> "double const":
         """
@@ -406,7 +390,6 @@ class btkEvent(_object):
         """
         return _btk.btkEvent_GetTime(self)
 
-
     def SetTime(self, arg2: 'double const') -> "void":
         """
         SetTime(self, double)
@@ -414,7 +397,6 @@ class btkEvent(_object):
         Sets the event's time.
         """
         return _btk.btkEvent_SetTime(self, arg2)
-
 
     def GetFrame(self) -> "int const":
         """
@@ -424,7 +406,6 @@ class btkEvent(_object):
         """
         return _btk.btkEvent_GetFrame(self)
 
-
     def SetFrame(self, arg2: 'int const') -> "void":
         """
         SetFrame(self, int)
@@ -432,7 +413,6 @@ class btkEvent(_object):
         Sets the event's frame.
         """
         return _btk.btkEvent_SetFrame(self, arg2)
-
 
     def GetDetectionFlags(self) -> "int const":
         """
@@ -442,7 +422,6 @@ class btkEvent(_object):
         """
         return _btk.btkEvent_GetDetectionFlags(self)
 
-
     def SetDetectionFlags(self, arg2: 'int const') -> "void":
         """
         SetDetectionFlags(self, int)
@@ -450,7 +429,6 @@ class btkEvent(_object):
         Sets the event's detection flags
         """
         return _btk.btkEvent_SetDetectionFlags(self, arg2)
-
 
     def HasDetectionFlag(self, arg2: 'btkEvent_impl::DetectionFlag') -> "bool":
         """
@@ -460,7 +438,6 @@ class btkEvent(_object):
         """
         return _btk.btkEvent_HasDetectionFlag(self, arg2)
 
-
     def GetId(self) -> "int const":
         """
         GetId(self) -> int const
@@ -468,7 +445,6 @@ class btkEvent(_object):
         Returns the event's ID.
         """
         return _btk.btkEvent_GetId(self)
-
 
     def SetId(self, arg2: 'int const') -> "void":
         """
@@ -478,7 +454,6 @@ class btkEvent(_object):
         """
         return _btk.btkEvent_SetId(self, arg2)
 
-
     def Update(self) -> "void":
         """
         Update(self)
@@ -486,7 +461,6 @@ class btkEvent(_object):
         Updates the ProcessObject associated with this DataObject.
         """
         return _btk.btkEvent_Update(self)
-
 
     def GetTimestamp(self) -> "unsigned long":
         """
@@ -496,8 +470,10 @@ class btkEvent(_object):
         """
         return _btk.btkEvent_GetTimestamp(self)
 
+
 btkEvent_swigregister = _btk.btkEvent_swigregister
 btkEvent_swigregister(btkEvent)
+
 
 class btkAnalog(_object):
     """
@@ -590,11 +566,9 @@ class btkAnalog(_object):
         """
         return _btk.btkAnalog_Clone(self)
 
-
     def __deref__(self) -> "btkAnalog_impl *":
         """__deref__(self) -> btkAnalog_impl *"""
         return _btk.btkAnalog___deref__(self)
-
 
     def GetValue(self, idx: 'int') -> "double":
         """
@@ -603,7 +577,6 @@ class btkAnalog(_object):
         Returns only one sample.
         """
         return _btk.btkAnalog_GetValue(self, idx)
-
 
     def SetValue(self, idx: 'int', v: 'double') -> "void":
         """
@@ -624,7 +597,6 @@ class btkAnalog(_object):
         """
         return _btk.btkAnalog_GetLabel(self)
 
-
     def SetLabel(self, arg2: 'std::string const &') -> "void":
         """
         SetLabel(self, string)
@@ -632,7 +604,6 @@ class btkAnalog(_object):
         Sets the analog's label.
         """
         return _btk.btkAnalog_SetLabel(self, arg2)
-
 
     def GetDescription(self) -> "std::string const &":
         """
@@ -642,7 +613,6 @@ class btkAnalog(_object):
         """
         return _btk.btkAnalog_GetDescription(self)
 
-
     def SetDescription(self, arg2: 'std::string const &') -> "void":
         """
         SetDescription(self, string)
@@ -650,7 +620,6 @@ class btkAnalog(_object):
         Sets the analog's description.
         """
         return _btk.btkAnalog_SetDescription(self, arg2)
-
 
     def GetValues(self) -> "btk::Analog::Values const &":
         """
@@ -661,7 +630,6 @@ class btkAnalog(_object):
         """
         return _btk.btkAnalog_GetValues(self)
 
-
     def SetValues(self, arg2: 'btk::Analog::Values const &') -> "void":
         """
         SetValues(self, array)
@@ -669,7 +637,6 @@ class btkAnalog(_object):
         Sets the analog's samples.
         """
         return _btk.btkAnalog_SetValues(self, arg2)
-
 
     def GetFrameNumber(self) -> "int const":
         """
@@ -679,7 +646,6 @@ class btkAnalog(_object):
         """
         return _btk.btkAnalog_GetFrameNumber(self)
 
-
     def SetFrameNumber(self, arg2: 'int const') -> "void":
         """
         SetFrameNumber(self, int)
@@ -687,7 +653,6 @@ class btkAnalog(_object):
         Sets the number of frames.
         """
         return _btk.btkAnalog_SetFrameNumber(self, arg2)
-
 
     def GetUnit(self) -> "std::string const &":
         """
@@ -697,7 +662,6 @@ class btkAnalog(_object):
         """
         return _btk.btkAnalog_GetUnit(self)
 
-
     def SetUnit(self, arg2: 'std::string const &') -> "void":
         """
         SetUnit(self, string)
@@ -705,7 +669,6 @@ class btkAnalog(_object):
         Sets the analog's unit.
         """
         return _btk.btkAnalog_SetUnit(self, arg2)
-
 
     def GetGain(self) -> "btkAnalog_impl::Gain const":
         """
@@ -715,7 +678,6 @@ class btkAnalog(_object):
         """
         return _btk.btkAnalog_GetGain(self)
 
-
     def SetGain(self, arg2: 'btkAnalog_impl::Gain const') -> "void":
         """
         SetGain(self, int)
@@ -724,26 +686,21 @@ class btkAnalog(_object):
         """
         return _btk.btkAnalog_SetGain(self, arg2)
 
-
     def GetOffset(self) -> "double const":
         """GetOffset(self) -> double const"""
         return _btk.btkAnalog_GetOffset(self)
-
 
     def SetOffset(self, arg2: 'double const') -> "void":
         """SetOffset(self, arg2)"""
         return _btk.btkAnalog_SetOffset(self, arg2)
 
-
     def GetScale(self) -> "double const":
         """GetScale(self) -> double const"""
         return _btk.btkAnalog_GetScale(self)
 
-
     def SetScale(self, arg2: 'double const') -> "void":
         """SetScale(self, arg2)"""
         return _btk.btkAnalog_SetScale(self, arg2)
-
 
     def GetData(self) -> "btkAnalogData":
         """
@@ -753,8 +710,7 @@ class btkAnalog(_object):
         """
         return _btk.btkAnalog_GetData(self)
 
-
-    def SetData(self, arg2: 'btkAnalogData', parenting: 'bool'=True) -> "void":
+    def SetData(self, arg2: 'btkAnalogData', parenting: 'bool' = True) -> "void":
         """
         SetData(self, btkAnalogData, parenting = true)
         SetData(self, btkAnalogData, parenting = true)
@@ -763,11 +719,9 @@ class btkAnalog(_object):
         """
         return _btk.btkAnalog_SetData(self, arg2, parenting)
 
-
     def SetDataSlice(self, arg2: 'int', arg3: 'double') -> "void":
         """SetDataSlice(self, arg2, arg3)"""
         return _btk.btkAnalog_SetDataSlice(self, arg2, arg3)
-
 
     def Update(self) -> "void":
         """
@@ -777,7 +731,6 @@ class btkAnalog(_object):
         """
         return _btk.btkAnalog_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -786,8 +739,10 @@ class btkAnalog(_object):
         """
         return _btk.btkAnalog_GetTimestamp(self)
 
+
 btkAnalog_swigregister = _btk.btkAnalog_swigregister
 btkAnalog_swigregister(btkAnalog)
+
 
 class btkAnalogData(_object):
     """
@@ -824,11 +779,9 @@ class btkAnalogData(_object):
         """
         return _btk.btkAnalogData_Clone(self)
 
-
     def __deref__(self) -> "btkAnalogData_impl *":
         """__deref__(self) -> btkAnalogData_impl *"""
         return _btk.btkAnalogData___deref__(self)
-
 
     def GetValue(self, idx: 'int') -> "double":
         """
@@ -837,7 +790,6 @@ class btkAnalogData(_object):
         Returns only one sample.
         """
         return _btk.btkAnalogData_GetValue(self, idx)
-
 
     def SetValue(self, idx: 'int', v: 'double') -> "void":
         """
@@ -859,7 +811,6 @@ class btkAnalogData(_object):
         """
         return _btk.btkAnalogData_GetValues(self)
 
-
     def SetValues(self, arg2: 'btk::Analog::Values const &') -> "void":
         """
         SetValues(self, array)
@@ -867,7 +818,6 @@ class btkAnalogData(_object):
         Sets the analog's values.
         """
         return _btk.btkAnalogData_SetValues(self, arg2)
-
 
     def Resize(self, frameNumber: 'int') -> "void":
         """
@@ -877,7 +827,6 @@ class btkAnalogData(_object):
         """
         return _btk.btkAnalogData_Resize(self, frameNumber)
 
-
     def Update(self) -> "void":
         """
         Update(self)
@@ -885,7 +834,6 @@ class btkAnalogData(_object):
         Updates the ProcessObject associated with this DataObject.
         """
         return _btk.btkAnalogData_Update(self)
-
 
     def GetTimestamp(self) -> "unsigned long":
         """
@@ -895,8 +843,10 @@ class btkAnalogData(_object):
         """
         return _btk.btkAnalogData_GetTimestamp(self)
 
+
 btkAnalogData_swigregister = _btk.btkAnalogData_swigregister
 btkAnalogData_swigregister(btkAnalogData)
+
 
 class btkPoint(_object):
     """
@@ -983,11 +933,9 @@ class btkPoint(_object):
         """
         return _btk.btkPoint_Clone(self)
 
-
     def __deref__(self) -> "btkPoint_impl *":
         """__deref__(self) -> btkPoint_impl *"""
         return _btk.btkPoint___deref__(self)
-
 
     def GetValue(self, row: 'int', col: 'int') -> "double":
         """
@@ -997,7 +945,6 @@ class btkPoint(_object):
         """
         return _btk.btkPoint_GetValue(self, row, col)
 
-
     def SetValue(self, row: 'int', col: 'int', v: 'double') -> "void":
         """
         SetValue(self, int, int, double)
@@ -1006,7 +953,6 @@ class btkPoint(_object):
         """
         return _btk.btkPoint_SetValue(self, row, col, v)
 
-
     def GetResidual(self, idx: 'int') -> "double":
         """
         GetResidual(self, idx) -> double
@@ -1014,7 +960,6 @@ class btkPoint(_object):
         Returns only one residual for the given frame.
         """
         return _btk.btkPoint_GetResidual(self, idx)
-
 
     def SetResidual(self, idx: 'int', v: 'double') -> "void":
         """
@@ -1035,7 +980,6 @@ class btkPoint(_object):
         """
         return _btk.btkPoint_GetLabel(self)
 
-
     def SetLabel(self, arg2: 'std::string const &') -> "void":
         """
         SetLabel(self, string)
@@ -1043,7 +987,6 @@ class btkPoint(_object):
         Sets the point's label.
         """
         return _btk.btkPoint_SetLabel(self, arg2)
-
 
     def GetDescription(self) -> "std::string const &":
         """
@@ -1053,7 +996,6 @@ class btkPoint(_object):
         """
         return _btk.btkPoint_GetDescription(self)
 
-
     def SetDescription(self, arg2: 'std::string const &') -> "void":
         """
         SetDescription(self, string)
@@ -1061,7 +1003,6 @@ class btkPoint(_object):
         Sets the point's description.
         """
         return _btk.btkPoint_SetDescription(self, arg2)
-
 
     def GetValues(self) -> "btk::Point::Values const &":
         """
@@ -1072,7 +1013,6 @@ class btkPoint(_object):
         """
         return _btk.btkPoint_GetValues(self)
 
-
     def SetValues(self, arg2: 'btk::Point::Values const &') -> "void":
         """
         SetValues(self, array)
@@ -1080,7 +1020,6 @@ class btkPoint(_object):
         Sets the point's values.
         """
         return _btk.btkPoint_SetValues(self, arg2)
-
 
     def GetResiduals(self) -> "btk::Point::Residuals const &":
         """
@@ -1090,7 +1029,6 @@ class btkPoint(_object):
         """
         return _btk.btkPoint_GetResiduals(self)
 
-
     def SetResiduals(self, arg2: 'btk::Point::Residuals const &') -> "void":
         """
         SetResiduals(self, array)
@@ -1098,7 +1036,6 @@ class btkPoint(_object):
         Sets the point's residuals.
         """
         return _btk.btkPoint_SetResiduals(self, arg2)
-
 
     def GetFrameNumber(self) -> "int const":
         """
@@ -1108,7 +1045,6 @@ class btkPoint(_object):
         """
         return _btk.btkPoint_GetFrameNumber(self)
 
-
     def SetFrameNumber(self, arg2: 'int const') -> "void":
         """
         SetFrameNumber(self, int)
@@ -1116,7 +1052,6 @@ class btkPoint(_object):
         Sets the number of frames.
         """
         return _btk.btkPoint_SetFrameNumber(self, arg2)
-
 
     def GetType(self) -> "btkPoint_impl::Type const":
         """
@@ -1126,7 +1061,6 @@ class btkPoint(_object):
         """
         return _btk.btkPoint_GetType(self)
 
-
     def SetType(self, arg2: 'btkPoint_impl::Type const') -> "void":
         """
         SetUnit(self, int)
@@ -1134,7 +1068,6 @@ class btkPoint(_object):
         Sets the point's type.
         """
         return _btk.btkPoint_SetType(self, arg2)
-
 
     def GetData(self) -> "btkPointData":
         """
@@ -1144,8 +1077,7 @@ class btkPoint(_object):
         """
         return _btk.btkPoint_GetData(self)
 
-
-    def SetData(self, arg2: 'btkPointData', parenting: 'bool'=True) -> "void":
+    def SetData(self, arg2: 'btkPointData', parenting: 'bool' = True) -> "void":
         """
         SetData(self, btkPointData, parenting = true)
         SetData(self, btkPointData, parenting = true)
@@ -1154,8 +1086,7 @@ class btkPoint(_object):
         """
         return _btk.btkPoint_SetData(self, arg2, parenting)
 
-
-    def SetDataSlice(self, arg2: 'int', arg3: 'double', arg4: 'double', arg5: 'double', res: 'double'=0.0) -> "void":
+    def SetDataSlice(self, arg2: 'int', arg3: 'double', arg4: 'double', arg5: 'double', res: 'double' = 0.0) -> "void":
         """
         SetDataSlice(self, arg2, arg3, arg4, arg5, res=0.0)
         SetDataSlice(self, arg2, arg3, arg4, arg5)
@@ -1165,7 +1096,6 @@ class btkPoint(_object):
         """
         return _btk.btkPoint_SetDataSlice(self, arg2, arg3, arg4, arg5, res)
 
-
     def Update(self) -> "void":
         """
         Update(self)
@@ -1173,7 +1103,6 @@ class btkPoint(_object):
         Updates the ProcessObject associated with this DataObject.
         """
         return _btk.btkPoint_Update(self)
-
 
     def GetTimestamp(self) -> "unsigned long":
         """
@@ -1183,8 +1112,10 @@ class btkPoint(_object):
         """
         return _btk.btkPoint_GetTimestamp(self)
 
+
 btkPoint_swigregister = _btk.btkPoint_swigregister
 btkPoint_swigregister(btkPoint)
+
 
 class btkPointData(_object):
     """
@@ -1221,26 +1152,21 @@ class btkPointData(_object):
         """
         return _btk.btkPointData_Clone(self)
 
-
     def __deref__(self) -> "btkPointData_impl *":
         """__deref__(self) -> btkPointData_impl *"""
         return _btk.btkPointData___deref__(self)
-
 
     def GetValue(self, row: 'int', col: 'int') -> "double":
         """GetValue(self, row, col) -> double"""
         return _btk.btkPointData_GetValue(self, row, col)
 
-
     def SetValue(self, row: 'int', col: 'int', v: 'double') -> "void":
         """SetValue(self, row, col, v)"""
         return _btk.btkPointData_SetValue(self, row, col, v)
 
-
     def GetResidual(self, idx: 'int') -> "double":
         """GetResidual(self, idx) -> double"""
         return _btk.btkPointData_GetResidual(self, idx)
-
 
     def SetResidual(self, idx: 'int', v: 'double') -> "void":
         """SetResidual(self, idx, v)"""
@@ -1258,7 +1184,6 @@ class btkPointData(_object):
         """
         return _btk.btkPointData_GetValues(self)
 
-
     def SetValues(self, arg2: 'btk::Point::Values const &') -> "void":
         """
         SetValues(self, array)
@@ -1266,7 +1191,6 @@ class btkPointData(_object):
         Sets the point's values.
         """
         return _btk.btkPointData_SetValues(self, arg2)
-
 
     def GetResiduals(self) -> "btk::Point::Residuals const &":
         """
@@ -1276,7 +1200,6 @@ class btkPointData(_object):
         """
         return _btk.btkPointData_GetResiduals(self)
 
-
     def SetResiduals(self, arg2: 'btk::Point::Residuals const &') -> "void":
         """
         SetResiduals(self, array)
@@ -1284,7 +1207,6 @@ class btkPointData(_object):
         Sets the point's residuals.
         """
         return _btk.btkPointData_SetResiduals(self, arg2)
-
 
     def Resize(self, frameNumber: 'int') -> "void":
         """
@@ -1294,7 +1216,6 @@ class btkPointData(_object):
         """
         return _btk.btkPointData_Resize(self, frameNumber)
 
-
     def Update(self) -> "void":
         """
         Update(self)
@@ -1302,7 +1223,6 @@ class btkPointData(_object):
         Updates the ProcessObject associated with this DataObject.
         """
         return _btk.btkPointData_Update(self)
-
 
     def GetTimestamp(self) -> "unsigned long":
         """
@@ -1312,8 +1232,10 @@ class btkPointData(_object):
         """
         return _btk.btkPointData_GetTimestamp(self)
 
+
 btkPointData_swigregister = _btk.btkPointData_swigregister
 btkPointData_swigregister(btkPointData)
+
 
 class btkForcePlatform(_object):
     """
@@ -1335,6 +1257,7 @@ class btkForcePlatform(_object):
 
     def __init__(self, *args, **kwargs):
         raise AttributeError("No constructor defined")
+
     __repr__ = _swig_repr
 
     def Clone(self) -> "btkForcePlatform":
@@ -1345,11 +1268,9 @@ class btkForcePlatform(_object):
         """
         return _btk.btkForcePlatform_Clone(self)
 
-
     def __deref__(self) -> "btkForcePlatform_impl *":
         """__deref__(self) -> btkForcePlatform_impl *"""
         return _btk.btkForcePlatform___deref__(self)
-
 
     def SetOrigin(self, *args):
         """
@@ -1376,7 +1297,7 @@ class btkForcePlatform(_object):
         elif (len(args) == 3):
             self._set_corner_2(*args)
         else:
-            self._set_corner_3(*args) 
+            self._set_corner_3(*args)
 
     __swig_destroy__ = _btk.delete_btkForcePlatform
     __del__ = lambda self: None
@@ -1389,7 +1310,6 @@ class btkForcePlatform(_object):
         """
         return _btk.btkForcePlatform_Begin(self)
 
-
     def End(self) -> "btkForcePlatform_impl::Iterator":
         """
         End(self) -> btkAnalogIterator
@@ -1397,7 +1317,6 @@ class btkForcePlatform(_object):
         Returns an iterator just past the last item.
         """
         return _btk.btkForcePlatform_End(self)
-
 
     def GetChannelNumber(self) -> "int":
         """
@@ -1407,7 +1326,6 @@ class btkForcePlatform(_object):
         """
         return _btk.btkForcePlatform_GetChannelNumber(self)
 
-
     def GetChannel(self, arg2: 'int') -> "btkAnalog":
         """
         GetChannel(self, int) -> btkAnalog)
@@ -1415,7 +1333,6 @@ class btkForcePlatform(_object):
         Returns the analog channel for the given index.
         """
         return _btk.btkForcePlatform_GetChannel(self, arg2)
-
 
     def SetChannel(self, arg2: 'int', arg3: 'btkAnalog') -> "void":
         """
@@ -1425,7 +1342,6 @@ class btkForcePlatform(_object):
         """
         return _btk.btkForcePlatform_SetChannel(self, arg2, arg3)
 
-
     def GetChannels(self) -> "btkAnalogCollection":
         """
         GetChannels(self) -> btkAnalogCollection
@@ -1433,7 +1349,6 @@ class btkForcePlatform(_object):
         Returns force platform's channels.
         """
         return _btk.btkForcePlatform_GetChannels(self)
-
 
     def GetOrigin(self) -> "btk::ForcePlatform::Origin const &":
         """
@@ -1443,7 +1358,6 @@ class btkForcePlatform(_object):
         """
         return _btk.btkForcePlatform_GetOrigin(self)
 
-
     def _set_origin_1(self, arg2: 'btk::ForcePlatform::Origin const &') -> "void":
         """
         _set_origin_1(self, array)
@@ -1451,7 +1365,6 @@ class btkForcePlatform(_object):
         Internal method. Sets the origin.
         """
         return _btk.btkForcePlatform__set_origin_1(self, arg2)
-
 
     def _set_origin_2(self, arg2: 'double', arg3: 'double', arg4: 'double') -> "void":
         """
@@ -1461,7 +1374,6 @@ class btkForcePlatform(_object):
         """
         return _btk.btkForcePlatform__set_origin_2(self, arg2, arg3, arg4)
 
-
     def GetCorner(self, arg2: 'int') -> "btk::ForcePlatform::Corner const":
         """
         GetCorner(self, int) -> array (NumPy)
@@ -1469,7 +1381,6 @@ class btkForcePlatform(_object):
         Returns the corner for the given index.
         """
         return _btk.btkForcePlatform_GetCorner(self, arg2)
-
 
     def _set_corner_2(self, arg2: 'int', arg3: 'int', arg4: 'double') -> "void":
         """
@@ -1479,7 +1390,6 @@ class btkForcePlatform(_object):
         """
         return _btk.btkForcePlatform__set_corner_2(self, arg2, arg3, arg4)
 
-
     def _set_corner_3(self, arg2: 'int', arg3: 'double', arg4: 'double', arg5: 'double') -> "void":
         """
         _set_corner_3(self, int, double, double, double)
@@ -1487,7 +1397,6 @@ class btkForcePlatform(_object):
         Internal method. Sets the corner for the given index.
         """
         return _btk.btkForcePlatform__set_corner_3(self, arg2, arg3, arg4, arg5)
-
 
     def _set_corner_1(self, arg2: 'int', arg3: 'btk::ForcePlatform::Corner const &') -> "void":
         """
@@ -1497,7 +1406,6 @@ class btkForcePlatform(_object):
         """
         return _btk.btkForcePlatform__set_corner_1(self, arg2, arg3)
 
-
     def GetCorners(self) -> "btk::ForcePlatform::Corners const &":
         """
         GetCorners(self) -> array (NumPy)
@@ -1505,7 +1413,6 @@ class btkForcePlatform(_object):
         Returns corners' coordinates.
         """
         return _btk.btkForcePlatform_GetCorners(self)
-
 
     def SetCorners(self, arg2: 'btk::ForcePlatform::Corners const &') -> "void":
         """
@@ -1515,7 +1422,6 @@ class btkForcePlatform(_object):
         """
         return _btk.btkForcePlatform_SetCorners(self, arg2)
 
-
     def GetCalMatrix(self) -> "btk::ForcePlatform::CalMatrix const &":
         """
         GetCalMatrix(self) -> array (NumPy)
@@ -1523,7 +1429,6 @@ class btkForcePlatform(_object):
         Returns the calibration matrix.
         """
         return _btk.btkForcePlatform_GetCalMatrix(self)
-
 
     def SetCalMatrix(self, arg2: 'btk::ForcePlatform::CalMatrix const &') -> "void":
         """
@@ -1533,7 +1438,6 @@ class btkForcePlatform(_object):
         """
         return _btk.btkForcePlatform_SetCalMatrix(self, arg2)
 
-
     def GetType(self) -> "int":
         """
         GetType(self) -> int
@@ -1541,7 +1445,6 @@ class btkForcePlatform(_object):
         Returns the type of the force platform.
         """
         return _btk.btkForcePlatform_GetType(self)
-
 
     def Update(self) -> "void":
         """
@@ -1551,7 +1454,6 @@ class btkForcePlatform(_object):
         """
         return _btk.btkForcePlatform_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -1559,6 +1461,7 @@ class btkForcePlatform(_object):
         Returns the timestamp of the object.
         """
         return _btk.btkForcePlatform_GetTimestamp(self)
+
 
 btkForcePlatform_swigregister = _btk.btkForcePlatform_swigregister
 btkForcePlatform_swigregister(btkForcePlatform)
@@ -1579,6 +1482,7 @@ def btkForcePlatformType1() -> "btkForcePlatform":
     """
     return _btk.btkForcePlatformType1()
 
+
 def btkForcePlatformType2() -> "btkForcePlatform":
     """
     btkForcePlatformType2() -> btkForcePlatform
@@ -1593,6 +1497,7 @@ def btkForcePlatformType2() -> "btkForcePlatform":
      - MZ: Vertical moment on the axis Z of the platform.
     """
     return _btk.btkForcePlatformType2()
+
 
 def btkForcePlatformType3() -> "btkForcePlatform":
     """
@@ -1611,6 +1516,7 @@ def btkForcePlatformType3() -> "btkForcePlatform":
     """
     return _btk.btkForcePlatformType3()
 
+
 def btkForcePlatformType4() -> "btkForcePlatform":
     """
     btkForcePlatformType4() -> btkForcePlatform
@@ -1621,6 +1527,7 @@ def btkForcePlatformType4() -> "btkForcePlatform":
     """
     return _btk.btkForcePlatformType4()
 
+
 def btkForcePlatformType5() -> "btkForcePlatform":
     """
     btkForcePlatformType5() -> btkForcePlatform
@@ -1630,6 +1537,7 @@ def btkForcePlatformType5() -> "btkForcePlatform":
     The definition of the channels are the same than the force platform Type 3.
     """
     return _btk.btkForcePlatformType5()
+
 
 def btkForcePlatformType6() -> "btkForcePlatform":
     """
@@ -1651,6 +1559,8 @@ def btkForcePlatformType6() -> "btkForcePlatform":
      - FZ4: Vertical forces measured by the sensor on the corner 4.
     """
     return _btk.btkForcePlatformType6()
+
+
 class btkWrench(_object):
     """
 
@@ -1697,7 +1607,6 @@ class btkWrench(_object):
         """Clone(self) -> btkWrench"""
         return _btk.btkWrench_Clone(self)
 
-
     def __deref__(self) -> "btkWrench_impl *":
         """__deref__(self) -> btkWrench_impl *"""
         return _btk.btkWrench___deref__(self)
@@ -1713,7 +1622,6 @@ class btkWrench(_object):
         """
         return _btk.btkWrench_GetPosition(self)
 
-
     def SetPosition(self, arg2: 'btkPoint') -> "void":
         """
         SetPosition(self, btkPoint)
@@ -1721,7 +1629,6 @@ class btkWrench(_object):
         Sets the wrench's position.
         """
         return _btk.btkWrench_SetPosition(self, arg2)
-
 
     def GetForce(self) -> "btkPoint const":
         """
@@ -1731,7 +1638,6 @@ class btkWrench(_object):
         """
         return _btk.btkWrench_GetForce(self)
 
-
     def SetForce(self, arg2: 'btkPoint') -> "void":
         """
         SetForce(self, btkPoint)
@@ -1739,7 +1645,6 @@ class btkWrench(_object):
         Sets the wrench's moment.
         """
         return _btk.btkWrench_SetForce(self, arg2)
-
 
     def GetMoment(self) -> "btkPoint const":
         """
@@ -1749,11 +1654,9 @@ class btkWrench(_object):
         """
         return _btk.btkWrench_GetMoment(self)
 
-
     def SetMoment(self, arg2: 'btkPoint') -> "void":
         """SetMoment(self, btkPoint)"""
         return _btk.btkWrench_SetMoment(self, arg2)
-
 
     def GetComponent(self, arg2: 'int') -> "btkPoint":
         """
@@ -1763,7 +1666,6 @@ class btkWrench(_object):
         """
         return _btk.btkWrench_GetComponent(self, arg2)
 
-
     def SetFrameNumber(self, arg2: 'int') -> "void":
         """
         SetFrameNumber(self, int)
@@ -1771,7 +1673,6 @@ class btkWrench(_object):
         Set the number of frames in the wrenches. The given number of frames must be greater than 0.
         """
         return _btk.btkWrench_SetFrameNumber(self, arg2)
-
 
     def Update(self) -> "void":
         """
@@ -1781,7 +1682,6 @@ class btkWrench(_object):
         """
         return _btk.btkWrench_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -1790,8 +1690,10 @@ class btkWrench(_object):
         """
         return _btk.btkWrench_GetTimestamp(self)
 
+
 btkWrench_swigregister = _btk.btkWrench_swigregister
 btkWrench_swigregister(btkWrench)
+
 
 class btkIMU(_object):
     """
@@ -1814,12 +1716,12 @@ class btkIMU(_object):
 
     def __init__(self, *args, **kwargs):
         raise AttributeError("No constructor defined")
+
     __repr__ = _swig_repr
 
     def Clone(self) -> "btkIMU":
         """Clone(self) -> btkIMU"""
         return _btk.btkIMU_Clone(self)
-
 
     def __deref__(self) -> "btkIMU_impl *":
         """__deref__(self) -> btkIMU_impl *"""
@@ -1832,30 +1734,26 @@ class btkIMU(_object):
         """GetLabel(self) -> std::string const &"""
         return _btk.btkIMU_GetLabel(self)
 
-
     def SetLabel(self, arg2: 'std::string const &') -> "void":
         """SetLabel(self, arg2)"""
         return _btk.btkIMU_SetLabel(self, arg2)
-
 
     def GetDescription(self) -> "std::string const &":
         """GetDescription(self) -> std::string const &"""
         return _btk.btkIMU_GetDescription(self)
 
-
     def SetDescription(self, arg2: 'std::string const &') -> "void":
         """SetDescription(self, arg2)"""
         return _btk.btkIMU_SetDescription(self, arg2)
 
-
-    def SetChannels(self, arg2: 'btkAnalog', arg3: 'btkAnalog', arg4: 'btkAnalog', arg5: 'btkAnalog', arg6: 'btkAnalog', arg7: 'btkAnalog') -> "void":
+    def SetChannels(self, arg2: 'btkAnalog', arg3: 'btkAnalog', arg4: 'btkAnalog', arg5: 'btkAnalog', arg6: 'btkAnalog',
+                    arg7: 'btkAnalog') -> "void":
         """
         SetChannels(self, btkAnalog, btkAnalog, btkAnalog, btkAnalog, btkAnalog, btkAnalog)
 
         Sets the 6 first channels of the IMUs with the analog channels @a accX, @a accY, @a accZ, @a gyroX, @a gyroY, @a gyroZ.
         """
         return _btk.btkIMU_SetChannels(self, arg2, arg3, arg4, arg5, arg6, arg7)
-
 
     def GetChannels(self) -> "btkAnalogCollection":
         """
@@ -1865,7 +1763,6 @@ class btkIMU(_object):
         """
         return _btk.btkIMU_GetChannels(self)
 
-
     def SetChannel(self, arg2: 'int', arg3: 'btkAnalog') -> "void":
         """
         SetChannel(self, id, btkAnalog)
@@ -1873,7 +1770,6 @@ class btkIMU(_object):
         Sets an analog channel to the given ID. If an analog channel is already set to this ID, then it is replaced.
         """
         return _btk.btkIMU_SetChannel(self, arg2, arg3)
-
 
     def GetChannel(self, *args) -> "btkAnalog":
         """
@@ -1884,7 +1780,6 @@ class btkIMU(_object):
         """
         return _btk.btkIMU_GetChannel(self, *args)
 
-
     def GetChannelNumber(self) -> "int":
         """
         GetChannelNumber(self) -> int
@@ -1892,7 +1787,6 @@ class btkIMU(_object):
         Returns the number of analog channels associated to this IMU.
         """
         return _btk.btkIMU_GetChannelNumber(self)
-
 
     def GetType(self) -> "int":
         """
@@ -1902,7 +1796,6 @@ class btkIMU(_object):
         """
         return _btk.btkIMU_GetType(self)
 
-
     def GetFrameNumber(self) -> "int":
         """
         GetFrameNumber(self) -> int
@@ -1910,7 +1803,6 @@ class btkIMU(_object):
         Returns the number of frames set in this IMU.
         """
         return _btk.btkIMU_GetFrameNumber(self)
-
 
     def SetFrameNumber(self, fn: 'int') -> "void":
         """
@@ -1920,7 +1812,6 @@ class btkIMU(_object):
         """
         return _btk.btkIMU_SetFrameNumber(self, fn)
 
-
     def GetFrequency(self) -> "double":
         """
         GetFrequency(self) -> double
@@ -1928,7 +1819,6 @@ class btkIMU(_object):
         Returns the frequency set to the IMU. (by default it is 0 Hz).
         """
         return _btk.btkIMU_GetFrequency(self)
-
 
     def SetFrequency(self, f: 'double') -> "void":
         """
@@ -1938,16 +1828,13 @@ class btkIMU(_object):
         """
         return _btk.btkIMU_SetFrequency(self, f)
 
-
     def GetCalMatrix(self) -> "btk::IMU::CalMatrix const &":
         """GetCalMatrix(self) -> array (NumPy)"""
         return _btk.btkIMU_GetCalMatrix(self)
 
-
     def SetCalMatrix(self, arg2: 'btk::IMU::CalMatrix const &') -> "void":
         """SetCalMatrix(self, array)"""
         return _btk.btkIMU_SetCalMatrix(self, arg2)
-
 
     def GetAccelerometerX(self) -> "btkAnalog":
         """
@@ -1957,7 +1844,6 @@ class btkIMU(_object):
         """
         return _btk.btkIMU_GetAccelerometerX(self)
 
-
     def GetAccelerometerY(self) -> "btkAnalog":
         """
         GetAccelerometerY(self) -> btkAnalog
@@ -1965,7 +1851,6 @@ class btkIMU(_object):
         Convenient method to return the analog channel with the ID 1 (which should correspond to an accelerometer measuring data on the Y axis of the IMU).
         """
         return _btk.btkIMU_GetAccelerometerY(self)
-
 
     def GetAccelerometerZ(self) -> "btkAnalog":
         """
@@ -1975,7 +1860,6 @@ class btkIMU(_object):
         """
         return _btk.btkIMU_GetAccelerometerZ(self)
 
-
     def GetGyroscopeX(self) -> "btkAnalog":
         """
         GetGyroscopeX(self) -> btkAnalog
@@ -1983,7 +1867,6 @@ class btkIMU(_object):
         Convenient method to return the analog channel with the ID 3 (which should correspond to a gyroscope measuring data on the X axis of the IMU).
         """
         return _btk.btkIMU_GetGyroscopeX(self)
-
 
     def GetGyroscopeY(self) -> "btkAnalog":
         """
@@ -1993,7 +1876,6 @@ class btkIMU(_object):
         """
         return _btk.btkIMU_GetGyroscopeY(self)
 
-
     def GetGyroscopeZ(self) -> "btkAnalog":
         """
         GetGyroscopeZ(self) -> btkAnalog
@@ -2001,7 +1883,6 @@ class btkIMU(_object):
         Convenient method to return the analog channel with the ID 5 (which should correspond to a gyroscope measuring data on the Z axis of the IMU).
         """
         return _btk.btkIMU_GetGyroscopeZ(self)
-
 
     def Rotate(self, arg2: 'btk::IMU::Rotation const &') -> "void":
         """
@@ -2011,7 +1892,6 @@ class btkIMU(_object):
         """
         return _btk.btkIMU_Rotate(self, arg2)
 
-
     def Update(self) -> "void":
         """
         Update(self)
@@ -2020,7 +1900,6 @@ class btkIMU(_object):
         """
         return _btk.btkIMU_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -2028,6 +1907,7 @@ class btkIMU(_object):
         Returns the timestamp of the object.
         """
         return _btk.btkIMU_GetTimestamp(self)
+
 
 btkIMU_swigregister = _btk.btkIMU_swigregister
 btkIMU_swigregister(btkIMU)
@@ -2045,6 +1925,7 @@ def btkIMUType1(*args) -> "btkIMU":
     """
     return _btk.btkIMUType1(*args)
 
+
 def btkIMUType2(*args) -> "btkIMU":
     """
     btkIMUType2(label, desc, init=True) -> btkIMU
@@ -2056,6 +1937,8 @@ def btkIMUType2(*args) -> "btkIMU":
     IMU 6D (same as Type 1) with a calibration matrix used to align sensors (accelerometers and gyroscopes) on the same inertial reference frame.
     """
     return _btk.btkIMUType2(*args)
+
+
 class btkEventCollectionIterator(_object):
     """Proxy of C++ btkEventCollectionIterator class."""
 
@@ -2077,21 +1960,17 @@ class btkEventCollectionIterator(_object):
         """incr(self)"""
         return _btk.btkEventCollectionIterator_incr(self)
 
-
     def decr(self) -> "void":
         """decr(self)"""
         return _btk.btkEventCollectionIterator_decr(self)
-
 
     def value(self) -> "btkEvent":
         """value(self) -> btkEvent"""
         return _btk.btkEventCollectionIterator_value(self)
 
-
     def __eq__(self, rhs: 'btkEventCollectionIterator') -> "bool":
         """__eq__(self, rhs) -> bool"""
         return _btk.btkEventCollectionIterator___eq__(self, rhs)
-
 
     def __ne__(self, rhs: 'btkEventCollectionIterator') -> "bool":
         """__ne__(self, rhs) -> bool"""
@@ -2099,8 +1978,11 @@ class btkEventCollectionIterator(_object):
 
     __swig_destroy__ = _btk.delete_btkEventCollectionIterator
     __del__ = lambda self: None
+
+
 btkEventCollectionIterator_swigregister = _btk.btkEventCollectionIterator_swigregister
 btkEventCollectionIterator_swigregister(btkEventCollectionIterator)
+
 
 class btkEventCollection(_object):
     """
@@ -2135,7 +2017,6 @@ class btkEventCollection(_object):
         """
         return _btk.btkEventCollection_Clone(self)
 
-
     def __deref__(self) -> "btkEventCollection_impl *":
         """__deref__(self) -> btkEventCollection_impl *"""
         return _btk.btkEventCollection___deref__(self)
@@ -2151,7 +2032,6 @@ class btkEventCollection(_object):
         """
         return _btk.btkEventCollection_Begin(self)
 
-
     def End(self) -> "btkEventCollection_impl::Iterator":
         """
         End(self) -> btkEventIterator
@@ -2159,7 +2039,6 @@ class btkEventCollection(_object):
         Returns an iterator just past the last item.
         """
         return _btk.btkEventCollection_End(self)
-
 
     def IsEmpty(self) -> "bool":
         """
@@ -2169,7 +2048,6 @@ class btkEventCollection(_object):
         """
         return _btk.btkEventCollection_IsEmpty(self)
 
-
     def GetItemNumber(self) -> "int":
         """
         GetItemNumber(self) -> int
@@ -2177,7 +2055,6 @@ class btkEventCollection(_object):
         Returns the number of events
         """
         return _btk.btkEventCollection_GetItemNumber(self)
-
 
     def SetItemNumber(self, arg2: 'int') -> "void":
         """
@@ -2187,7 +2064,6 @@ class btkEventCollection(_object):
         """
         return _btk.btkEventCollection_SetItemNumber(self, arg2)
 
-
     def GetIndexOf(self, arg2: 'btkEvent') -> "int":
         """
         GetIndexOf(self, int) -> btkEvent
@@ -2196,7 +2072,6 @@ class btkEventCollection(_object):
         """
         return _btk.btkEventCollection_GetIndexOf(self, arg2)
 
-
     def GetItem(self, arg2: 'int') -> "btkEventCollection_impl::ItemPointer":
         """
         GetItem(self, int) -> btkEvent
@@ -2204,7 +2079,6 @@ class btkEventCollection(_object):
         Returns the event for the given index.
         """
         return _btk.btkEventCollection_GetItem(self, arg2)
-
 
     def InsertItem(self, *args) -> "bool":
         """
@@ -2216,7 +2090,6 @@ class btkEventCollection(_object):
         """
         return _btk.btkEventCollection_InsertItem(self, *args)
 
-
     def SetItem(self, arg2: 'int', arg3: 'btkEvent') -> "bool":
         """
         SetItem(self, int) -> btkEvent
@@ -2224,7 +2097,6 @@ class btkEventCollection(_object):
         Sets an event.
         """
         return _btk.btkEventCollection_SetItem(self, arg2, arg3)
-
 
     def RemoveItem(self, *args) -> "void":
         """
@@ -2235,7 +2107,6 @@ class btkEventCollection(_object):
         """
         return _btk.btkEventCollection_RemoveItem(self, *args)
 
-
     def TakeItem(self, *args) -> "btkEventCollection_impl::ItemPointer":
         """
         TakeItem(self, btkEventIterator) -> btkEvent
@@ -2245,7 +2116,6 @@ class btkEventCollection(_object):
         """
         return _btk.btkEventCollection_TakeItem(self, *args)
 
-
     def Clear(self) -> "void":
         """
         Clear(self)
@@ -2253,7 +2123,6 @@ class btkEventCollection(_object):
         Clear the contents of the collection.
         """
         return _btk.btkEventCollection_Clear(self)
-
 
     def Update(self) -> "void":
         """
@@ -2263,7 +2132,6 @@ class btkEventCollection(_object):
         """
         return _btk.btkEventCollection_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -2272,8 +2140,10 @@ class btkEventCollection(_object):
         """
         return _btk.btkEventCollection_GetTimestamp(self)
 
+
 btkEventCollection_swigregister = _btk.btkEventCollection_swigregister
 btkEventCollection_swigregister(btkEventCollection)
+
 
 class btkAnalogCollectionIterator(_object):
     """Proxy of C++ btkAnalogCollectionIterator class."""
@@ -2296,21 +2166,17 @@ class btkAnalogCollectionIterator(_object):
         """incr(self)"""
         return _btk.btkAnalogCollectionIterator_incr(self)
 
-
     def decr(self) -> "void":
         """decr(self)"""
         return _btk.btkAnalogCollectionIterator_decr(self)
-
 
     def value(self) -> "btkAnalog":
         """value(self) -> btkAnalog"""
         return _btk.btkAnalogCollectionIterator_value(self)
 
-
     def __eq__(self, rhs: 'btkAnalogCollectionIterator') -> "bool":
         """__eq__(self, rhs) -> bool"""
         return _btk.btkAnalogCollectionIterator___eq__(self, rhs)
-
 
     def __ne__(self, rhs: 'btkAnalogCollectionIterator') -> "bool":
         """__ne__(self, rhs) -> bool"""
@@ -2318,8 +2184,11 @@ class btkAnalogCollectionIterator(_object):
 
     __swig_destroy__ = _btk.delete_btkAnalogCollectionIterator
     __del__ = lambda self: None
+
+
 btkAnalogCollectionIterator_swigregister = _btk.btkAnalogCollectionIterator_swigregister
 btkAnalogCollectionIterator_swigregister(btkAnalogCollectionIterator)
+
 
 class btkAnalogCollection(_object):
     """
@@ -2354,7 +2223,6 @@ class btkAnalogCollection(_object):
         """
         return _btk.btkAnalogCollection_Clone(self)
 
-
     def __deref__(self) -> "btkAnalogCollection_impl *":
         """__deref__(self) -> btkAnalogCollection_impl *"""
         return _btk.btkAnalogCollection___deref__(self)
@@ -2370,7 +2238,6 @@ class btkAnalogCollection(_object):
         """
         return _btk.btkAnalogCollection_Begin(self)
 
-
     def End(self) -> "btkAnalogCollection_impl::Iterator":
         """
         End(self) -> btkAnalogIterator
@@ -2378,7 +2245,6 @@ class btkAnalogCollection(_object):
         Returns an iterator just past the last item.
         """
         return _btk.btkAnalogCollection_End(self)
-
 
     def IsEmpty(self) -> "bool":
         """
@@ -2388,7 +2254,6 @@ class btkAnalogCollection(_object):
         """
         return _btk.btkAnalogCollection_IsEmpty(self)
 
-
     def GetItemNumber(self) -> "int":
         """
         GetItemNumber(self) -> int
@@ -2396,7 +2261,6 @@ class btkAnalogCollection(_object):
         Returns the number of analog channels
         """
         return _btk.btkAnalogCollection_GetItemNumber(self)
-
 
     def SetItemNumber(self, arg2: 'int') -> "void":
         """
@@ -2406,7 +2270,6 @@ class btkAnalogCollection(_object):
         """
         return _btk.btkAnalogCollection_SetItemNumber(self, arg2)
 
-
     def GetIndexOf(self, arg2: 'btkAnalog') -> "int":
         """
         GetIndexOf(self, int) -> btkAnalog
@@ -2415,7 +2278,6 @@ class btkAnalogCollection(_object):
         """
         return _btk.btkAnalogCollection_GetIndexOf(self, arg2)
 
-
     def GetItem(self, arg2: 'int') -> "btkAnalogCollection_impl::ItemPointer":
         """
         GetItem(self, int) -> btkAnalog
@@ -2423,7 +2285,6 @@ class btkAnalogCollection(_object):
         Returns the analog channel for the given index.
         """
         return _btk.btkAnalogCollection_GetItem(self, arg2)
-
 
     def InsertItem(self, *args) -> "bool":
         """
@@ -2435,7 +2296,6 @@ class btkAnalogCollection(_object):
         """
         return _btk.btkAnalogCollection_InsertItem(self, *args)
 
-
     def SetItem(self, arg2: 'int', arg3: 'btkAnalog') -> "bool":
         """
         SetItem(self, int) -> btkAnalog
@@ -2443,7 +2303,6 @@ class btkAnalogCollection(_object):
         Sets an analog channel.
         """
         return _btk.btkAnalogCollection_SetItem(self, arg2, arg3)
-
 
     def RemoveItem(self, *args) -> "void":
         """
@@ -2454,7 +2313,6 @@ class btkAnalogCollection(_object):
         """
         return _btk.btkAnalogCollection_RemoveItem(self, *args)
 
-
     def TakeItem(self, *args) -> "btkAnalogCollection_impl::ItemPointer":
         """
         TakeItem(self, btkAnalogIterator) -> btkAnalog
@@ -2464,7 +2322,6 @@ class btkAnalogCollection(_object):
         """
         return _btk.btkAnalogCollection_TakeItem(self, *args)
 
-
     def Clear(self) -> "void":
         """
         Clear(self)
@@ -2472,7 +2329,6 @@ class btkAnalogCollection(_object):
         Clear the contents of the collection.
         """
         return _btk.btkAnalogCollection_Clear(self)
-
 
     def Update(self) -> "void":
         """
@@ -2482,7 +2338,6 @@ class btkAnalogCollection(_object):
         """
         return _btk.btkAnalogCollection_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -2491,8 +2346,10 @@ class btkAnalogCollection(_object):
         """
         return _btk.btkAnalogCollection_GetTimestamp(self)
 
+
 btkAnalogCollection_swigregister = _btk.btkAnalogCollection_swigregister
 btkAnalogCollection_swigregister(btkAnalogCollection)
+
 
 class btkPointCollectionIterator(_object):
     """Proxy of C++ btkPointCollectionIterator class."""
@@ -2515,21 +2372,17 @@ class btkPointCollectionIterator(_object):
         """incr(self)"""
         return _btk.btkPointCollectionIterator_incr(self)
 
-
     def decr(self) -> "void":
         """decr(self)"""
         return _btk.btkPointCollectionIterator_decr(self)
-
 
     def value(self) -> "btkPoint":
         """value(self) -> btkPoint"""
         return _btk.btkPointCollectionIterator_value(self)
 
-
     def __eq__(self, rhs: 'btkPointCollectionIterator') -> "bool":
         """__eq__(self, rhs) -> bool"""
         return _btk.btkPointCollectionIterator___eq__(self, rhs)
-
 
     def __ne__(self, rhs: 'btkPointCollectionIterator') -> "bool":
         """__ne__(self, rhs) -> bool"""
@@ -2537,8 +2390,11 @@ class btkPointCollectionIterator(_object):
 
     __swig_destroy__ = _btk.delete_btkPointCollectionIterator
     __del__ = lambda self: None
+
+
 btkPointCollectionIterator_swigregister = _btk.btkPointCollectionIterator_swigregister
 btkPointCollectionIterator_swigregister(btkPointCollectionIterator)
+
 
 class btkPointCollection(_object):
     """
@@ -2573,7 +2429,6 @@ class btkPointCollection(_object):
         """
         return _btk.btkPointCollection_Clone(self)
 
-
     def __deref__(self) -> "btkPointCollection_impl *":
         """__deref__(self) -> btkPointCollection_impl *"""
         return _btk.btkPointCollection___deref__(self)
@@ -2589,7 +2444,6 @@ class btkPointCollection(_object):
         """
         return _btk.btkPointCollection_Begin(self)
 
-
     def End(self) -> "btkPointCollection_impl::Iterator":
         """
         End(self) -> btkPointIterator
@@ -2597,7 +2451,6 @@ class btkPointCollection(_object):
         Returns an iterator just past the last item.
         """
         return _btk.btkPointCollection_End(self)
-
 
     def IsEmpty(self) -> "bool":
         """
@@ -2607,7 +2460,6 @@ class btkPointCollection(_object):
         """
         return _btk.btkPointCollection_IsEmpty(self)
 
-
     def GetItemNumber(self) -> "int":
         """
         GetItemNumber(self) -> int
@@ -2615,7 +2467,6 @@ class btkPointCollection(_object):
         Returns the number of points
         """
         return _btk.btkPointCollection_GetItemNumber(self)
-
 
     def SetItemNumber(self, arg2: 'int') -> "void":
         """
@@ -2625,7 +2476,6 @@ class btkPointCollection(_object):
         """
         return _btk.btkPointCollection_SetItemNumber(self, arg2)
 
-
     def GetIndexOf(self, arg2: 'btkPoint') -> "int":
         """
         GetIndexOf(self, int) -> btkPoint
@@ -2634,7 +2484,6 @@ class btkPointCollection(_object):
         """
         return _btk.btkPointCollection_GetIndexOf(self, arg2)
 
-
     def GetItem(self, arg2: 'int') -> "btkPointCollection_impl::ItemPointer":
         """
         GetItem(self, int) -> btkPoint
@@ -2642,7 +2491,6 @@ class btkPointCollection(_object):
         Returns the point for the given index.
         """
         return _btk.btkPointCollection_GetItem(self, arg2)
-
 
     def InsertItem(self, *args) -> "bool":
         """
@@ -2654,7 +2502,6 @@ class btkPointCollection(_object):
         """
         return _btk.btkPointCollection_InsertItem(self, *args)
 
-
     def SetItem(self, arg2: 'int', arg3: 'btkPoint') -> "bool":
         """
         SetItem(self, int) -> btkPoint
@@ -2662,7 +2509,6 @@ class btkPointCollection(_object):
         Sets a point.
         """
         return _btk.btkPointCollection_SetItem(self, arg2, arg3)
-
 
     def RemoveItem(self, *args) -> "void":
         """
@@ -2673,7 +2519,6 @@ class btkPointCollection(_object):
         """
         return _btk.btkPointCollection_RemoveItem(self, *args)
 
-
     def TakeItem(self, *args) -> "btkPointCollection_impl::ItemPointer":
         """
         TakeItem(self, btkPointIterator) -> btkPoint
@@ -2683,7 +2528,6 @@ class btkPointCollection(_object):
         """
         return _btk.btkPointCollection_TakeItem(self, *args)
 
-
     def Clear(self) -> "void":
         """
         Clear(self)
@@ -2691,7 +2535,6 @@ class btkPointCollection(_object):
         Clear the contents of the collection.
         """
         return _btk.btkPointCollection_Clear(self)
-
 
     def Update(self) -> "void":
         """
@@ -2701,7 +2544,6 @@ class btkPointCollection(_object):
         """
         return _btk.btkPointCollection_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -2710,8 +2552,10 @@ class btkPointCollection(_object):
         """
         return _btk.btkPointCollection_GetTimestamp(self)
 
+
 btkPointCollection_swigregister = _btk.btkPointCollection_swigregister
 btkPointCollection_swigregister(btkPointCollection)
+
 
 class btkForcePlatformCollectionIterator(_object):
     """Proxy of C++ btkForcePlatformCollectionIterator class."""
@@ -2734,21 +2578,17 @@ class btkForcePlatformCollectionIterator(_object):
         """incr(self)"""
         return _btk.btkForcePlatformCollectionIterator_incr(self)
 
-
     def decr(self) -> "void":
         """decr(self)"""
         return _btk.btkForcePlatformCollectionIterator_decr(self)
-
 
     def value(self) -> "btkForcePlatform":
         """value(self) -> btkForcePlatform"""
         return _btk.btkForcePlatformCollectionIterator_value(self)
 
-
     def __eq__(self, rhs: 'btkForcePlatformCollectionIterator') -> "bool":
         """__eq__(self, rhs) -> bool"""
         return _btk.btkForcePlatformCollectionIterator___eq__(self, rhs)
-
 
     def __ne__(self, rhs: 'btkForcePlatformCollectionIterator') -> "bool":
         """__ne__(self, rhs) -> bool"""
@@ -2756,8 +2596,11 @@ class btkForcePlatformCollectionIterator(_object):
 
     __swig_destroy__ = _btk.delete_btkForcePlatformCollectionIterator
     __del__ = lambda self: None
+
+
 btkForcePlatformCollectionIterator_swigregister = _btk.btkForcePlatformCollectionIterator_swigregister
 btkForcePlatformCollectionIterator_swigregister(btkForcePlatformCollectionIterator)
+
 
 class btkForcePlatformCollection(_object):
     """
@@ -2792,7 +2635,6 @@ class btkForcePlatformCollection(_object):
         """
         return _btk.btkForcePlatformCollection_Clone(self)
 
-
     def __deref__(self) -> "btkForcePlatformCollection_impl *":
         """__deref__(self) -> btkForcePlatformCollection_impl *"""
         return _btk.btkForcePlatformCollection___deref__(self)
@@ -2808,7 +2650,6 @@ class btkForcePlatformCollection(_object):
         """
         return _btk.btkForcePlatformCollection_Begin(self)
 
-
     def End(self) -> "btkForcePlatformCollection_impl::Iterator":
         """
         End(self) -> btkForcePlatformIterator
@@ -2816,7 +2657,6 @@ class btkForcePlatformCollection(_object):
         Returns an iterator just past the last item.
         """
         return _btk.btkForcePlatformCollection_End(self)
-
 
     def IsEmpty(self) -> "bool":
         """
@@ -2826,7 +2666,6 @@ class btkForcePlatformCollection(_object):
         """
         return _btk.btkForcePlatformCollection_IsEmpty(self)
 
-
     def GetItemNumber(self) -> "int":
         """
         GetItemNumber(self) -> int
@@ -2834,7 +2673,6 @@ class btkForcePlatformCollection(_object):
         Returns the number of force platforms
         """
         return _btk.btkForcePlatformCollection_GetItemNumber(self)
-
 
     def SetItemNumber(self, arg2: 'int') -> "void":
         """
@@ -2844,7 +2682,6 @@ class btkForcePlatformCollection(_object):
         """
         return _btk.btkForcePlatformCollection_SetItemNumber(self, arg2)
 
-
     def GetIndexOf(self, arg2: 'btkForcePlatform') -> "int":
         """
         GetIndexOf(self, int) -> btkForcePlatform
@@ -2853,7 +2690,6 @@ class btkForcePlatformCollection(_object):
         """
         return _btk.btkForcePlatformCollection_GetIndexOf(self, arg2)
 
-
     def GetItem(self, arg2: 'int') -> "btkForcePlatformCollection_impl::ItemPointer":
         """
         GetItem(self, int) -> btkForcePlatform
@@ -2861,7 +2697,6 @@ class btkForcePlatformCollection(_object):
         Returns the force platform for the given index.
         """
         return _btk.btkForcePlatformCollection_GetItem(self, arg2)
-
 
     def InsertItem(self, *args) -> "bool":
         """
@@ -2873,7 +2708,6 @@ class btkForcePlatformCollection(_object):
         """
         return _btk.btkForcePlatformCollection_InsertItem(self, *args)
 
-
     def SetItem(self, arg2: 'int', arg3: 'btkForcePlatform') -> "bool":
         """
         SetItem(self, int) -> btkForcePlatform
@@ -2881,7 +2715,6 @@ class btkForcePlatformCollection(_object):
         Sets a force platform.
         """
         return _btk.btkForcePlatformCollection_SetItem(self, arg2, arg3)
-
 
     def RemoveItem(self, *args) -> "void":
         """
@@ -2892,7 +2725,6 @@ class btkForcePlatformCollection(_object):
         """
         return _btk.btkForcePlatformCollection_RemoveItem(self, *args)
 
-
     def TakeItem(self, *args) -> "btkForcePlatformCollection_impl::ItemPointer":
         """
         TakeItem(self, btkForcePlatformIterator) -> btkForcePlatform
@@ -2902,7 +2734,6 @@ class btkForcePlatformCollection(_object):
         """
         return _btk.btkForcePlatformCollection_TakeItem(self, *args)
 
-
     def Clear(self) -> "void":
         """
         Clear(self)
@@ -2910,7 +2741,6 @@ class btkForcePlatformCollection(_object):
         Clear the contents of the collection.
         """
         return _btk.btkForcePlatformCollection_Clear(self)
-
 
     def Update(self) -> "void":
         """
@@ -2920,7 +2750,6 @@ class btkForcePlatformCollection(_object):
         """
         return _btk.btkForcePlatformCollection_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -2929,8 +2758,10 @@ class btkForcePlatformCollection(_object):
         """
         return _btk.btkForcePlatformCollection_GetTimestamp(self)
 
+
 btkForcePlatformCollection_swigregister = _btk.btkForcePlatformCollection_swigregister
 btkForcePlatformCollection_swigregister(btkForcePlatformCollection)
+
 
 class btkWrenchCollectionIterator(_object):
     """Proxy of C++ btkWrenchCollectionIterator class."""
@@ -2953,21 +2784,17 @@ class btkWrenchCollectionIterator(_object):
         """incr(self)"""
         return _btk.btkWrenchCollectionIterator_incr(self)
 
-
     def decr(self) -> "void":
         """decr(self)"""
         return _btk.btkWrenchCollectionIterator_decr(self)
-
 
     def value(self) -> "btkWrench":
         """value(self) -> btkWrench"""
         return _btk.btkWrenchCollectionIterator_value(self)
 
-
     def __eq__(self, rhs: 'btkWrenchCollectionIterator') -> "bool":
         """__eq__(self, rhs) -> bool"""
         return _btk.btkWrenchCollectionIterator___eq__(self, rhs)
-
 
     def __ne__(self, rhs: 'btkWrenchCollectionIterator') -> "bool":
         """__ne__(self, rhs) -> bool"""
@@ -2975,8 +2802,11 @@ class btkWrenchCollectionIterator(_object):
 
     __swig_destroy__ = _btk.delete_btkWrenchCollectionIterator
     __del__ = lambda self: None
+
+
 btkWrenchCollectionIterator_swigregister = _btk.btkWrenchCollectionIterator_swigregister
 btkWrenchCollectionIterator_swigregister(btkWrenchCollectionIterator)
+
 
 class btkWrenchCollection(_object):
     """
@@ -3011,7 +2841,6 @@ class btkWrenchCollection(_object):
         """
         return _btk.btkWrenchCollection_Clone(self)
 
-
     def __deref__(self) -> "btkWrenchCollection_impl *":
         """__deref__(self) -> btkWrenchCollection_impl *"""
         return _btk.btkWrenchCollection___deref__(self)
@@ -3027,7 +2856,6 @@ class btkWrenchCollection(_object):
         """
         return _btk.btkWrenchCollection_Begin(self)
 
-
     def End(self) -> "btkWrenchCollection_impl::Iterator":
         """
         End(self) -> btkWrenchIterator
@@ -3035,7 +2863,6 @@ class btkWrenchCollection(_object):
         Returns an iterator just past the last item.
         """
         return _btk.btkWrenchCollection_End(self)
-
 
     def IsEmpty(self) -> "bool":
         """
@@ -3045,7 +2872,6 @@ class btkWrenchCollection(_object):
         """
         return _btk.btkWrenchCollection_IsEmpty(self)
 
-
     def GetItemNumber(self) -> "int":
         """
         GetItemNumber(self) -> int
@@ -3053,7 +2879,6 @@ class btkWrenchCollection(_object):
         Returns the number of wrenches
         """
         return _btk.btkWrenchCollection_GetItemNumber(self)
-
 
     def SetItemNumber(self, arg2: 'int') -> "void":
         """
@@ -3063,7 +2888,6 @@ class btkWrenchCollection(_object):
         """
         return _btk.btkWrenchCollection_SetItemNumber(self, arg2)
 
-
     def GetIndexOf(self, arg2: 'btkWrench') -> "int":
         """
         GetIndexOf(self, int) -> btkWrench
@@ -3072,7 +2896,6 @@ class btkWrenchCollection(_object):
         """
         return _btk.btkWrenchCollection_GetIndexOf(self, arg2)
 
-
     def GetItem(self, arg2: 'int') -> "btkWrenchCollection_impl::ItemPointer":
         """
         GetItem(self, int) -> btkWrench
@@ -3080,7 +2903,6 @@ class btkWrenchCollection(_object):
         Returns the wrench for the given index.
         """
         return _btk.btkWrenchCollection_GetItem(self, arg2)
-
 
     def InsertItem(self, *args) -> "bool":
         """
@@ -3092,7 +2914,6 @@ class btkWrenchCollection(_object):
         """
         return _btk.btkWrenchCollection_InsertItem(self, *args)
 
-
     def SetItem(self, arg2: 'int', arg3: 'btkWrench') -> "bool":
         """
         SetItem(self, int) -> btkWrench
@@ -3100,7 +2921,6 @@ class btkWrenchCollection(_object):
         Sets a wrench.
         """
         return _btk.btkWrenchCollection_SetItem(self, arg2, arg3)
-
 
     def RemoveItem(self, *args) -> "void":
         """
@@ -3111,7 +2931,6 @@ class btkWrenchCollection(_object):
         """
         return _btk.btkWrenchCollection_RemoveItem(self, *args)
 
-
     def TakeItem(self, *args) -> "btkWrenchCollection_impl::ItemPointer":
         """
         TakeItem(self, btkWrenchIterator) -> btkWrench
@@ -3121,7 +2940,6 @@ class btkWrenchCollection(_object):
         """
         return _btk.btkWrenchCollection_TakeItem(self, *args)
 
-
     def Clear(self) -> "void":
         """
         Clear(self)
@@ -3129,7 +2947,6 @@ class btkWrenchCollection(_object):
         Clear the contents of the collection.
         """
         return _btk.btkWrenchCollection_Clear(self)
-
 
     def Update(self) -> "void":
         """
@@ -3139,7 +2956,6 @@ class btkWrenchCollection(_object):
         """
         return _btk.btkWrenchCollection_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -3148,8 +2964,10 @@ class btkWrenchCollection(_object):
         """
         return _btk.btkWrenchCollection_GetTimestamp(self)
 
+
 btkWrenchCollection_swigregister = _btk.btkWrenchCollection_swigregister
 btkWrenchCollection_swigregister(btkWrenchCollection)
+
 
 class btkIMUCollectionIterator(_object):
     """Proxy of C++ btkIMUCollectionIterator class."""
@@ -3172,21 +2990,17 @@ class btkIMUCollectionIterator(_object):
         """incr(self)"""
         return _btk.btkIMUCollectionIterator_incr(self)
 
-
     def decr(self) -> "void":
         """decr(self)"""
         return _btk.btkIMUCollectionIterator_decr(self)
-
 
     def value(self) -> "btkIMU":
         """value(self) -> btkIMU"""
         return _btk.btkIMUCollectionIterator_value(self)
 
-
     def __eq__(self, rhs: 'btkIMUCollectionIterator') -> "bool":
         """__eq__(self, rhs) -> bool"""
         return _btk.btkIMUCollectionIterator___eq__(self, rhs)
-
 
     def __ne__(self, rhs: 'btkIMUCollectionIterator') -> "bool":
         """__ne__(self, rhs) -> bool"""
@@ -3194,8 +3008,11 @@ class btkIMUCollectionIterator(_object):
 
     __swig_destroy__ = _btk.delete_btkIMUCollectionIterator
     __del__ = lambda self: None
+
+
 btkIMUCollectionIterator_swigregister = _btk.btkIMUCollectionIterator_swigregister
 btkIMUCollectionIterator_swigregister(btkIMUCollectionIterator)
+
 
 class btkIMUCollection(_object):
     """
@@ -3230,7 +3047,6 @@ class btkIMUCollection(_object):
         """
         return _btk.btkIMUCollection_Clone(self)
 
-
     def __deref__(self) -> "btkIMUCollection_impl *":
         """__deref__(self) -> btkIMUCollection_impl *"""
         return _btk.btkIMUCollection___deref__(self)
@@ -3246,7 +3062,6 @@ class btkIMUCollection(_object):
         """
         return _btk.btkIMUCollection_Begin(self)
 
-
     def End(self) -> "btkIMUCollection_impl::Iterator":
         """
         End(self) -> btkIMUIterator
@@ -3254,7 +3069,6 @@ class btkIMUCollection(_object):
         Returns an iterator just past the last item.
         """
         return _btk.btkIMUCollection_End(self)
-
 
     def IsEmpty(self) -> "bool":
         """
@@ -3264,7 +3078,6 @@ class btkIMUCollection(_object):
         """
         return _btk.btkIMUCollection_IsEmpty(self)
 
-
     def GetItemNumber(self) -> "int":
         """
         GetItemNumber(self) -> int
@@ -3272,7 +3085,6 @@ class btkIMUCollection(_object):
         Returns the number of IMUs
         """
         return _btk.btkIMUCollection_GetItemNumber(self)
-
 
     def SetItemNumber(self, arg2: 'int') -> "void":
         """
@@ -3282,7 +3094,6 @@ class btkIMUCollection(_object):
         """
         return _btk.btkIMUCollection_SetItemNumber(self, arg2)
 
-
     def GetIndexOf(self, arg2: 'btkIMU') -> "int":
         """
         GetIndexOf(self, int) -> btkIMU
@@ -3291,7 +3102,6 @@ class btkIMUCollection(_object):
         """
         return _btk.btkIMUCollection_GetIndexOf(self, arg2)
 
-
     def GetItem(self, arg2: 'int') -> "btkIMUCollection_impl::ItemPointer":
         """
         GetItem(self, int) -> btkIMU
@@ -3299,7 +3109,6 @@ class btkIMUCollection(_object):
         Returns the IMU for the given index.
         """
         return _btk.btkIMUCollection_GetItem(self, arg2)
-
 
     def InsertItem(self, *args) -> "bool":
         """
@@ -3311,7 +3120,6 @@ class btkIMUCollection(_object):
         """
         return _btk.btkIMUCollection_InsertItem(self, *args)
 
-
     def SetItem(self, arg2: 'int', arg3: 'btkIMU') -> "bool":
         """
         SetItem(self, int) -> btkIMU
@@ -3319,7 +3127,6 @@ class btkIMUCollection(_object):
         Sets an IMU.
         """
         return _btk.btkIMUCollection_SetItem(self, arg2, arg3)
-
 
     def RemoveItem(self, *args) -> "void":
         """
@@ -3330,7 +3137,6 @@ class btkIMUCollection(_object):
         """
         return _btk.btkIMUCollection_RemoveItem(self, *args)
 
-
     def TakeItem(self, *args) -> "btkIMUCollection_impl::ItemPointer":
         """
         TakeItem(self, btkIMUIterator) -> btkIMU
@@ -3340,7 +3146,6 @@ class btkIMUCollection(_object):
         """
         return _btk.btkIMUCollection_TakeItem(self, *args)
 
-
     def Clear(self) -> "void":
         """
         Clear(self)
@@ -3348,7 +3153,6 @@ class btkIMUCollection(_object):
         Clear the contents of the collection.
         """
         return _btk.btkIMUCollection_Clear(self)
-
 
     def Update(self) -> "void":
         """
@@ -3358,7 +3162,6 @@ class btkIMUCollection(_object):
         """
         return _btk.btkIMUCollection_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -3367,8 +3170,10 @@ class btkIMUCollection(_object):
         """
         return _btk.btkIMUCollection_GetTimestamp(self)
 
+
 btkIMUCollection_swigregister = _btk.btkIMUCollection_swigregister
 btkIMUCollection_swigregister(btkIMUCollection)
+
 
 class btkStringArray(_object):
     """Proxy of C++ std::vector<(std::string)> class."""
@@ -3390,21 +3195,18 @@ class btkStringArray(_object):
         """__nonzero__(self) -> bool"""
         return _btk.btkStringArray___nonzero__(self)
 
-
     def __bool__(self) -> "bool":
         """__bool__(self) -> bool"""
         return _btk.btkStringArray___bool__(self)
-
 
     def __len__(self) -> "std::vector< std::string >::size_type":
         """__len__(self) -> std::vector< std::string >::size_type"""
         return _btk.btkStringArray___len__(self)
 
-
-    def __getslice__(self, i: 'std::vector< std::string >::difference_type', j: 'std::vector< std::string >::difference_type') -> "std::vector< std::string,std::allocator< std::string > > *":
+    def __getslice__(self, i: 'std::vector< std::string >::difference_type',
+                     j: 'std::vector< std::string >::difference_type') -> "std::vector< std::string,std::allocator< std::string > > *":
         """__getslice__(self, i, j) -> btkStringArray"""
         return _btk.btkStringArray___getslice__(self, i, j)
-
 
     def __setslice__(self, *args) -> "void":
         """
@@ -3413,11 +3215,10 @@ class btkStringArray(_object):
         """
         return _btk.btkStringArray___setslice__(self, *args)
 
-
-    def __delslice__(self, i: 'std::vector< std::string >::difference_type', j: 'std::vector< std::string >::difference_type') -> "void":
+    def __delslice__(self, i: 'std::vector< std::string >::difference_type',
+                     j: 'std::vector< std::string >::difference_type') -> "void":
         """__delslice__(self, i, j)"""
         return _btk.btkStringArray___delslice__(self, i, j)
-
 
     def __delitem__(self, *args) -> "void":
         """
@@ -3426,14 +3227,12 @@ class btkStringArray(_object):
         """
         return _btk.btkStringArray___delitem__(self, *args)
 
-
     def __getitem__(self, *args) -> "std::vector< std::string >::value_type const &":
         """
         __getitem__(self, slice) -> btkStringArray
         __getitem__(self, i) -> std::vector< std::string >::value_type const &
         """
         return _btk.btkStringArray___getitem__(self, *args)
-
 
     def __setitem__(self, *args) -> "void":
         """
@@ -3443,66 +3242,53 @@ class btkStringArray(_object):
         """
         return _btk.btkStringArray___setitem__(self, *args)
 
-
     def pop(self) -> "std::vector< std::string >::value_type":
         """pop(self) -> std::vector< std::string >::value_type"""
         return _btk.btkStringArray_pop(self)
-
 
     def append(self, x: 'std::vector< std::string >::value_type const &') -> "void":
         """append(self, x)"""
         return _btk.btkStringArray_append(self, x)
 
-
     def empty(self) -> "bool":
         """empty(self) -> bool"""
         return _btk.btkStringArray_empty(self)
-
 
     def size(self) -> "std::vector< std::string >::size_type":
         """size(self) -> std::vector< std::string >::size_type"""
         return _btk.btkStringArray_size(self)
 
-
     def swap(self, v: 'btkStringArray') -> "void":
         """swap(self, v)"""
         return _btk.btkStringArray_swap(self, v)
-
 
     def begin(self) -> "std::vector< std::string >::iterator":
         """begin(self) -> std::vector< std::string >::iterator"""
         return _btk.btkStringArray_begin(self)
 
-
     def end(self) -> "std::vector< std::string >::iterator":
         """end(self) -> std::vector< std::string >::iterator"""
         return _btk.btkStringArray_end(self)
-
 
     def rbegin(self) -> "std::vector< std::string >::reverse_iterator":
         """rbegin(self) -> std::vector< std::string >::reverse_iterator"""
         return _btk.btkStringArray_rbegin(self)
 
-
     def rend(self) -> "std::vector< std::string >::reverse_iterator":
         """rend(self) -> std::vector< std::string >::reverse_iterator"""
         return _btk.btkStringArray_rend(self)
-
 
     def clear(self) -> "void":
         """clear(self)"""
         return _btk.btkStringArray_clear(self)
 
-
     def get_allocator(self) -> "std::vector< std::string >::allocator_type":
         """get_allocator(self) -> std::vector< std::string >::allocator_type"""
         return _btk.btkStringArray_get_allocator(self)
 
-
     def pop_back(self) -> "void":
         """pop_back(self)"""
         return _btk.btkStringArray_pop_back(self)
-
 
     def erase(self, *args) -> "std::vector< std::string >::iterator":
         """
@@ -3510,7 +3296,6 @@ class btkStringArray(_object):
         erase(self, first, last) -> std::vector< std::string >::iterator
         """
         return _btk.btkStringArray_erase(self, *args)
-
 
     def __init__(self, *args):
         """
@@ -3529,21 +3314,18 @@ class btkStringArray(_object):
         """push_back(self, x)"""
         return _btk.btkStringArray_push_back(self, x)
 
-
     def front(self) -> "std::vector< std::string >::value_type const &":
         """front(self) -> std::vector< std::string >::value_type const &"""
         return _btk.btkStringArray_front(self)
-
 
     def back(self) -> "std::vector< std::string >::value_type const &":
         """back(self) -> std::vector< std::string >::value_type const &"""
         return _btk.btkStringArray_back(self)
 
-
-    def assign(self, n: 'std::vector< std::string >::size_type', x: 'std::vector< std::string >::value_type const &') -> "void":
+    def assign(self, n: 'std::vector< std::string >::size_type',
+               x: 'std::vector< std::string >::value_type const &') -> "void":
         """assign(self, n, x)"""
         return _btk.btkStringArray_assign(self, n, x)
-
 
     def resize(self, *args) -> "void":
         """
@@ -3552,7 +3334,6 @@ class btkStringArray(_object):
         """
         return _btk.btkStringArray_resize(self, *args)
 
-
     def insert(self, *args) -> "void":
         """
         insert(self, pos, x) -> std::vector< std::string >::iterator
@@ -3560,11 +3341,9 @@ class btkStringArray(_object):
         """
         return _btk.btkStringArray_insert(self, *args)
 
-
     def reserve(self, n: 'std::vector< std::string >::size_type') -> "void":
         """reserve(self, n)"""
         return _btk.btkStringArray_reserve(self, n)
-
 
     def capacity(self) -> "std::vector< std::string >::size_type":
         """capacity(self) -> std::vector< std::string >::size_type"""
@@ -3572,8 +3351,11 @@ class btkStringArray(_object):
 
     __swig_destroy__ = _btk.delete_btkStringArray
     __del__ = lambda self: None
+
+
 btkStringArray_swigregister = _btk.btkStringArray_swigregister
 btkStringArray_swigregister(btkStringArray)
+
 
 class btkIntArray(_object):
     """Proxy of C++ std::vector<(int)> class."""
@@ -3595,21 +3377,18 @@ class btkIntArray(_object):
         """__nonzero__(self) -> bool"""
         return _btk.btkIntArray___nonzero__(self)
 
-
     def __bool__(self) -> "bool":
         """__bool__(self) -> bool"""
         return _btk.btkIntArray___bool__(self)
-
 
     def __len__(self) -> "std::vector< int >::size_type":
         """__len__(self) -> std::vector< int >::size_type"""
         return _btk.btkIntArray___len__(self)
 
-
-    def __getslice__(self, i: 'std::vector< int >::difference_type', j: 'std::vector< int >::difference_type') -> "std::vector< int,std::allocator< int > > *":
+    def __getslice__(self, i: 'std::vector< int >::difference_type',
+                     j: 'std::vector< int >::difference_type') -> "std::vector< int,std::allocator< int > > *":
         """__getslice__(self, i, j) -> btkIntArray"""
         return _btk.btkIntArray___getslice__(self, i, j)
-
 
     def __setslice__(self, *args) -> "void":
         """
@@ -3618,11 +3397,10 @@ class btkIntArray(_object):
         """
         return _btk.btkIntArray___setslice__(self, *args)
 
-
-    def __delslice__(self, i: 'std::vector< int >::difference_type', j: 'std::vector< int >::difference_type') -> "void":
+    def __delslice__(self, i: 'std::vector< int >::difference_type',
+                     j: 'std::vector< int >::difference_type') -> "void":
         """__delslice__(self, i, j)"""
         return _btk.btkIntArray___delslice__(self, i, j)
-
 
     def __delitem__(self, *args) -> "void":
         """
@@ -3631,14 +3409,12 @@ class btkIntArray(_object):
         """
         return _btk.btkIntArray___delitem__(self, *args)
 
-
     def __getitem__(self, *args) -> "std::vector< int >::value_type const &":
         """
         __getitem__(self, slice) -> btkIntArray
         __getitem__(self, i) -> std::vector< int >::value_type const &
         """
         return _btk.btkIntArray___getitem__(self, *args)
-
 
     def __setitem__(self, *args) -> "void":
         """
@@ -3648,66 +3424,53 @@ class btkIntArray(_object):
         """
         return _btk.btkIntArray___setitem__(self, *args)
 
-
     def pop(self) -> "std::vector< int >::value_type":
         """pop(self) -> std::vector< int >::value_type"""
         return _btk.btkIntArray_pop(self)
-
 
     def append(self, x: 'std::vector< int >::value_type const &') -> "void":
         """append(self, x)"""
         return _btk.btkIntArray_append(self, x)
 
-
     def empty(self) -> "bool":
         """empty(self) -> bool"""
         return _btk.btkIntArray_empty(self)
-
 
     def size(self) -> "std::vector< int >::size_type":
         """size(self) -> std::vector< int >::size_type"""
         return _btk.btkIntArray_size(self)
 
-
     def swap(self, v: 'btkIntArray') -> "void":
         """swap(self, v)"""
         return _btk.btkIntArray_swap(self, v)
-
 
     def begin(self) -> "std::vector< int >::iterator":
         """begin(self) -> std::vector< int >::iterator"""
         return _btk.btkIntArray_begin(self)
 
-
     def end(self) -> "std::vector< int >::iterator":
         """end(self) -> std::vector< int >::iterator"""
         return _btk.btkIntArray_end(self)
-
 
     def rbegin(self) -> "std::vector< int >::reverse_iterator":
         """rbegin(self) -> std::vector< int >::reverse_iterator"""
         return _btk.btkIntArray_rbegin(self)
 
-
     def rend(self) -> "std::vector< int >::reverse_iterator":
         """rend(self) -> std::vector< int >::reverse_iterator"""
         return _btk.btkIntArray_rend(self)
-
 
     def clear(self) -> "void":
         """clear(self)"""
         return _btk.btkIntArray_clear(self)
 
-
     def get_allocator(self) -> "std::vector< int >::allocator_type":
         """get_allocator(self) -> std::vector< int >::allocator_type"""
         return _btk.btkIntArray_get_allocator(self)
 
-
     def pop_back(self) -> "void":
         """pop_back(self)"""
         return _btk.btkIntArray_pop_back(self)
-
 
     def erase(self, *args) -> "std::vector< int >::iterator":
         """
@@ -3715,7 +3478,6 @@ class btkIntArray(_object):
         erase(self, first, last) -> std::vector< int >::iterator
         """
         return _btk.btkIntArray_erase(self, *args)
-
 
     def __init__(self, *args):
         """
@@ -3734,21 +3496,17 @@ class btkIntArray(_object):
         """push_back(self, x)"""
         return _btk.btkIntArray_push_back(self, x)
 
-
     def front(self) -> "std::vector< int >::value_type const &":
         """front(self) -> std::vector< int >::value_type const &"""
         return _btk.btkIntArray_front(self)
-
 
     def back(self) -> "std::vector< int >::value_type const &":
         """back(self) -> std::vector< int >::value_type const &"""
         return _btk.btkIntArray_back(self)
 
-
     def assign(self, n: 'std::vector< int >::size_type', x: 'std::vector< int >::value_type const &') -> "void":
         """assign(self, n, x)"""
         return _btk.btkIntArray_assign(self, n, x)
-
 
     def resize(self, *args) -> "void":
         """
@@ -3757,7 +3515,6 @@ class btkIntArray(_object):
         """
         return _btk.btkIntArray_resize(self, *args)
 
-
     def insert(self, *args) -> "void":
         """
         insert(self, pos, x) -> std::vector< int >::iterator
@@ -3765,11 +3522,9 @@ class btkIntArray(_object):
         """
         return _btk.btkIntArray_insert(self, *args)
 
-
     def reserve(self, n: 'std::vector< int >::size_type') -> "void":
         """reserve(self, n)"""
         return _btk.btkIntArray_reserve(self, n)
-
 
     def capacity(self) -> "std::vector< int >::size_type":
         """capacity(self) -> std::vector< int >::size_type"""
@@ -3777,8 +3532,11 @@ class btkIntArray(_object):
 
     __swig_destroy__ = _btk.delete_btkIntArray
     __del__ = lambda self: None
+
+
 btkIntArray_swigregister = _btk.btkIntArray_swigregister
 btkIntArray_swigregister(btkIntArray)
+
 
 class btkDoubleArray(_object):
     """Proxy of C++ std::vector<(double)> class."""
@@ -3800,21 +3558,18 @@ class btkDoubleArray(_object):
         """__nonzero__(self) -> bool"""
         return _btk.btkDoubleArray___nonzero__(self)
 
-
     def __bool__(self) -> "bool":
         """__bool__(self) -> bool"""
         return _btk.btkDoubleArray___bool__(self)
-
 
     def __len__(self) -> "std::vector< double >::size_type":
         """__len__(self) -> std::vector< double >::size_type"""
         return _btk.btkDoubleArray___len__(self)
 
-
-    def __getslice__(self, i: 'std::vector< double >::difference_type', j: 'std::vector< double >::difference_type') -> "std::vector< double,std::allocator< double > > *":
+    def __getslice__(self, i: 'std::vector< double >::difference_type',
+                     j: 'std::vector< double >::difference_type') -> "std::vector< double,std::allocator< double > > *":
         """__getslice__(self, i, j) -> btkDoubleArray"""
         return _btk.btkDoubleArray___getslice__(self, i, j)
-
 
     def __setslice__(self, *args) -> "void":
         """
@@ -3823,11 +3578,10 @@ class btkDoubleArray(_object):
         """
         return _btk.btkDoubleArray___setslice__(self, *args)
 
-
-    def __delslice__(self, i: 'std::vector< double >::difference_type', j: 'std::vector< double >::difference_type') -> "void":
+    def __delslice__(self, i: 'std::vector< double >::difference_type',
+                     j: 'std::vector< double >::difference_type') -> "void":
         """__delslice__(self, i, j)"""
         return _btk.btkDoubleArray___delslice__(self, i, j)
-
 
     def __delitem__(self, *args) -> "void":
         """
@@ -3836,14 +3590,12 @@ class btkDoubleArray(_object):
         """
         return _btk.btkDoubleArray___delitem__(self, *args)
 
-
     def __getitem__(self, *args) -> "std::vector< double >::value_type const &":
         """
         __getitem__(self, slice) -> btkDoubleArray
         __getitem__(self, i) -> std::vector< double >::value_type const &
         """
         return _btk.btkDoubleArray___getitem__(self, *args)
-
 
     def __setitem__(self, *args) -> "void":
         """
@@ -3853,66 +3605,53 @@ class btkDoubleArray(_object):
         """
         return _btk.btkDoubleArray___setitem__(self, *args)
 
-
     def pop(self) -> "std::vector< double >::value_type":
         """pop(self) -> std::vector< double >::value_type"""
         return _btk.btkDoubleArray_pop(self)
-
 
     def append(self, x: 'std::vector< double >::value_type const &') -> "void":
         """append(self, x)"""
         return _btk.btkDoubleArray_append(self, x)
 
-
     def empty(self) -> "bool":
         """empty(self) -> bool"""
         return _btk.btkDoubleArray_empty(self)
-
 
     def size(self) -> "std::vector< double >::size_type":
         """size(self) -> std::vector< double >::size_type"""
         return _btk.btkDoubleArray_size(self)
 
-
     def swap(self, v: 'btkDoubleArray') -> "void":
         """swap(self, v)"""
         return _btk.btkDoubleArray_swap(self, v)
-
 
     def begin(self) -> "std::vector< double >::iterator":
         """begin(self) -> std::vector< double >::iterator"""
         return _btk.btkDoubleArray_begin(self)
 
-
     def end(self) -> "std::vector< double >::iterator":
         """end(self) -> std::vector< double >::iterator"""
         return _btk.btkDoubleArray_end(self)
-
 
     def rbegin(self) -> "std::vector< double >::reverse_iterator":
         """rbegin(self) -> std::vector< double >::reverse_iterator"""
         return _btk.btkDoubleArray_rbegin(self)
 
-
     def rend(self) -> "std::vector< double >::reverse_iterator":
         """rend(self) -> std::vector< double >::reverse_iterator"""
         return _btk.btkDoubleArray_rend(self)
-
 
     def clear(self) -> "void":
         """clear(self)"""
         return _btk.btkDoubleArray_clear(self)
 
-
     def get_allocator(self) -> "std::vector< double >::allocator_type":
         """get_allocator(self) -> std::vector< double >::allocator_type"""
         return _btk.btkDoubleArray_get_allocator(self)
 
-
     def pop_back(self) -> "void":
         """pop_back(self)"""
         return _btk.btkDoubleArray_pop_back(self)
-
 
     def erase(self, *args) -> "std::vector< double >::iterator":
         """
@@ -3920,7 +3659,6 @@ class btkDoubleArray(_object):
         erase(self, first, last) -> std::vector< double >::iterator
         """
         return _btk.btkDoubleArray_erase(self, *args)
-
 
     def __init__(self, *args):
         """
@@ -3939,21 +3677,17 @@ class btkDoubleArray(_object):
         """push_back(self, x)"""
         return _btk.btkDoubleArray_push_back(self, x)
 
-
     def front(self) -> "std::vector< double >::value_type const &":
         """front(self) -> std::vector< double >::value_type const &"""
         return _btk.btkDoubleArray_front(self)
-
 
     def back(self) -> "std::vector< double >::value_type const &":
         """back(self) -> std::vector< double >::value_type const &"""
         return _btk.btkDoubleArray_back(self)
 
-
     def assign(self, n: 'std::vector< double >::size_type', x: 'std::vector< double >::value_type const &') -> "void":
         """assign(self, n, x)"""
         return _btk.btkDoubleArray_assign(self, n, x)
-
 
     def resize(self, *args) -> "void":
         """
@@ -3962,7 +3696,6 @@ class btkDoubleArray(_object):
         """
         return _btk.btkDoubleArray_resize(self, *args)
 
-
     def insert(self, *args) -> "void":
         """
         insert(self, pos, x) -> std::vector< double >::iterator
@@ -3970,11 +3703,9 @@ class btkDoubleArray(_object):
         """
         return _btk.btkDoubleArray_insert(self, *args)
 
-
     def reserve(self, n: 'std::vector< double >::size_type') -> "void":
         """reserve(self, n)"""
         return _btk.btkDoubleArray_reserve(self, n)
-
 
     def capacity(self) -> "std::vector< double >::size_type":
         """capacity(self) -> std::vector< double >::size_type"""
@@ -3982,8 +3713,11 @@ class btkDoubleArray(_object):
 
     __swig_destroy__ = _btk.delete_btkDoubleArray
     __del__ = lambda self: None
+
+
 btkDoubleArray_swigregister = _btk.btkDoubleArray_swigregister
 btkDoubleArray_swigregister(btkDoubleArray)
+
 
 class btkMetaDataInfo(_object):
     """
@@ -4050,36 +3784,29 @@ class btkMetaDataInfo(_object):
         """
         return _btk.btkMetaDataInfo_Clone(self)
 
-
     def __deref__(self) -> "btkMetaDataInfo_impl *":
         """__deref__(self) -> btkMetaDataInfo_impl *"""
         return _btk.btkMetaDataInfo___deref__(self)
-
 
     def GetDimension(self, idx: 'int') -> "int":
         """GetDimension(self, idx) -> int"""
         return _btk.btkMetaDataInfo_GetDimension(self, idx)
 
-
     def SetDimension(self, idx: 'int', val: 'int') -> "void":
         """SetDimension(self, idx, val)"""
         return _btk.btkMetaDataInfo_SetDimension(self, idx, val)
-
 
     def GetDimensions(self) -> "std::vector< int,std::allocator< int > > const":
         """GetDimensions(self) -> btkIntArray"""
         return _btk.btkMetaDataInfo_GetDimensions(self)
 
-
     def SetDimensions(self, dims: 'btkIntArray') -> "void":
         """SetDimensions(self, dims)"""
         return _btk.btkMetaDataInfo_SetDimensions(self, dims)
 
-
     def GetValueNumber(self) -> "int":
         """GetValueNumber(self) -> int"""
         return _btk.btkMetaDataInfo_GetValueNumber(self)
-
 
     def SetValue(self, *args) -> "void":
         """
@@ -4088,7 +3815,6 @@ class btkMetaDataInfo(_object):
         SetValue(self, idx, val)
         """
         return _btk.btkMetaDataInfo_SetValue(self, *args)
-
 
     def SetValues(self, *args) -> "void":
         """
@@ -4104,11 +3830,9 @@ class btkMetaDataInfo(_object):
         """
         return _btk.btkMetaDataInfo_SetValues(self, *args)
 
-
     def __eq__(self, rRHS: 'btkMetaDataInfo') -> "bool":
         """__eq__(self, rRHS) -> bool"""
         return _btk.btkMetaDataInfo___eq__(self, rRHS)
-
 
     def __ne__(self, rRHS: 'btkMetaDataInfo') -> "bool":
         """__ne__(self, rRHS) -> bool"""
@@ -4125,7 +3849,6 @@ class btkMetaDataInfo(_object):
         """
         return _btk.btkMetaDataInfo_GetFormat(self)
 
-
     def GetFormatAsString(self) -> "std::string":
         """
         GetFormatAsString(self) -> std::string
@@ -4133,7 +3856,6 @@ class btkMetaDataInfo(_object):
         Returns the format of the values as a string.
         """
         return _btk.btkMetaDataInfo_GetFormatAsString(self)
-
 
     def SetFormat(self, format: 'btkMetaDataInfo_impl::Format') -> "void":
         """
@@ -4143,8 +3865,7 @@ class btkMetaDataInfo(_object):
         """
         return _btk.btkMetaDataInfo_SetFormat(self, format)
 
-
-    def GetDimensionsProduct(self, start: 'int'=0) -> "int":
+    def GetDimensionsProduct(self, start: 'int' = 0) -> "int":
         """
         GetDimensionsProduct(self, start=0) -> int
         GetDimensionsProduct(self) -> int
@@ -4153,7 +3874,6 @@ class btkMetaDataInfo(_object):
         """
         return _btk.btkMetaDataInfo_GetDimensionsProduct(self, start)
 
-
     def ResizeDimensions(self, nb: 'int') -> "void":
         """
         ResizeDimensions(self, nb)
@@ -4161,7 +3881,6 @@ class btkMetaDataInfo(_object):
         Resize the dimensions and adapt the values and their structure. If the number of dimensions is greater, then the new dimensions are equal to 1. If the number of dimensions is lower, then the value are shrunken.
         """
         return _btk.btkMetaDataInfo_ResizeDimensions(self, nb)
-
 
     def ToString(self, *args) -> "std::vector< std::string,std::allocator< std::string > > const":
         """
@@ -4172,7 +3891,6 @@ class btkMetaDataInfo(_object):
         """
         return _btk.btkMetaDataInfo_ToString(self, *args)
 
-
     def ToInt(self, *args) -> "std::vector< int,std::allocator< int > > const":
         """
         ToInt(self, idx) -> int
@@ -4181,7 +3899,6 @@ class btkMetaDataInfo(_object):
         Convert stored value(s) into integer(s).
         """
         return _btk.btkMetaDataInfo_ToInt(self, *args)
-
 
     def ToDouble(self, *args) -> "std::vector< double,std::allocator< double > > const":
         """
@@ -4192,8 +3909,10 @@ class btkMetaDataInfo(_object):
         """
         return _btk.btkMetaDataInfo_ToDouble(self, *args)
 
+
 btkMetaDataInfo_swigregister = _btk.btkMetaDataInfo_swigregister
 btkMetaDataInfo_swigregister(btkMetaDataInfo)
+
 
 class btkMetaData(_object):
     """
@@ -4265,16 +3984,13 @@ class btkMetaData(_object):
         """
         return _btk.btkMetaData_Clone(self)
 
-
     def __deref__(self) -> "btkMetaData_impl *":
         """__deref__(self) -> btkMetaData_impl *"""
         return _btk.btkMetaData___deref__(self)
 
-
     def __eq__(self, rRHS: 'btkMetaData') -> "bool":
         """__eq__(self, rRHS) -> bool"""
         return _btk.btkMetaData___eq__(self, rRHS)
-
 
     def __ne__(self, rRHS: 'btkMetaData') -> "bool":
         """__ne__(self, rRHS) -> bool"""
@@ -4287,7 +4003,6 @@ class btkMetaData(_object):
         """GetLabel(self) -> std::string const &"""
         return _btk.btkMetaData_GetLabel(self)
 
-
     def SetLabel(self, arg2: 'std::string const &') -> "void":
         """
         SetLabel(self, string)
@@ -4296,16 +4011,13 @@ class btkMetaData(_object):
         """
         return _btk.btkMetaData_SetLabel(self, arg2)
 
-
     def GetDescription(self) -> "std::string const &":
         """GetDescription(self) -> std::string const &"""
         return _btk.btkMetaData_GetDescription(self)
 
-
     def SetDescription(self, arg2: 'std::string const &') -> "void":
         """SetDescription(self, string)"""
         return _btk.btkMetaData_SetDescription(self, arg2)
-
 
     def GetUnlockState(self) -> "bool const":
         """
@@ -4315,7 +4027,6 @@ class btkMetaData(_object):
         """
         return _btk.btkMetaData_GetUnlockState(self)
 
-
     def SetUnlockState(self, arg2: 'bool const') -> "void":
         """
         SetUnlockState(self, arg2)
@@ -4323,7 +4034,6 @@ class btkMetaData(_object):
         Sets the unlock state of the entry.
         """
         return _btk.btkMetaData_SetUnlockState(self, arg2)
-
 
     def GetInfo(self) -> "btkMetaDataInfo const":
         """
@@ -4333,7 +4043,6 @@ class btkMetaData(_object):
         """
         return _btk.btkMetaData_GetInfo(self)
 
-
     def SetInfo(self, arg2: 'btkMetaDataInfo') -> "void":
         """
         SetInfo(self, arg2)
@@ -4341,7 +4050,6 @@ class btkMetaData(_object):
         Sets the btkMetaDataInfo associated to the entry.
         """
         return _btk.btkMetaData_SetInfo(self, arg2)
-
 
     def HasInfo(self) -> "bool":
         """
@@ -4351,8 +4059,8 @@ class btkMetaData(_object):
         """
         return _btk.btkMetaData_HasInfo(self)
 
-
-    def ExtractChildInfo(self, arg2: 'std::string const &', arg3: 'btk::MetaDataInfo::Format', arg4: 'int', noPossibleEmptyValue: 'bool'=True) -> "btkMetaDataInfo":
+    def ExtractChildInfo(self, arg2: 'std::string const &', arg3: 'btk::MetaDataInfo::Format', arg4: 'int',
+                         noPossibleEmptyValue: 'bool' = True) -> "btkMetaDataInfo":
         """
         ExtractChildInfo(self, label, format, numdims, noPossibleEmptyValue = True) -> btkMetaDataInfo
         ExtractChildInfo(self, label, format, numdims, noPossibleEmptyValue = True) -> btkMetaDataInfo
@@ -4360,7 +4068,6 @@ class btkMetaData(_object):
         Check if a child exists with the given label and correspond to the given format plus the number of dimensions with or without values (noPossibleEmptyValue). The informations of the metadata are extracted if all the checks are ok. Otherwise, the methods return an empty pointer.
         """
         return _btk.btkMetaData_ExtractChildInfo(self, arg2, arg3, arg4, noPossibleEmptyValue)
-
 
     def HasMetaDataAsParent(self) -> "bool":
         """
@@ -4370,7 +4077,6 @@ class btkMetaData(_object):
         """
         return _btk.btkMetaData_HasMetaDataAsParent(self)
 
-
     def Begin(self) -> "btkMetaData_impl::Iterator":
         """
         Begin(self) -> btkMetaDataIterator
@@ -4379,7 +4085,6 @@ class btkMetaData(_object):
         """
         return _btk.btkMetaData_Begin(self)
 
-
     def End(self) -> "btkMetaData_impl::Iterator":
         """
         End(self) -> btkMetaDataIterator
@@ -4387,7 +4092,6 @@ class btkMetaData(_object):
         Returns an iterator just past the last child.
         """
         return _btk.btkMetaData_End(self)
-
 
     def GetChild(self, *args) -> "btkMetaData":
         """
@@ -4398,7 +4102,6 @@ class btkMetaData(_object):
         """
         return _btk.btkMetaData_GetChild(self, *args)
 
-
     def AppendChild(self, arg2: 'btkMetaData') -> "bool":
         """
         AppendChild(self, arg2) -> bool
@@ -4406,7 +4109,6 @@ class btkMetaData(_object):
         Append the child entry. If entry has a label which already exists in the parent's list, then it is not inserted. Returns True if child has been inserted or False.
         """
         return _btk.btkMetaData_AppendChild(self, arg2)
-
 
     def InsertChild(self, *args) -> "bool":
         """
@@ -4417,7 +4119,6 @@ class btkMetaData(_object):
         """
         return _btk.btkMetaData_InsertChild(self, *args)
 
-
     def SetChild(self, arg2: 'int', arg3: 'btkMetaData') -> "void":
         """
         SetChild(self, int, btkMetaData)
@@ -4425,7 +4126,6 @@ class btkMetaData(_object):
         Sets the child entry for the given index
         """
         return _btk.btkMetaData_SetChild(self, arg2, arg3)
-
 
     def TakeChild(self, *args) -> "btkMetaData":
         """
@@ -4437,7 +4137,6 @@ class btkMetaData(_object):
         """
         return _btk.btkMetaData_TakeChild(self, *args)
 
-
     def RemoveChild(self, *args) -> "void":
         """
         RemoveChild(self, btkMetaDataIterator) -> btkMetaDataIterator
@@ -4448,7 +4147,6 @@ class btkMetaData(_object):
         """
         return _btk.btkMetaData_RemoveChild(self, *args)
 
-
     def ClearChildren(self) -> "void":
         """
         ClearChildren(self)
@@ -4456,7 +4154,6 @@ class btkMetaData(_object):
         Removes every children.
         """
         return _btk.btkMetaData_ClearChildren(self)
-
 
     def HasChildren(self) -> "bool":
         """
@@ -4466,7 +4163,6 @@ class btkMetaData(_object):
         """
         return _btk.btkMetaData_HasChildren(self)
 
-
     def GetChildNumber(self) -> "int":
         """
         GetChildNumber(self) -> int
@@ -4474,7 +4170,6 @@ class btkMetaData(_object):
         Returns the number of children 
         """
         return _btk.btkMetaData_GetChildNumber(self)
-
 
     def FindChild(self, arg2: 'std::string const &') -> "btkMetaData_impl::Iterator":
         """
@@ -4484,7 +4179,6 @@ class btkMetaData(_object):
         """
         return _btk.btkMetaData_FindChild(self, arg2)
 
-
     def Update(self) -> "void":
         """
         Update(self)
@@ -4492,7 +4186,6 @@ class btkMetaData(_object):
         Updates the ProcessObject associated with this DataObject.
         """
         return _btk.btkMetaData_Update(self)
-
 
     def GetTimestamp(self) -> "unsigned long":
         """
@@ -4502,8 +4195,10 @@ class btkMetaData(_object):
         """
         return _btk.btkMetaData_GetTimestamp(self)
 
+
 btkMetaData_swigregister = _btk.btkMetaData_swigregister
 btkMetaData_swigregister(btkMetaData)
+
 
 class btkMetaDataIterator(_object):
     """Proxy of C++ btkMetaDataIterator class."""
@@ -4526,21 +4221,17 @@ class btkMetaDataIterator(_object):
         """incr(self)"""
         return _btk.btkMetaDataIterator_incr(self)
 
-
     def decr(self) -> "void":
         """decr(self)"""
         return _btk.btkMetaDataIterator_decr(self)
-
 
     def value(self) -> "btkMetaData":
         """value(self) -> btkMetaData"""
         return _btk.btkMetaDataIterator_value(self)
 
-
     def __eq__(self, rhs: 'btkMetaDataIterator') -> "bool":
         """__eq__(self, rhs) -> bool"""
         return _btk.btkMetaDataIterator___eq__(self, rhs)
-
 
     def __ne__(self, rhs: 'btkMetaDataIterator') -> "bool":
         """__ne__(self, rhs) -> bool"""
@@ -4548,6 +4239,8 @@ class btkMetaDataIterator(_object):
 
     __swig_destroy__ = _btk.delete_btkMetaDataIterator
     __del__ = lambda self: None
+
+
 btkMetaDataIterator_swigregister = _btk.btkMetaDataIterator_swigregister
 btkMetaDataIterator_swigregister(btkMetaDataIterator)
 
@@ -4569,7 +4262,10 @@ def btkMetaDataCreateChild(*args) -> "void":
     """
     return _btk.btkMetaDataCreateChild(*args)
 
-def btkMetaDataCollapseChildrenValuesInt(parent: 'btkMetaData', baselabel: 'std::string const &', targetFinalSize: 'int'=-1, blankReplacement: 'int'=0) -> "std::vector< int,std::allocator< int > >":
+
+def btkMetaDataCollapseChildrenValuesInt(parent: 'btkMetaData', baselabel: 'std::string const &',
+                                         targetFinalSize: 'int' = -1,
+                                         blankReplacement: 'int' = 0) -> "std::vector< int,std::allocator< int > >":
     """
     btkMetaDataCollapseChildrenValuesInt(parent, baselabel, targetFinalSize=-1, blankReplacement=0) -> btkIntArray
     btkMetaDataCollapseChildrenValuesInt(parent, baselabel, targetFinalSize=-1) -> btkIntArray
@@ -4580,7 +4276,10 @@ def btkMetaDataCollapseChildrenValuesInt(parent: 'btkMetaData', baselabel: 'std:
     """
     return _btk.btkMetaDataCollapseChildrenValuesInt(parent, baselabel, targetFinalSize, blankReplacement)
 
-def btkMetaDataCollapseChildrenValuesDouble(parent: 'btkMetaData', baselabel: 'std::string const &', targetFinalSize: 'int'=-1, blankReplacement: 'double'=0.0) -> "std::vector< double,std::allocator< double > >":
+
+def btkMetaDataCollapseChildrenValuesDouble(parent: 'btkMetaData', baselabel: 'std::string const &',
+                                            targetFinalSize: 'int' = -1,
+                                            blankReplacement: 'double' = 0.0) -> "std::vector< double,std::allocator< double > >":
     """
     btkMetaDataCollapseChildrenValuesDouble(parent, baselabel, targetFinalSize=-1, blankReplacement=0.0) -> btkDoubleArray
     btkMetaDataCollapseChildrenValuesDouble(parent, baselabel, targetFinalSize=-1) -> btkDoubleArray
@@ -4590,6 +4289,7 @@ def btkMetaDataCollapseChildrenValuesDouble(parent: 'btkMetaData', baselabel: 's
     Collapse the parent children entries' values starting with the string 'baselabel' and incrementing (for example: LABELS, LABELS2, LABELS3).
     """
     return _btk.btkMetaDataCollapseChildrenValuesDouble(parent, baselabel, targetFinalSize, blankReplacement)
+
 
 def btkMetaDataCollapseChildrenValuesString(*args) -> "std::vector< std::string,std::allocator< std::string > >":
     """
@@ -4601,6 +4301,8 @@ def btkMetaDataCollapseChildrenValuesString(*args) -> "std::vector< std::string,
     Collapse the parent children entries' values starting with the string 'baselabel' and incrementing (for example: LABELS, LABELS2, LABELS3).
     """
     return _btk.btkMetaDataCollapseChildrenValuesString(*args)
+
+
 class btkAcquisition(_object):
     """
 
@@ -4693,7 +4395,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_Clone(self)
 
-
     def __deref__(self) -> "btkAcquisition_impl *":
         """__deref__(self) -> btkAcquisition_impl *"""
         return _btk.btkAcquisition___deref__(self)
@@ -4709,7 +4410,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_BeginMetaData(self)
 
-
     def EndMetaData(self) -> "btkAcquisition_impl::MetaDataIterator":
         """
         EndMetaData(self) -> btkMetaDataIterator
@@ -4717,7 +4417,6 @@ class btkAcquisition(_object):
         Returns an iterator just past the last metadata.
         """
         return _btk.btkAcquisition_EndMetaData(self)
-
 
     def GetMetaData(self) -> "btkMetaData":
         """
@@ -4727,7 +4426,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_GetMetaData(self)
 
-
     def SetMetaData(self, arg2: 'btkMetaData') -> "void":
         """
         SetMetaData(self, btkMetaData)
@@ -4735,7 +4433,6 @@ class btkAcquisition(_object):
         Sets the metadata of the acquisition.
         """
         return _btk.btkAcquisition_SetMetaData(self, arg2)
-
 
     def BeginEvent(self) -> "btkAcquisition_impl::EventIterator":
         """
@@ -4745,7 +4442,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_BeginEvent(self)
 
-
     def EndEvent(self) -> "btkAcquisition_impl::EventIterator":
         """
         EndEvent(self) -> btkEventCollectionIterator
@@ -4753,7 +4449,6 @@ class btkAcquisition(_object):
         Returns a const iterator just past the last event.
         """
         return _btk.btkAcquisition_EndEvent(self)
-
 
     def GetEvent(self, arg2: 'int') -> "btkEvent":
         """
@@ -4763,7 +4458,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_GetEvent(self, arg2)
 
-
     def SetEvent(self, arg2: 'int', arg3: 'btkEvent') -> "void":
         """
         SetEvent(self, int, btkEvent)
@@ -4771,7 +4465,6 @@ class btkAcquisition(_object):
         Sets the content of event at the given index.
         """
         return _btk.btkAcquisition_SetEvent(self, arg2, arg3)
-
 
     def GetEvents(self) -> "btkEventCollection":
         """
@@ -4781,7 +4474,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_GetEvents(self)
 
-
     def SetEvents(self, arg2: 'btkEventCollection') -> "void":
         """
         SetEvents(self, btkEventCollection)
@@ -4789,7 +4481,6 @@ class btkAcquisition(_object):
         Sets events for this acquisition.
         """
         return _btk.btkAcquisition_SetEvents(self, arg2)
-
 
     def IsEmptyEvent(self) -> "bool":
         """
@@ -4799,7 +4490,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_IsEmptyEvent(self)
 
-
     def GetEventNumber(self) -> "int":
         """
         GetEventNumber(self) -> int
@@ -4807,7 +4497,6 @@ class btkAcquisition(_object):
         Returns the number of events.
         """
         return _btk.btkAcquisition_GetEventNumber(self)
-
 
     def SetEventNumber(self, arg2: 'int') -> "void":
         """
@@ -4817,7 +4506,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_SetEventNumber(self, arg2)
 
-
     def ClearEvents(self) -> "void":
         """
         ClearEvents(self)
@@ -4825,7 +4513,6 @@ class btkAcquisition(_object):
         Clear events.
         """
         return _btk.btkAcquisition_ClearEvents(self)
-
 
     def FindEvent(self, arg2: 'std::string const &') -> "btkAcquisition_impl::EventIterator":
         """
@@ -4836,7 +4523,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_FindEvent(self, arg2)
 
-
     def AppendEvent(self, arg2: 'btkEvent') -> "void":
         """
         AppendEvent(self, btkEvent)
@@ -4844,7 +4530,6 @@ class btkAcquisition(_object):
         Appends the given event in the acquisition.
         """
         return _btk.btkAcquisition_AppendEvent(self, arg2)
-
 
     def RemoveEvent(self, *args) -> "btkAcquisition_impl::EventIterator":
         """
@@ -4855,7 +4540,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_RemoveEvent(self, *args)
 
-
     def BeginPoint(self) -> "btkAcquisition_impl::PointIterator":
         """
         BeginPoint(self) -> btkPointCollectionIterator
@@ -4864,7 +4548,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_BeginPoint(self)
 
-
     def EndPoint(self) -> "btkAcquisition_impl::PointIterator":
         """
         EndPoint(self) -> btkPointCollectionIterator
@@ -4872,7 +4555,6 @@ class btkAcquisition(_object):
         Returns an iterator just past the last point.
         """
         return _btk.btkAcquisition_EndPoint(self)
-
 
     def GetPoint(self, *args) -> "btkPoint":
         """
@@ -4883,7 +4565,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_GetPoint(self, *args)
 
-
     def SetPoint(self, arg2: 'int', arg3: 'btkPoint') -> "void":
         """
         SetPoint(self, int, btkPoint)
@@ -4891,7 +4572,6 @@ class btkAcquisition(_object):
         Sets the content of a point at the given index.
         """
         return _btk.btkAcquisition_SetPoint(self, arg2, arg3)
-
 
     def GetPoints(self) -> "btkPointCollection":
         """
@@ -4901,7 +4581,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_GetPoints(self)
 
-
     def SetPoints(self, arg2: 'btkPointCollection') -> "void":
         """
         SetPoints(self, btkPointCollection)
@@ -4909,7 +4588,6 @@ class btkAcquisition(_object):
         Sets points for this acquisition.
         """
         return _btk.btkAcquisition_SetPoints(self, arg2)
-
 
     def IsEmptyPoint(self) -> "bool":
         """
@@ -4919,7 +4597,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_IsEmptyPoint(self)
 
-
     def GetPointNumber(self) -> "int":
         """
         GetPointNumber(self) -> int
@@ -4927,7 +4604,6 @@ class btkAcquisition(_object):
         Returns the number of points.
         """
         return _btk.btkAcquisition_GetPointNumber(self)
-
 
     def SetPointNumber(self, arg2: 'int') -> "void":
         """
@@ -4937,7 +4613,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_SetPointNumber(self, arg2)
 
-
     def ClearPoints(self) -> "void":
         """
         ClearPoints(self)
@@ -4945,7 +4620,6 @@ class btkAcquisition(_object):
         Clear points.
         """
         return _btk.btkAcquisition_ClearPoints(self)
-
 
     def FindPoint(self, arg2: 'std::string const &') -> "btkAcquisition_impl::PointIterator":
         """
@@ -4956,7 +4630,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_FindPoint(self, arg2)
 
-
     def AppendPoint(self, arg2: 'btkPoint') -> "void":
         """
         AppendPoint(self, btkPoint)
@@ -4964,7 +4637,6 @@ class btkAcquisition(_object):
         Convenient method to append a point in the acquisition. This method also resizes the frame number of the inserted point if necessary.
         """
         return _btk.btkAcquisition_AppendPoint(self, arg2)
-
 
     def RemovePoint(self, *args) -> "btkAcquisition_impl::PointIterator":
         """
@@ -4976,7 +4648,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_RemovePoint(self, *args)
 
-
     def BeginAnalog(self) -> "btkAcquisition_impl::AnalogIterator":
         """
         BeginAnalog(self) -> btkAnalogCollectionIterator
@@ -4984,7 +4655,6 @@ class btkAcquisition(_object):
         Returns an iterator to the beginning of the list of analog channels.
         """
         return _btk.btkAcquisition_BeginAnalog(self)
-
 
     def EndAnalog(self) -> "btkAcquisition_impl::AnalogIterator":
         """
@@ -4994,7 +4664,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_EndAnalog(self)
 
-
     def IsEmptyAnalog(self) -> "bool":
         """
         IsEmptyAnalog(self) -> bool
@@ -5002,7 +4671,6 @@ class btkAcquisition(_object):
         Checks if the analogs' list is empty.
         """
         return _btk.btkAcquisition_IsEmptyAnalog(self)
-
 
     def GetAnalogNumber(self) -> "int":
         """
@@ -5012,7 +4680,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_GetAnalogNumber(self)
 
-
     def SetAnalogNumber(self, arg2: 'int') -> "void":
         """
         SetAnalogNumber(self, int)
@@ -5020,7 +4687,6 @@ class btkAcquisition(_object):
         Sets the number of analog channels.
         """
         return _btk.btkAcquisition_SetAnalogNumber(self, arg2)
-
 
     def GetAnalog(self, *args) -> "btkAnalog":
         """
@@ -5031,7 +4697,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_GetAnalog(self, *args)
 
-
     def SetAnalog(self, arg2: 'int', arg3: 'btkAnalog') -> "void":
         """
         SetAnalog(self, int, btkAnalog)
@@ -5039,7 +4704,6 @@ class btkAcquisition(_object):
         Sets the analog channel at the given index by the content of the given analog channel.
         """
         return _btk.btkAcquisition_SetAnalog(self, arg2, arg3)
-
 
     def GetAnalogs(self) -> "btkAnalogCollection":
         """
@@ -5049,7 +4713,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_GetAnalogs(self)
 
-
     def SetAnalogs(self, arg2: 'btkAnalogCollection') -> "void":
         """
         SetAnalogs(self, btkAnalogCollection)
@@ -5058,7 +4721,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_SetAnalogs(self, arg2)
 
-
     def ClearAnalogs(self) -> "void":
         """
         ClearAnalogs(self)
@@ -5066,7 +4728,6 @@ class btkAcquisition(_object):
         Clear analogs channels.
         """
         return _btk.btkAcquisition_ClearAnalogs(self)
-
 
     def FindAnalog(self, arg2: 'std::string const &') -> "btkAcquisition_impl::AnalogIterator":
         """
@@ -5077,7 +4738,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_FindAnalog(self, arg2)
 
-
     def AppendAnalog(self, arg2: 'btkAnalog') -> "void":
         """
         AppendAnalog(self, btkAnalog)
@@ -5085,7 +4745,6 @@ class btkAcquisition(_object):
         Append the analog channel ac in the acquisition This method also resizes the frame number of the inserted analog channel if necessary.
         """
         return _btk.btkAcquisition_AppendAnalog(self, arg2)
-
 
     def RemoveAnalog(self, *args) -> "btkAcquisition_impl::AnalogIterator":
         """
@@ -5097,8 +4756,8 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_RemoveAnalog(self, *args)
 
-
-    def Init(self, arg2: 'int', arg3: 'int', analogNumber: 'int'=0, analogSampleNumberPerPointFrame: 'int'=1) -> "void":
+    def Init(self, arg2: 'int', arg3: 'int', analogNumber: 'int' = 0,
+             analogSampleNumberPerPointFrame: 'int' = 1) -> "void":
         """
         Init(self, pointNumber, frameNumber, analogNumber = 0, , analogSampleNumberPerPointFrame = 1)
         Init(self, pointNumber, frameNumber, analogNumber = 0)
@@ -5110,8 +4769,8 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_Init(self, arg2, arg3, analogNumber, analogSampleNumberPerPointFrame)
 
-
-    def Resize(self, arg2: 'int', arg3: 'int', analogNumber: 'int'=0, analogSampleNumberPerPointFrame: 'int'=1) -> "void":
+    def Resize(self, arg2: 'int', arg3: 'int', analogNumber: 'int' = 0,
+               analogSampleNumberPerPointFrame: 'int' = 1) -> "void":
         """
         Resize(self, pointNumber, frameNumber, analogNumber = 0, , analogSampleNumberPerPointFrame = 1)
         Resize(self, pointNumber, frameNumber, analogNumber = 0)
@@ -5121,7 +4780,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_Resize(self, arg2, arg3, analogNumber, analogSampleNumberPerPointFrame)
 
-
     def ResizePointNumber(self, arg2: 'int') -> "void":
         """
         ResizePointNumber(self, int)
@@ -5129,7 +4787,6 @@ class btkAcquisition(_object):
         Resize the number of points.
         """
         return _btk.btkAcquisition_ResizePointNumber(self, arg2)
-
 
     def ResizeAnalogNumber(self, arg2: 'int') -> "void":
         """
@@ -5139,7 +4796,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_ResizeAnalogNumber(self, arg2)
 
-
     def ResizeFrameNumber(self, arg2: 'int') -> "void":
         """
         ResizeFrameNumber(self, int)
@@ -5148,7 +4804,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_ResizeFrameNumber(self, arg2)
 
-
     def ResizeFrameNumberFromEnd(self, arg2: 'int') -> "void":
         """
         ResizeFrameNumberFromEnd(self, int)
@@ -5156,7 +4811,6 @@ class btkAcquisition(_object):
         Resize the number of frames by adding new (or removing) frames at the beginning of the acquisition and set automatically the new first frame index.
         """
         return _btk.btkAcquisition_ResizeFrameNumberFromEnd(self, arg2)
-
 
     def Reset(self) -> "void":
         """
@@ -5167,7 +4821,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_Reset(self)
 
-
     def GetDuration(self) -> "double":
         """
         GetDuration(self) -> double
@@ -5175,7 +4828,6 @@ class btkAcquisition(_object):
         Returns the duration of the acquisition. The duration is computed as the multiplication of the points' frequency with the points frame number.
         """
         return _btk.btkAcquisition_GetDuration(self)
-
 
     def GetFirstFrame(self) -> "int":
         """
@@ -5185,8 +4837,7 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_GetFirstFrame(self)
 
-
-    def SetFirstFrame(self, arg2: 'int', adaptEvents: 'bool'=False) -> "void":
+    def SetFirstFrame(self, arg2: 'int', adaptEvents: 'bool' = False) -> "void":
         """
         SetFirstFrame(self, int, adaptEvents)
         SetFirstFrame(self, int)
@@ -5194,7 +4845,6 @@ class btkAcquisition(_object):
         Sets the first frame index. If the third argument is given and set to true, then events' frame/time will be shifted by the difference between the new first frame and the old one.
         """
         return _btk.btkAcquisition_SetFirstFrame(self, arg2, adaptEvents)
-
 
     def GetLastFrame(self) -> "int":
         """
@@ -5204,7 +4854,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_GetLastFrame(self)
 
-
     def GetPointUnit(self, *args) -> "std::string const":
         """
         GetPointUnit(self) -> std::string const
@@ -5213,7 +4862,6 @@ class btkAcquisition(_object):
         Returns the unit for points which have the given type.
         """
         return _btk.btkAcquisition_GetPointUnit(self, *args)
-
 
     def SetPointUnit(self, *args) -> "void":
         """
@@ -5225,7 +4873,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_SetPointUnit(self, *args)
 
-
     def GetPointFrameNumber(self) -> "int":
         """
         GetPointFrameNumber(self) -> int
@@ -5233,7 +4880,6 @@ class btkAcquisition(_object):
         Returns the number of frames for the points.
         """
         return _btk.btkAcquisition_GetPointFrameNumber(self)
-
 
     def GetPointFrequency(self) -> "double":
         """
@@ -5243,7 +4889,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_GetPointFrequency(self)
 
-
     def SetPointFrequency(self, arg2: 'double') -> "void":
         """
         SetPointFrequency(self, double)
@@ -5251,7 +4896,6 @@ class btkAcquisition(_object):
         Sets the points sample rate.
         """
         return _btk.btkAcquisition_SetPointFrequency(self, arg2)
-
 
     def GetAnalogFrameNumber(self) -> "int":
         """
@@ -5261,7 +4905,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_GetAnalogFrameNumber(self)
 
-
     def GetNumberAnalogSamplePerFrame(self) -> "int":
         """
         GetNumberAnalogSamplePerFrame(self) -> int
@@ -5269,7 +4912,6 @@ class btkAcquisition(_object):
         Returns the number of analog sample (acquired by each channel) per point frame.
         """
         return _btk.btkAcquisition_GetNumberAnalogSamplePerFrame(self)
-
 
     def GetAnalogFrequency(self) -> "double":
         """
@@ -5279,7 +4921,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_GetAnalogFrequency(self)
 
-
     def GetAnalogResolution(self) -> "btkAcquisition_impl::AnalogResolution":
         """
         GetAnalogResolution(self) -> btk.btkAcquisition.AnalogResolution
@@ -5288,7 +4929,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_GetAnalogResolution(self)
 
-
     def SetAnalogResolution(self, r: 'btkAcquisition_impl::AnalogResolution') -> "void":
         """
         SetAnalogResolution(self, btk.btkAcquisition.AnalogResolution)
@@ -5296,7 +4936,6 @@ class btkAcquisition(_object):
         Sets the analog resolution.
         """
         return _btk.btkAcquisition_SetAnalogResolution(self, r)
-
 
     def GetMaxInterpolationGap(self) -> "int":
         """
@@ -5307,7 +4946,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_GetMaxInterpolationGap(self)
 
-
     def SetMaxInterpolationGap(self, gap: 'int') -> "void":
         """
         SetMaxInterpolationGap(self, int)
@@ -5317,7 +4955,6 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_SetMaxInterpolationGap(self, gap)
 
-
     def Update(self) -> "void":
         """
         Update(self)
@@ -5325,7 +4962,6 @@ class btkAcquisition(_object):
         Updates the ProcessObject associated with this DataObject.
         """
         return _btk.btkAcquisition_Update(self)
-
 
     def GetTimestamp(self) -> "unsigned long":
         """
@@ -5335,8 +4971,10 @@ class btkAcquisition(_object):
         """
         return _btk.btkAcquisition_GetTimestamp(self)
 
+
 btkAcquisition_swigregister = _btk.btkAcquisition_swigregister
 btkAcquisition_swigregister(btkAcquisition)
+
 
 class btkAcquisitionFileIO(_object):
     """
@@ -5393,7 +5031,6 @@ class btkAcquisitionFileIO(_object):
         """
         return _btk.btkAcquisitionFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -5401,7 +5038,6 @@ class btkAcquisitionFileIO(_object):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkAcquisitionFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -5411,7 +5047,6 @@ class btkAcquisitionFileIO(_object):
         """
         return _btk.btkAcquisitionFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -5419,7 +5054,6 @@ class btkAcquisitionFileIO(_object):
         Sets the byte order of the file.
         """
         return _btk.btkAcquisitionFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -5429,7 +5063,6 @@ class btkAcquisitionFileIO(_object):
         """
         return _btk.btkAcquisitionFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -5437,7 +5070,6 @@ class btkAcquisitionFileIO(_object):
         Gets the storage format as a string.
         """
         return _btk.btkAcquisitionFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -5447,7 +5079,6 @@ class btkAcquisitionFileIO(_object):
         """
         return _btk.btkAcquisitionFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -5455,7 +5086,6 @@ class btkAcquisitionFileIO(_object):
         Returns the option(s) used to update internals.
         """
         return _btk.btkAcquisitionFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -5465,7 +5095,6 @@ class btkAcquisitionFileIO(_object):
         """
         return _btk.btkAcquisitionFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -5474,7 +5103,6 @@ class btkAcquisitionFileIO(_object):
         """
         return _btk.btkAcquisitionFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -5482,7 +5110,6 @@ class btkAcquisitionFileIO(_object):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkAcquisitionFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -5493,7 +5120,6 @@ class btkAcquisitionFileIO(_object):
         """
         return _btk.btkAcquisitionFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -5501,7 +5127,6 @@ class btkAcquisitionFileIO(_object):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkAcquisitionFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -5511,8 +5136,10 @@ class btkAcquisitionFileIO(_object):
         """
         return _btk.btkAcquisitionFileIO_Write(self, filename, input)
 
+
 btkAcquisitionFileIO_swigregister = _btk.btkAcquisitionFileIO_swigregister
 btkAcquisitionFileIO_swigregister(btkAcquisitionFileIO)
+
 
 class btkAcquisitionFileReader(_object):
     """
@@ -5559,7 +5186,6 @@ class btkAcquisitionFileReader(_object):
         """__deref__(self) -> btkAcquisitionFileReader_impl *"""
         return _btk.btkAcquisitionFileReader___deref__(self)
 
-
     def GetAcquisitionIO(self) -> "btkAcquisitionFileIO":
         """
         GetAcquisitionIO(self) -> btkAcquisitionFileIO
@@ -5567,7 +5193,6 @@ class btkAcquisitionFileReader(_object):
         Returns the btkAcquisitionIO used to read the given file.
         """
         return _btk.btkAcquisitionFileReader_GetAcquisitionIO(self)
-
 
     def _reset(self) -> "void":
         """_reset(self)"""
@@ -5584,7 +5209,6 @@ class btkAcquisitionFileReader(_object):
         """
         return _btk.btkAcquisitionFileReader_GetOutput(self)
 
-
     def GetDisableFilenameExceptionState(self) -> "bool":
         """
         GetDisableFilenameExceptionState(self) -> bool
@@ -5592,7 +5216,6 @@ class btkAcquisitionFileReader(_object):
         Returns state of the disabling of the exception for missing filename.
         """
         return _btk.btkAcquisitionFileReader_GetDisableFilenameExceptionState(self)
-
 
     def SetDisableFilenameExceptionState(self, arg2: 'bool') -> "void":
         """
@@ -5602,7 +5225,6 @@ class btkAcquisitionFileReader(_object):
         """
         return _btk.btkAcquisitionFileReader_SetDisableFilenameExceptionState(self, arg2)
 
-
     def GetFilename(self) -> "std::string const &":
         """
         GetFilename(self) -> std::string const &
@@ -5611,7 +5233,6 @@ class btkAcquisitionFileReader(_object):
         """
         return _btk.btkAcquisitionFileReader_GetFilename(self)
 
-
     def SetFilename(self, arg2: 'std::string const &') -> "void":
         """
         SetFilename(self, string)
@@ -5619,7 +5240,6 @@ class btkAcquisitionFileReader(_object):
         Specifies the file to read. This is forwarded to the IO instance.
         """
         return _btk.btkAcquisitionFileReader_SetFilename(self, arg2)
-
 
     def SetAcquisitionIO(self, *args) -> "void":
         """
@@ -5631,7 +5251,6 @@ class btkAcquisitionFileReader(_object):
         """
         return _btk.btkAcquisitionFileReader_SetAcquisitionIO(self, *args)
 
-
     def GetInputNumber(self) -> "int":
         """
         GetInputNumber(self) -> int
@@ -5639,7 +5258,6 @@ class btkAcquisitionFileReader(_object):
         Returns the number of inputs.
         """
         return _btk.btkAcquisitionFileReader_GetInputNumber(self)
-
 
     def GetValidInputNumber(self) -> "int":
         """
@@ -5649,7 +5267,6 @@ class btkAcquisitionFileReader(_object):
         """
         return _btk.btkAcquisitionFileReader_GetValidInputNumber(self)
 
-
     def GetOutputNumber(self) -> "int":
         """
         GetOutputNumber(self) -> int
@@ -5658,7 +5275,6 @@ class btkAcquisitionFileReader(_object):
         """
         return _btk.btkAcquisitionFileReader_GetOutputNumber(self)
 
-
     def ResetState(self) -> "void":
         """
         ResetState(self)
@@ -5666,7 +5282,6 @@ class btkAcquisitionFileReader(_object):
         Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkAcquisitionFileReader_ResetState(self)
-
 
     def Update(self) -> "void":
         """
@@ -5678,7 +5293,6 @@ class btkAcquisitionFileReader(_object):
         """
         return _btk.btkAcquisitionFileReader_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -5687,8 +5301,10 @@ class btkAcquisitionFileReader(_object):
         """
         return _btk.btkAcquisitionFileReader_GetTimestamp(self)
 
+
 btkAcquisitionFileReader_swigregister = _btk.btkAcquisitionFileReader_swigregister
 btkAcquisitionFileReader_swigregister(btkAcquisitionFileReader)
+
 
 class btkAcquisitionFileWriter(_object):
     """
@@ -5719,7 +5335,6 @@ class btkAcquisitionFileWriter(_object):
         """__deref__(self) -> btkAcquisitionFileWriter_impl *"""
         return _btk.btkAcquisitionFileWriter___deref__(self)
 
-
     def GetAcquisitionIO(self) -> "btkAcquisitionFileIO":
         """
         GetAcquisitionIO(self) -> btkAcquisitionFileIO
@@ -5739,7 +5354,6 @@ class btkAcquisitionFileWriter(_object):
         """
         return _btk.btkAcquisitionFileWriter_GetInput(self)
 
-
     def SetInput(self, arg2: 'btkAcquisition') -> "void":
         """
         SetInput(self, arg2)
@@ -5747,7 +5361,6 @@ class btkAcquisitionFileWriter(_object):
         Sets the btkAcquisition to write by a btkAcquisitionIO helper class
         """
         return _btk.btkAcquisitionFileWriter_SetInput(self, arg2)
-
 
     def GetFilename(self) -> "std::string const &":
         """
@@ -5757,7 +5370,6 @@ class btkAcquisitionFileWriter(_object):
         """
         return _btk.btkAcquisitionFileWriter_GetFilename(self)
 
-
     def SetFilename(self, arg2: 'std::string const &') -> "void":
         """
         SetFilename(self, arg2)
@@ -5765,7 +5377,6 @@ class btkAcquisitionFileWriter(_object):
         Specifies the file to write. This is forwarded to the IO instance.
         """
         return _btk.btkAcquisitionFileWriter_SetFilename(self, arg2)
-
 
     def SetAcquisitionIO(self, *args) -> "void":
         """
@@ -5777,7 +5388,6 @@ class btkAcquisitionFileWriter(_object):
         """
         return _btk.btkAcquisitionFileWriter_SetAcquisitionIO(self, *args)
 
-
     def GetInputNumber(self) -> "int":
         """
         GetInputNumber(self) -> int
@@ -5785,7 +5395,6 @@ class btkAcquisitionFileWriter(_object):
         Returns the number of inputs.
         """
         return _btk.btkAcquisitionFileWriter_GetInputNumber(self)
-
 
     def GetValidInputNumber(self) -> "int":
         """
@@ -5795,7 +5404,6 @@ class btkAcquisitionFileWriter(_object):
         """
         return _btk.btkAcquisitionFileWriter_GetValidInputNumber(self)
 
-
     def GetOutputNumber(self) -> "int":
         """
         GetOutputNumber(self) -> int
@@ -5804,7 +5412,6 @@ class btkAcquisitionFileWriter(_object):
         """
         return _btk.btkAcquisitionFileWriter_GetOutputNumber(self)
 
-
     def ResetState(self) -> "void":
         """
         ResetState(self)
@@ -5812,7 +5419,6 @@ class btkAcquisitionFileWriter(_object):
         Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkAcquisitionFileWriter_ResetState(self)
-
 
     def Update(self) -> "void":
         """
@@ -5824,7 +5430,6 @@ class btkAcquisitionFileWriter(_object):
         """
         return _btk.btkAcquisitionFileWriter_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -5833,8 +5438,10 @@ class btkAcquisitionFileWriter(_object):
         """
         return _btk.btkAcquisitionFileWriter_GetTimestamp(self)
 
+
 btkAcquisitionFileWriter_swigregister = _btk.btkAcquisitionFileWriter_swigregister
 btkAcquisitionFileWriter_swigregister(btkAcquisitionFileWriter)
+
 
 class btkC3DFileIO(btkAcquisitionFileIO):
     """
@@ -5928,7 +5535,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkC3DFileIO_GetPointScale(self)
 
-
     def SetPointScale(self, arg2: 'double') -> "void":
         """
         SetPointScale(self, arg2)
@@ -5936,7 +5542,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         Sets the scale for the points.
         """
         return _btk.btkC3DFileIO_SetPointScale(self, arg2)
-
 
     def GetAnalogIntegerFormat(self) -> "btkC3DFileIO_impl::AnalogIntegerFormat":
         """
@@ -5946,7 +5551,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkC3DFileIO_GetAnalogIntegerFormat(self)
 
-
     def SetAnalogIntegerFormat(self, arg2: 'btkC3DFileIO_impl::AnalogIntegerFormat') -> "void":
         """
         SetAnalogIntegerFormat(self, arg2)
@@ -5954,7 +5558,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         Sets the integer format used to store analog channels data.
         """
         return _btk.btkC3DFileIO_SetAnalogIntegerFormat(self, arg2)
-
 
     def GetAnalogChannelScale(self) -> "std::vector< double,std::allocator< double > > &":
         """
@@ -5964,7 +5567,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkC3DFileIO_GetAnalogChannelScale(self)
 
-
     def SetAnalogChannelScale(self, arg2: 'btkDoubleArray') -> "void":
         """
         SetAnalogChannelScale(self, arg2)
@@ -5972,7 +5574,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         Sets the vector of scales used for the analog channels' scaling.
         """
         return _btk.btkC3DFileIO_SetAnalogChannelScale(self, arg2)
-
 
     def GetAnalogZeroOffset(self) -> "std::vector< double,std::allocator< double > > &":
         """
@@ -5982,7 +5583,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkC3DFileIO_GetAnalogZeroOffset(self)
 
-
     def SetAnalogZeroOffset(self, arg2: 'btkDoubleArray') -> "void":
         """
         SetAnalogZeroOffset(self, arg2)
@@ -5990,7 +5590,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         Sets the vector of offsets used for the analog channels' scaling.
         """
         return _btk.btkC3DFileIO_SetAnalogZeroOffset(self, arg2)
-
 
     def GetAnalogUniversalScale(self) -> "double":
         """
@@ -6000,7 +5599,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkC3DFileIO_GetAnalogUniversalScale(self)
 
-
     def SetAnalogUniversalScale(self, arg2: 'double') -> "void":
         """
         SetAnalogUniversalScale(self, arg2)
@@ -6008,7 +5606,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         Sets Returns the universal scale factor used to scale analog channels.
         """
         return _btk.btkC3DFileIO_SetAnalogUniversalScale(self, arg2)
-
 
     def GetFileType(self) -> "btkAcquisitionFileIO_impl::FileType":
         """
@@ -6018,7 +5615,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkC3DFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -6026,7 +5622,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkC3DFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -6036,7 +5631,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkC3DFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -6044,7 +5638,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkC3DFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -6054,7 +5647,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkC3DFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -6062,7 +5654,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkC3DFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -6072,7 +5663,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkC3DFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -6080,7 +5670,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkC3DFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -6090,7 +5679,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkC3DFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -6099,7 +5687,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkC3DFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -6107,7 +5694,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkC3DFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -6118,7 +5704,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkC3DFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -6126,7 +5711,6 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkC3DFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -6136,8 +5720,10 @@ class btkC3DFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkC3DFileIO_Write(self, filename, input)
 
+
 btkC3DFileIO_swigregister = _btk.btkC3DFileIO_swigregister
 btkC3DFileIO_swigregister(btkC3DFileIO)
+
 
 class btkANBFileIO(btkAcquisitionFileIO):
     """
@@ -6184,7 +5770,6 @@ class btkANBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANBFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -6192,7 +5777,6 @@ class btkANBFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkANBFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -6202,7 +5786,6 @@ class btkANBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANBFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -6210,7 +5793,6 @@ class btkANBFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkANBFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -6220,7 +5802,6 @@ class btkANBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANBFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -6228,7 +5809,6 @@ class btkANBFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkANBFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -6238,7 +5818,6 @@ class btkANBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANBFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -6246,7 +5825,6 @@ class btkANBFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkANBFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -6256,7 +5834,6 @@ class btkANBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANBFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -6265,7 +5842,6 @@ class btkANBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANBFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -6273,7 +5849,6 @@ class btkANBFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkANBFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -6284,7 +5859,6 @@ class btkANBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANBFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -6292,7 +5866,6 @@ class btkANBFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkANBFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -6302,8 +5875,10 @@ class btkANBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANBFileIO_Write(self, filename, input)
 
+
 btkANBFileIO_swigregister = _btk.btkANBFileIO_swigregister
 btkANBFileIO_swigregister(btkANBFileIO)
+
 
 class btkANCFileIO(btkAcquisitionFileIO):
     """
@@ -6350,7 +5925,6 @@ class btkANCFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANCFileIO_GetFileGeneration(self)
 
-
     def SetFileGeneration(self, gen: 'int') -> "void":
         """
         SetFileGeneration(self, gen)
@@ -6358,7 +5932,6 @@ class btkANCFileIO(btkAcquisitionFileIO):
         Set the generation of the ANC file.
         """
         return _btk.btkANCFileIO_SetFileGeneration(self, gen)
-
 
     def GetFileType(self) -> "btkAcquisitionFileIO_impl::FileType":
         """
@@ -6368,7 +5941,6 @@ class btkANCFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANCFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -6376,7 +5948,6 @@ class btkANCFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkANCFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -6386,7 +5957,6 @@ class btkANCFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANCFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -6394,7 +5964,6 @@ class btkANCFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkANCFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -6404,7 +5973,6 @@ class btkANCFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANCFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -6412,7 +5980,6 @@ class btkANCFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkANCFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -6422,7 +5989,6 @@ class btkANCFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANCFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -6430,7 +5996,6 @@ class btkANCFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkANCFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -6440,7 +6005,6 @@ class btkANCFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANCFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -6449,7 +6013,6 @@ class btkANCFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANCFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -6457,7 +6020,6 @@ class btkANCFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkANCFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -6468,7 +6030,6 @@ class btkANCFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANCFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -6476,7 +6037,6 @@ class btkANCFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkANCFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -6486,8 +6046,10 @@ class btkANCFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANCFileIO_Write(self, filename, input)
 
+
 btkANCFileIO_swigregister = _btk.btkANCFileIO_swigregister
 btkANCFileIO_swigregister(btkANCFileIO)
+
 
 class btkANGFileIO(btkAcquisitionFileIO):
     """
@@ -6534,7 +6096,6 @@ class btkANGFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANGFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -6542,7 +6103,6 @@ class btkANGFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkANGFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -6552,7 +6112,6 @@ class btkANGFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANGFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -6560,7 +6119,6 @@ class btkANGFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkANGFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -6570,7 +6128,6 @@ class btkANGFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANGFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -6578,7 +6135,6 @@ class btkANGFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkANGFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -6588,7 +6144,6 @@ class btkANGFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANGFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -6596,7 +6151,6 @@ class btkANGFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkANGFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -6606,7 +6160,6 @@ class btkANGFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANGFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -6615,7 +6168,6 @@ class btkANGFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANGFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -6623,7 +6175,6 @@ class btkANGFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkANGFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -6634,7 +6185,6 @@ class btkANGFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANGFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -6642,7 +6192,6 @@ class btkANGFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkANGFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -6652,8 +6201,10 @@ class btkANGFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkANGFileIO_Write(self, filename, input)
 
+
 btkANGFileIO_swigregister = _btk.btkANGFileIO_swigregister
 btkANGFileIO_swigregister(btkANGFileIO)
+
 
 class btkCALForcePlateFileIO(btkAcquisitionFileIO):
     """
@@ -6700,7 +6251,6 @@ class btkCALForcePlateFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkCALForcePlateFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -6708,7 +6258,6 @@ class btkCALForcePlateFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkCALForcePlateFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -6718,7 +6267,6 @@ class btkCALForcePlateFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkCALForcePlateFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -6726,7 +6274,6 @@ class btkCALForcePlateFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkCALForcePlateFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -6736,7 +6283,6 @@ class btkCALForcePlateFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkCALForcePlateFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -6744,7 +6290,6 @@ class btkCALForcePlateFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkCALForcePlateFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -6754,7 +6299,6 @@ class btkCALForcePlateFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkCALForcePlateFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -6762,7 +6306,6 @@ class btkCALForcePlateFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkCALForcePlateFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -6772,7 +6315,6 @@ class btkCALForcePlateFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkCALForcePlateFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -6781,7 +6323,6 @@ class btkCALForcePlateFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkCALForcePlateFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -6789,7 +6330,6 @@ class btkCALForcePlateFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkCALForcePlateFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -6800,7 +6340,6 @@ class btkCALForcePlateFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkCALForcePlateFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -6808,7 +6347,6 @@ class btkCALForcePlateFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkCALForcePlateFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -6818,8 +6356,10 @@ class btkCALForcePlateFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkCALForcePlateFileIO_Write(self, filename, input)
 
+
 btkCALForcePlateFileIO_swigregister = _btk.btkCALForcePlateFileIO_swigregister
 btkCALForcePlateFileIO_swigregister(btkCALForcePlateFileIO)
+
 
 class btkCLBFileIO(btkAcquisitionFileIO):
     """
@@ -6866,7 +6406,6 @@ class btkCLBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkCLBFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -6874,7 +6413,6 @@ class btkCLBFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkCLBFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -6884,7 +6422,6 @@ class btkCLBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkCLBFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -6892,7 +6429,6 @@ class btkCLBFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkCLBFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -6902,7 +6438,6 @@ class btkCLBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkCLBFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -6910,7 +6445,6 @@ class btkCLBFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkCLBFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -6920,7 +6454,6 @@ class btkCLBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkCLBFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -6928,7 +6461,6 @@ class btkCLBFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkCLBFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -6938,7 +6470,6 @@ class btkCLBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkCLBFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -6947,7 +6478,6 @@ class btkCLBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkCLBFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -6955,7 +6485,6 @@ class btkCLBFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkCLBFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -6966,7 +6495,6 @@ class btkCLBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkCLBFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -6974,7 +6502,6 @@ class btkCLBFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkCLBFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -6984,8 +6511,10 @@ class btkCLBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkCLBFileIO_Write(self, filename, input)
 
+
 btkCLBFileIO_swigregister = _btk.btkCLBFileIO_swigregister
 btkCLBFileIO_swigregister(btkCLBFileIO)
+
 
 class btkDelsysEMGFileIO(btkAcquisitionFileIO):
     """
@@ -7032,7 +6561,6 @@ class btkDelsysEMGFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkDelsysEMGFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -7040,7 +6568,6 @@ class btkDelsysEMGFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkDelsysEMGFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -7050,7 +6577,6 @@ class btkDelsysEMGFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkDelsysEMGFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -7058,7 +6584,6 @@ class btkDelsysEMGFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkDelsysEMGFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -7068,7 +6593,6 @@ class btkDelsysEMGFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkDelsysEMGFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -7076,7 +6600,6 @@ class btkDelsysEMGFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkDelsysEMGFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -7086,7 +6609,6 @@ class btkDelsysEMGFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkDelsysEMGFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -7094,7 +6616,6 @@ class btkDelsysEMGFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkDelsysEMGFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -7104,7 +6625,6 @@ class btkDelsysEMGFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkDelsysEMGFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -7113,7 +6633,6 @@ class btkDelsysEMGFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkDelsysEMGFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -7121,7 +6640,6 @@ class btkDelsysEMGFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkDelsysEMGFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -7132,7 +6650,6 @@ class btkDelsysEMGFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkDelsysEMGFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -7140,7 +6657,6 @@ class btkDelsysEMGFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkDelsysEMGFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -7150,8 +6666,10 @@ class btkDelsysEMGFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkDelsysEMGFileIO_Write(self, filename, input)
 
+
 btkDelsysEMGFileIO_swigregister = _btk.btkDelsysEMGFileIO_swigregister
 btkDelsysEMGFileIO_swigregister(btkDelsysEMGFileIO)
+
 
 class btkMDFFileIO(btkAcquisitionFileIO):
     """
@@ -7198,7 +6716,6 @@ class btkMDFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkMDFFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -7206,7 +6723,6 @@ class btkMDFFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkMDFFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -7216,7 +6732,6 @@ class btkMDFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkMDFFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -7224,7 +6739,6 @@ class btkMDFFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkMDFFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -7234,7 +6748,6 @@ class btkMDFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkMDFFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -7242,7 +6755,6 @@ class btkMDFFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkMDFFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -7252,7 +6764,6 @@ class btkMDFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkMDFFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -7260,7 +6771,6 @@ class btkMDFFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkMDFFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -7270,7 +6780,6 @@ class btkMDFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkMDFFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -7279,7 +6788,6 @@ class btkMDFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkMDFFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -7287,7 +6795,6 @@ class btkMDFFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkMDFFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -7298,7 +6805,6 @@ class btkMDFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkMDFFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -7306,7 +6812,6 @@ class btkMDFFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkMDFFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -7316,8 +6821,10 @@ class btkMDFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkMDFFileIO_Write(self, filename, input)
 
+
 btkMDFFileIO_swigregister = _btk.btkMDFFileIO_swigregister
 btkMDFFileIO_swigregister(btkMDFFileIO)
+
 
 class btkEMFFileIO(btkAcquisitionFileIO):
     """
@@ -7364,7 +6871,6 @@ class btkEMFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkEMFFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -7372,7 +6878,6 @@ class btkEMFFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkEMFFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -7382,7 +6887,6 @@ class btkEMFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkEMFFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -7390,7 +6894,6 @@ class btkEMFFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkEMFFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -7400,7 +6903,6 @@ class btkEMFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkEMFFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -7408,7 +6910,6 @@ class btkEMFFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkEMFFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -7418,7 +6919,6 @@ class btkEMFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkEMFFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -7426,7 +6926,6 @@ class btkEMFFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkEMFFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -7436,7 +6935,6 @@ class btkEMFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkEMFFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -7445,7 +6943,6 @@ class btkEMFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkEMFFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -7453,7 +6950,6 @@ class btkEMFFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkEMFFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -7464,7 +6960,6 @@ class btkEMFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkEMFFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -7472,7 +6967,6 @@ class btkEMFFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkEMFFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -7482,8 +6976,10 @@ class btkEMFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkEMFFileIO_Write(self, filename, input)
 
+
 btkEMFFileIO_swigregister = _btk.btkEMFFileIO_swigregister
 btkEMFFileIO_swigregister(btkEMFFileIO)
+
 
 class btkEMxFileIO(btkAcquisitionFileIO):
     """
@@ -7530,7 +7026,6 @@ class btkEMxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkEMxFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -7538,7 +7033,6 @@ class btkEMxFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkEMxFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -7548,7 +7042,6 @@ class btkEMxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkEMxFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -7556,7 +7049,6 @@ class btkEMxFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkEMxFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -7566,7 +7058,6 @@ class btkEMxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkEMxFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -7574,7 +7065,6 @@ class btkEMxFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkEMxFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -7584,7 +7074,6 @@ class btkEMxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkEMxFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -7592,7 +7081,6 @@ class btkEMxFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkEMxFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -7602,7 +7090,6 @@ class btkEMxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkEMxFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -7611,7 +7098,6 @@ class btkEMxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkEMxFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -7619,7 +7105,6 @@ class btkEMxFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkEMxFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -7630,7 +7115,6 @@ class btkEMxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkEMxFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -7638,7 +7122,6 @@ class btkEMxFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkEMxFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -7648,8 +7131,10 @@ class btkEMxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkEMxFileIO_Write(self, filename, input)
 
+
 btkEMxFileIO_swigregister = _btk.btkEMxFileIO_swigregister
 btkEMxFileIO_swigregister(btkEMxFileIO)
+
 
 class btkGRxFileIO(btkAcquisitionFileIO):
     """
@@ -7696,7 +7181,6 @@ class btkGRxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkGRxFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -7704,7 +7188,6 @@ class btkGRxFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkGRxFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -7714,7 +7197,6 @@ class btkGRxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkGRxFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -7722,7 +7204,6 @@ class btkGRxFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkGRxFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -7732,7 +7213,6 @@ class btkGRxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkGRxFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -7740,7 +7220,6 @@ class btkGRxFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkGRxFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -7750,7 +7229,6 @@ class btkGRxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkGRxFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -7758,7 +7236,6 @@ class btkGRxFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkGRxFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -7768,7 +7245,6 @@ class btkGRxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkGRxFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -7777,7 +7253,6 @@ class btkGRxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkGRxFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -7785,7 +7260,6 @@ class btkGRxFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkGRxFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -7796,7 +7270,6 @@ class btkGRxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkGRxFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -7804,7 +7277,6 @@ class btkGRxFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkGRxFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -7814,8 +7286,10 @@ class btkGRxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkGRxFileIO_Write(self, filename, input)
 
+
 btkGRxFileIO_swigregister = _btk.btkGRxFileIO_swigregister
 btkGRxFileIO_swigregister(btkGRxFileIO)
+
 
 class btkMOMFileIO(btkAcquisitionFileIO):
     """
@@ -7862,7 +7336,6 @@ class btkMOMFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkMOMFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -7870,7 +7343,6 @@ class btkMOMFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkMOMFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -7880,7 +7352,6 @@ class btkMOMFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkMOMFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -7888,7 +7359,6 @@ class btkMOMFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkMOMFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -7898,7 +7368,6 @@ class btkMOMFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkMOMFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -7906,7 +7375,6 @@ class btkMOMFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkMOMFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -7916,7 +7384,6 @@ class btkMOMFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkMOMFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -7924,7 +7391,6 @@ class btkMOMFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkMOMFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -7934,7 +7400,6 @@ class btkMOMFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkMOMFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -7943,7 +7408,6 @@ class btkMOMFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkMOMFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -7951,7 +7415,6 @@ class btkMOMFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkMOMFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -7962,7 +7425,6 @@ class btkMOMFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkMOMFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -7970,7 +7432,6 @@ class btkMOMFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkMOMFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -7980,8 +7441,10 @@ class btkMOMFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkMOMFileIO_Write(self, filename, input)
 
+
 btkMOMFileIO_swigregister = _btk.btkMOMFileIO_swigregister
 btkMOMFileIO_swigregister(btkMOMFileIO)
+
 
 class btkPWRFileIO(btkAcquisitionFileIO):
     """
@@ -8028,7 +7491,6 @@ class btkPWRFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkPWRFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -8036,7 +7498,6 @@ class btkPWRFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkPWRFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -8046,7 +7507,6 @@ class btkPWRFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkPWRFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -8054,7 +7514,6 @@ class btkPWRFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkPWRFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -8064,7 +7523,6 @@ class btkPWRFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkPWRFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -8072,7 +7530,6 @@ class btkPWRFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkPWRFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -8082,7 +7539,6 @@ class btkPWRFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkPWRFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -8090,7 +7546,6 @@ class btkPWRFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkPWRFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -8100,7 +7555,6 @@ class btkPWRFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkPWRFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -8109,7 +7563,6 @@ class btkPWRFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkPWRFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -8117,7 +7570,6 @@ class btkPWRFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkPWRFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -8128,7 +7580,6 @@ class btkPWRFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkPWRFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -8136,7 +7587,6 @@ class btkPWRFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkPWRFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -8146,8 +7596,10 @@ class btkPWRFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkPWRFileIO_Write(self, filename, input)
 
+
 btkPWRFileIO_swigregister = _btk.btkPWRFileIO_swigregister
 btkPWRFileIO_swigregister(btkPWRFileIO)
+
 
 class btkRAxFileIO(btkAcquisitionFileIO):
     """
@@ -8194,7 +7646,6 @@ class btkRAxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkRAxFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -8202,7 +7653,6 @@ class btkRAxFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkRAxFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -8212,7 +7662,6 @@ class btkRAxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkRAxFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -8220,7 +7669,6 @@ class btkRAxFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkRAxFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -8230,7 +7678,6 @@ class btkRAxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkRAxFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -8238,7 +7685,6 @@ class btkRAxFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkRAxFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -8248,7 +7694,6 @@ class btkRAxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkRAxFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -8256,7 +7701,6 @@ class btkRAxFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkRAxFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -8266,7 +7710,6 @@ class btkRAxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkRAxFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -8275,7 +7718,6 @@ class btkRAxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkRAxFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -8283,7 +7725,6 @@ class btkRAxFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkRAxFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -8294,7 +7735,6 @@ class btkRAxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkRAxFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -8302,7 +7742,6 @@ class btkRAxFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkRAxFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -8312,8 +7751,10 @@ class btkRAxFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkRAxFileIO_Write(self, filename, input)
 
+
 btkRAxFileIO_swigregister = _btk.btkRAxFileIO_swigregister
 btkRAxFileIO_swigregister(btkRAxFileIO)
+
 
 class btkRICFileIO(btkAcquisitionFileIO):
     """
@@ -8360,7 +7801,6 @@ class btkRICFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkRICFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -8368,7 +7808,6 @@ class btkRICFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkRICFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -8378,7 +7817,6 @@ class btkRICFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkRICFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -8386,7 +7824,6 @@ class btkRICFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkRICFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -8396,7 +7833,6 @@ class btkRICFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkRICFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -8404,7 +7840,6 @@ class btkRICFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkRICFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -8414,7 +7849,6 @@ class btkRICFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkRICFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -8422,7 +7856,6 @@ class btkRICFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkRICFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -8432,7 +7865,6 @@ class btkRICFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkRICFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -8441,7 +7873,6 @@ class btkRICFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkRICFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -8449,7 +7880,6 @@ class btkRICFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkRICFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -8460,7 +7890,6 @@ class btkRICFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkRICFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -8468,7 +7897,6 @@ class btkRICFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkRICFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -8478,8 +7906,10 @@ class btkRICFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkRICFileIO_Write(self, filename, input)
 
+
 btkRICFileIO_swigregister = _btk.btkRICFileIO_swigregister
 btkRICFileIO_swigregister(btkRICFileIO)
+
 
 class btkTDFFileIO(btkAcquisitionFileIO):
     """
@@ -8526,7 +7956,6 @@ class btkTDFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTDFFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -8534,7 +7963,6 @@ class btkTDFFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkTDFFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -8544,7 +7972,6 @@ class btkTDFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTDFFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -8552,7 +7979,6 @@ class btkTDFFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkTDFFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -8562,7 +7988,6 @@ class btkTDFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTDFFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -8570,7 +7995,6 @@ class btkTDFFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkTDFFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -8580,7 +8004,6 @@ class btkTDFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTDFFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -8588,7 +8011,6 @@ class btkTDFFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkTDFFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -8598,7 +8020,6 @@ class btkTDFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTDFFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -8607,7 +8028,6 @@ class btkTDFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTDFFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -8615,7 +8035,6 @@ class btkTDFFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkTDFFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -8626,7 +8045,6 @@ class btkTDFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTDFFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -8634,7 +8052,6 @@ class btkTDFFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkTDFFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -8644,8 +8061,10 @@ class btkTDFFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTDFFileIO_Write(self, filename, input)
 
+
 btkTDFFileIO_swigregister = _btk.btkTDFFileIO_swigregister
 btkTDFFileIO_swigregister(btkTDFFileIO)
+
 
 class btkTRBFileIO(btkAcquisitionFileIO):
     """
@@ -8692,7 +8111,6 @@ class btkTRBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTRBFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -8700,7 +8118,6 @@ class btkTRBFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkTRBFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -8710,7 +8127,6 @@ class btkTRBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTRBFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -8718,7 +8134,6 @@ class btkTRBFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkTRBFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -8728,7 +8143,6 @@ class btkTRBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTRBFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -8736,7 +8150,6 @@ class btkTRBFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkTRBFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -8746,7 +8159,6 @@ class btkTRBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTRBFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -8754,7 +8166,6 @@ class btkTRBFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkTRBFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -8764,7 +8175,6 @@ class btkTRBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTRBFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -8773,7 +8183,6 @@ class btkTRBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTRBFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -8781,7 +8190,6 @@ class btkTRBFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkTRBFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -8792,7 +8200,6 @@ class btkTRBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTRBFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -8800,7 +8207,6 @@ class btkTRBFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkTRBFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -8810,8 +8216,10 @@ class btkTRBFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTRBFileIO_Write(self, filename, input)
 
+
 btkTRBFileIO_swigregister = _btk.btkTRBFileIO_swigregister
 btkTRBFileIO_swigregister(btkTRBFileIO)
+
 
 class btkTRCFileIO(btkAcquisitionFileIO):
     """
@@ -8858,7 +8266,6 @@ class btkTRCFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTRCFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -8866,7 +8273,6 @@ class btkTRCFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkTRCFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -8876,7 +8282,6 @@ class btkTRCFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTRCFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -8884,7 +8289,6 @@ class btkTRCFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkTRCFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -8894,7 +8298,6 @@ class btkTRCFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTRCFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -8902,7 +8305,6 @@ class btkTRCFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkTRCFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -8912,7 +8314,6 @@ class btkTRCFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTRCFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -8920,7 +8321,6 @@ class btkTRCFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkTRCFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -8930,7 +8330,6 @@ class btkTRCFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTRCFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -8939,7 +8338,6 @@ class btkTRCFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTRCFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -8947,7 +8345,6 @@ class btkTRCFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkTRCFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -8958,7 +8355,6 @@ class btkTRCFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTRCFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -8966,7 +8362,6 @@ class btkTRCFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkTRCFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -8976,8 +8371,10 @@ class btkTRCFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkTRCFileIO_Write(self, filename, input)
 
+
 btkTRCFileIO_swigregister = _btk.btkTRCFileIO_swigregister
 btkTRCFileIO_swigregister(btkTRCFileIO)
+
 
 class btkXLSOrthoTrakFileIO(btkAcquisitionFileIO):
     """
@@ -9024,7 +8421,6 @@ class btkXLSOrthoTrakFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkXLSOrthoTrakFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -9032,7 +8428,6 @@ class btkXLSOrthoTrakFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkXLSOrthoTrakFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -9042,7 +8437,6 @@ class btkXLSOrthoTrakFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkXLSOrthoTrakFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -9050,7 +8444,6 @@ class btkXLSOrthoTrakFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkXLSOrthoTrakFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -9060,7 +8453,6 @@ class btkXLSOrthoTrakFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkXLSOrthoTrakFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -9068,7 +8460,6 @@ class btkXLSOrthoTrakFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkXLSOrthoTrakFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -9078,7 +8469,6 @@ class btkXLSOrthoTrakFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkXLSOrthoTrakFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -9086,7 +8476,6 @@ class btkXLSOrthoTrakFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkXLSOrthoTrakFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -9096,7 +8485,6 @@ class btkXLSOrthoTrakFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkXLSOrthoTrakFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -9105,7 +8493,6 @@ class btkXLSOrthoTrakFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkXLSOrthoTrakFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -9113,7 +8500,6 @@ class btkXLSOrthoTrakFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkXLSOrthoTrakFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -9124,7 +8510,6 @@ class btkXLSOrthoTrakFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkXLSOrthoTrakFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -9132,7 +8517,6 @@ class btkXLSOrthoTrakFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkXLSOrthoTrakFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -9142,8 +8526,10 @@ class btkXLSOrthoTrakFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkXLSOrthoTrakFileIO_Write(self, filename, input)
 
+
 btkXLSOrthoTrakFileIO_swigregister = _btk.btkXLSOrthoTrakFileIO_swigregister
 btkXLSOrthoTrakFileIO_swigregister(btkXLSOrthoTrakFileIO)
+
 
 class btkXMOVEFileIO(btkAcquisitionFileIO):
     """
@@ -9190,7 +8576,6 @@ class btkXMOVEFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkXMOVEFileIO_GetFileType(self)
 
-
     def GetByteOrder(self) -> "btkAcquisitionFileIO_impl::ByteOrder":
         """
         GetByteOrder(self) -> btkAcquisitionFileIO_impl::ByteOrder
@@ -9198,7 +8583,6 @@ class btkXMOVEFileIO(btkAcquisitionFileIO):
         Gets the byte order of the file (only for binary file).
         """
         return _btk.btkXMOVEFileIO_GetByteOrder(self)
-
 
     def GetByteOrderAsString(self) -> "std::string":
         """
@@ -9208,7 +8592,6 @@ class btkXMOVEFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkXMOVEFileIO_GetByteOrderAsString(self)
 
-
     def SetByteOrder(self, b: 'btkAcquisitionFileIO_impl::ByteOrder') -> "void":
         """
         SetByteOrder(self, b)
@@ -9216,7 +8599,6 @@ class btkXMOVEFileIO(btkAcquisitionFileIO):
         Sets the byte order of the file.
         """
         return _btk.btkXMOVEFileIO_SetByteOrder(self, b)
-
 
     def GetStorageFormat(self) -> "btkAcquisitionFileIO_impl::StorageFormat":
         """
@@ -9226,7 +8608,6 @@ class btkXMOVEFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkXMOVEFileIO_GetStorageFormat(self)
 
-
     def GetStorageFormatAsString(self) -> "std::string":
         """
         GetStorageFormatAsString(self) -> std::string
@@ -9234,7 +8615,6 @@ class btkXMOVEFileIO(btkAcquisitionFileIO):
         Gets the storage format as a string.
         """
         return _btk.btkXMOVEFileIO_GetStorageFormatAsString(self)
-
 
     def SetStorageFormat(self, s: 'btkAcquisitionFileIO_impl::StorageFormat') -> "void":
         """
@@ -9244,7 +8624,6 @@ class btkXMOVEFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkXMOVEFileIO_SetStorageFormat(self, s)
 
-
     def GetInternalsUpdateOptions(self) -> "int":
         """
         GetInternalsUpdateOptions(self) -> int
@@ -9252,7 +8631,6 @@ class btkXMOVEFileIO(btkAcquisitionFileIO):
         Returns the option(s) used to update internals.
         """
         return _btk.btkXMOVEFileIO_GetInternalsUpdateOptions(self)
-
 
     def SetInternalsUpdateOptions(self, options: 'int') -> "void":
         """
@@ -9262,7 +8640,6 @@ class btkXMOVEFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkXMOVEFileIO_SetInternalsUpdateOptions(self, options)
 
-
     def HasInternalsUpdateOption(self, option: 'int') -> "bool":
         """
         HasInternalsUpdateOption(self, option) -> bool
@@ -9271,7 +8648,6 @@ class btkXMOVEFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkXMOVEFileIO_HasInternalsUpdateOption(self, option)
 
-
     def CanReadFile(self, filename: 'std::string const &') -> "bool":
         """
         CanReadFile(self, filename) -> bool
@@ -9279,7 +8655,6 @@ class btkXMOVEFileIO(btkAcquisitionFileIO):
         Checks if the given filename can be read by this AcquisitionFileIO. This methods should try to read the file header instead to check the file's suffix.
         """
         return _btk.btkXMOVEFileIO_CanReadFile(self, filename)
-
 
     def CanWriteFile(self, filename: 'std::string const &') -> "bool":
         """
@@ -9290,7 +8665,6 @@ class btkXMOVEFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkXMOVEFileIO_CanWriteFile(self, filename)
 
-
     def Read(self, filename: 'std::string const &', output: 'btkAcquisition') -> "void":
         """
         Read(self, filename, output)
@@ -9298,7 +8672,6 @@ class btkXMOVEFileIO(btkAcquisitionFileIO):
         Read the file designated by the given filename and fill the given btkAcquisition
         """
         return _btk.btkXMOVEFileIO_Read(self, filename, output)
-
 
     def Write(self, filename: 'std::string const &', input: 'btkAcquisition') -> "void":
         """
@@ -9308,8 +8681,10 @@ class btkXMOVEFileIO(btkAcquisitionFileIO):
         """
         return _btk.btkXMOVEFileIO_Write(self, filename, input)
 
+
 btkXMOVEFileIO_swigregister = _btk.btkXMOVEFileIO_swigregister
 btkXMOVEFileIO_swigregister(btkXMOVEFileIO)
+
 
 class btkAcquisitionUnitConverter(_object):
     """
@@ -9424,7 +8799,6 @@ class btkAcquisitionUnitConverter(_object):
         """
         return _btk.btkAcquisitionUnitConverter_GetInput(self)
 
-
     def SetInput(self, arg2: 'btkAcquisition') -> "void":
         """
         SetInput(self, btkAcquisition)
@@ -9432,7 +8806,6 @@ class btkAcquisitionUnitConverter(_object):
         Sets the input required with this process.
         """
         return _btk.btkAcquisitionUnitConverter_SetInput(self, arg2)
-
 
     def GetOutput(self) -> "btkAcquisition":
         """
@@ -9442,7 +8815,6 @@ class btkAcquisitionUnitConverter(_object):
         """
         return _btk.btkAcquisitionUnitConverter_GetOutput(self)
 
-
     def SetUnit(self, arg2: 'btkAcquisitionUnitConverter_impl::Unit', arg3: 'std::string const &') -> "void":
         """
         SetUnit(self, btk.btkAcquisitionUnitConverter.Unit, string)
@@ -9450,7 +8822,6 @@ class btkAcquisitionUnitConverter(_object):
         Set the given unit with the given string
         """
         return _btk.btkAcquisitionUnitConverter_SetUnit(self, arg2, arg3)
-
 
     def GetUnit(self, arg2: 'btkAcquisitionUnitConverter_impl::Unit') -> "std::string const &":
         """
@@ -9460,7 +8831,6 @@ class btkAcquisitionUnitConverter(_object):
         """
         return _btk.btkAcquisitionUnitConverter_GetUnit(self, arg2)
 
-
     def GetInputNumber(self) -> "int":
         """
         GetInputNumber(self) -> int
@@ -9468,7 +8838,6 @@ class btkAcquisitionUnitConverter(_object):
         Returns the number of inputs.
         """
         return _btk.btkAcquisitionUnitConverter_GetInputNumber(self)
-
 
     def GetValidInputNumber(self) -> "int":
         """
@@ -9478,7 +8847,6 @@ class btkAcquisitionUnitConverter(_object):
         """
         return _btk.btkAcquisitionUnitConverter_GetValidInputNumber(self)
 
-
     def GetOutputNumber(self) -> "int":
         """
         GetOutputNumber(self) -> int
@@ -9487,7 +8855,6 @@ class btkAcquisitionUnitConverter(_object):
         """
         return _btk.btkAcquisitionUnitConverter_GetOutputNumber(self)
 
-
     def ResetState(self) -> "void":
         """
         ResetState(self)
@@ -9495,7 +8862,6 @@ class btkAcquisitionUnitConverter(_object):
         Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkAcquisitionUnitConverter_ResetState(self)
-
 
     def Update(self) -> "void":
         """
@@ -9507,7 +8873,6 @@ class btkAcquisitionUnitConverter(_object):
         """
         return _btk.btkAcquisitionUnitConverter_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -9516,8 +8881,10 @@ class btkAcquisitionUnitConverter(_object):
         """
         return _btk.btkAcquisitionUnitConverter_GetTimestamp(self)
 
+
 btkAcquisitionUnitConverter_swigregister = _btk.btkAcquisitionUnitConverter_swigregister
 btkAcquisitionUnitConverter_swigregister(btkAcquisitionUnitConverter)
+
 
 class btkAnalogOffsetRemover(_object):
     """
@@ -9567,7 +8934,6 @@ class btkAnalogOffsetRemover(_object):
         """
         return _btk.btkAnalogOffsetRemover_SetRawInput(self, arg2)
 
-
     def GetRawInput(self) -> "btkAcquisition":
         """
         GetRawInput(self) -> btkAcquisition
@@ -9575,7 +8941,6 @@ class btkAnalogOffsetRemover(_object):
         Gets the input registered with this process which is used as the input to process.
         """
         return _btk.btkAnalogOffsetRemover_GetRawInput(self)
-
 
     def SetOffsetInput(self, arg2: 'btkAcquisition') -> "void":
         """
@@ -9585,7 +8950,6 @@ class btkAnalogOffsetRemover(_object):
         """
         return _btk.btkAnalogOffsetRemover_SetOffsetInput(self, arg2)
 
-
     def GetOffsetInput(self) -> "btkAcquisition":
         """
         GetOffsetInput(self) -> btkAcquisition
@@ -9593,7 +8957,6 @@ class btkAnalogOffsetRemover(_object):
         Gets the input registered with this process which corresponds to the offsets to remove.
         """
         return _btk.btkAnalogOffsetRemover_GetOffsetInput(self)
-
 
     def GetOutput(self) -> "btkAcquisition":
         """
@@ -9603,7 +8966,6 @@ class btkAnalogOffsetRemover(_object):
         """
         return _btk.btkAnalogOffsetRemover_GetOutput(self)
 
-
     def GetInputNumber(self) -> "int":
         """
         GetInputNumber(self) -> int
@@ -9611,7 +8973,6 @@ class btkAnalogOffsetRemover(_object):
         Returns the number of inputs.
         """
         return _btk.btkAnalogOffsetRemover_GetInputNumber(self)
-
 
     def GetValidInputNumber(self) -> "int":
         """
@@ -9621,7 +8982,6 @@ class btkAnalogOffsetRemover(_object):
         """
         return _btk.btkAnalogOffsetRemover_GetValidInputNumber(self)
 
-
     def GetOutputNumber(self) -> "int":
         """
         GetOutputNumber(self) -> int
@@ -9630,7 +8990,6 @@ class btkAnalogOffsetRemover(_object):
         """
         return _btk.btkAnalogOffsetRemover_GetOutputNumber(self)
 
-
     def ResetState(self) -> "void":
         """
         ResetState(self)
@@ -9638,7 +8997,6 @@ class btkAnalogOffsetRemover(_object):
         Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkAnalogOffsetRemover_ResetState(self)
-
 
     def Update(self) -> "void":
         """
@@ -9650,7 +9008,6 @@ class btkAnalogOffsetRemover(_object):
         """
         return _btk.btkAnalogOffsetRemover_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -9659,8 +9016,10 @@ class btkAnalogOffsetRemover(_object):
         """
         return _btk.btkAnalogOffsetRemover_GetTimestamp(self)
 
+
 btkAnalogOffsetRemover_swigregister = _btk.btkAnalogOffsetRemover_swigregister
 btkAnalogOffsetRemover_swigregister(btkAnalogOffsetRemover)
+
 
 class btkWrenchDownsampleFilter(_object):
     """
@@ -9710,7 +9069,6 @@ class btkWrenchDownsampleFilter(_object):
         """
         return _btk.btkWrenchDownsampleFilter_GetInput(self)
 
-
     def SetInput(self, arg2: 'btkWrench') -> "void":
         """
         SetInput(self, btkWrench)
@@ -9718,7 +9076,6 @@ class btkWrenchDownsampleFilter(_object):
         Sets the input required with this process.
         """
         return _btk.btkWrenchDownsampleFilter_SetInput(self, arg2)
-
 
     def GetOutput(self) -> "btkWrench":
         """
@@ -9728,7 +9085,6 @@ class btkWrenchDownsampleFilter(_object):
         """
         return _btk.btkWrenchDownsampleFilter_GetOutput(self)
 
-
     def GetUpDownRatio(self) -> "int":
         """
         GetUpDownRatio(self) -> int
@@ -9736,7 +9092,6 @@ class btkWrenchDownsampleFilter(_object):
         Gets the ratio used to downsample the data.
         """
         return _btk.btkWrenchDownsampleFilter_GetUpDownRatio(self)
-
 
     def SetUpDownRatio(self, ratio: 'int') -> "void":
         """
@@ -9746,7 +9101,6 @@ class btkWrenchDownsampleFilter(_object):
         """
         return _btk.btkWrenchDownsampleFilter_SetUpDownRatio(self, ratio)
 
-
     def GetInputNumber(self) -> "int":
         """
         GetInputNumber(self) -> int
@@ -9754,7 +9108,6 @@ class btkWrenchDownsampleFilter(_object):
         Returns the number of inputs.
         """
         return _btk.btkWrenchDownsampleFilter_GetInputNumber(self)
-
 
     def GetValidInputNumber(self) -> "int":
         """
@@ -9764,7 +9117,6 @@ class btkWrenchDownsampleFilter(_object):
         """
         return _btk.btkWrenchDownsampleFilter_GetValidInputNumber(self)
 
-
     def GetOutputNumber(self) -> "int":
         """
         GetOutputNumber(self) -> int
@@ -9773,7 +9125,6 @@ class btkWrenchDownsampleFilter(_object):
         """
         return _btk.btkWrenchDownsampleFilter_GetOutputNumber(self)
 
-
     def ResetState(self) -> "void":
         """
         ResetState(self)
@@ -9781,7 +9132,6 @@ class btkWrenchDownsampleFilter(_object):
         Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkWrenchDownsampleFilter_ResetState(self)
-
 
     def Update(self) -> "void":
         """
@@ -9793,7 +9143,6 @@ class btkWrenchDownsampleFilter(_object):
         """
         return _btk.btkWrenchDownsampleFilter_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -9802,8 +9151,10 @@ class btkWrenchDownsampleFilter(_object):
         """
         return _btk.btkWrenchDownsampleFilter_GetTimestamp(self)
 
+
 btkWrenchDownsampleFilter_swigregister = _btk.btkWrenchDownsampleFilter_swigregister
 btkWrenchDownsampleFilter_swigregister(btkWrenchDownsampleFilter)
+
 
 class btkWrenchCollectionDownsampleFilter(_object):
     """
@@ -9853,7 +9204,6 @@ class btkWrenchCollectionDownsampleFilter(_object):
         """
         return _btk.btkWrenchCollectionDownsampleFilter_GetInput(self)
 
-
     def SetInput(self, arg2: 'btkWrenchCollection') -> "void":
         """
         SetInput(self, btkWrenchCollection)
@@ -9861,7 +9211,6 @@ class btkWrenchCollectionDownsampleFilter(_object):
         Sets the input required with this process.
         """
         return _btk.btkWrenchCollectionDownsampleFilter_SetInput(self, arg2)
-
 
     def GetOutput(self) -> "btkWrenchCollection":
         """
@@ -9871,7 +9220,6 @@ class btkWrenchCollectionDownsampleFilter(_object):
         """
         return _btk.btkWrenchCollectionDownsampleFilter_GetOutput(self)
 
-
     def GetUpDownRatio(self) -> "int":
         """
         GetUpDownRatio(self) -> int
@@ -9879,7 +9227,6 @@ class btkWrenchCollectionDownsampleFilter(_object):
         Gets the ratio used to downsample the data.
         """
         return _btk.btkWrenchCollectionDownsampleFilter_GetUpDownRatio(self)
-
 
     def SetUpDownRatio(self, ratio: 'int') -> "void":
         """
@@ -9889,7 +9236,6 @@ class btkWrenchCollectionDownsampleFilter(_object):
         """
         return _btk.btkWrenchCollectionDownsampleFilter_SetUpDownRatio(self, ratio)
 
-
     def GetInputNumber(self) -> "int":
         """
         GetInputNumber(self) -> int
@@ -9897,7 +9243,6 @@ class btkWrenchCollectionDownsampleFilter(_object):
         Returns the number of inputs.
         """
         return _btk.btkWrenchCollectionDownsampleFilter_GetInputNumber(self)
-
 
     def GetValidInputNumber(self) -> "int":
         """
@@ -9907,7 +9252,6 @@ class btkWrenchCollectionDownsampleFilter(_object):
         """
         return _btk.btkWrenchCollectionDownsampleFilter_GetValidInputNumber(self)
 
-
     def GetOutputNumber(self) -> "int":
         """
         GetOutputNumber(self) -> int
@@ -9916,7 +9260,6 @@ class btkWrenchCollectionDownsampleFilter(_object):
         """
         return _btk.btkWrenchCollectionDownsampleFilter_GetOutputNumber(self)
 
-
     def ResetState(self) -> "void":
         """
         ResetState(self)
@@ -9924,7 +9267,6 @@ class btkWrenchCollectionDownsampleFilter(_object):
         Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkWrenchCollectionDownsampleFilter_ResetState(self)
-
 
     def Update(self) -> "void":
         """
@@ -9936,7 +9278,6 @@ class btkWrenchCollectionDownsampleFilter(_object):
         """
         return _btk.btkWrenchCollectionDownsampleFilter_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -9945,8 +9286,10 @@ class btkWrenchCollectionDownsampleFilter(_object):
         """
         return _btk.btkWrenchCollectionDownsampleFilter_GetTimestamp(self)
 
+
 btkWrenchCollectionDownsampleFilter_swigregister = _btk.btkWrenchCollectionDownsampleFilter_swigregister
 btkWrenchCollectionDownsampleFilter_swigregister(btkWrenchCollectionDownsampleFilter)
+
 
 class btkForcePlatformsExtractor(_object):
     """
@@ -10044,7 +9387,6 @@ class btkForcePlatformsExtractor(_object):
         """
         return _btk.btkForcePlatformsExtractor_GetInput(self)
 
-
     def SetInput(self, arg2: 'btkAcquisition') -> "void":
         """
         SetInput(self, arg2)
@@ -10052,7 +9394,6 @@ class btkForcePlatformsExtractor(_object):
         Sets the input required with this process.
         """
         return _btk.btkForcePlatformsExtractor_SetInput(self, arg2)
-
 
     def GetOutput(self) -> "btkForcePlatformCollection":
         """
@@ -10062,7 +9403,6 @@ class btkForcePlatformsExtractor(_object):
         """
         return _btk.btkForcePlatformsExtractor_GetOutput(self)
 
-
     def GetInputNumber(self) -> "int":
         """
         GetInputNumber(self) -> int
@@ -10070,7 +9410,6 @@ class btkForcePlatformsExtractor(_object):
         Returns the number of inputs.
         """
         return _btk.btkForcePlatformsExtractor_GetInputNumber(self)
-
 
     def GetValidInputNumber(self) -> "int":
         """
@@ -10080,7 +9419,6 @@ class btkForcePlatformsExtractor(_object):
         """
         return _btk.btkForcePlatformsExtractor_GetValidInputNumber(self)
 
-
     def GetOutputNumber(self) -> "int":
         """
         GetOutputNumber(self) -> int
@@ -10089,7 +9427,6 @@ class btkForcePlatformsExtractor(_object):
         """
         return _btk.btkForcePlatformsExtractor_GetOutputNumber(self)
 
-
     def ResetState(self) -> "void":
         """
         ResetState(self)
@@ -10097,7 +9434,6 @@ class btkForcePlatformsExtractor(_object):
         Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkForcePlatformsExtractor_ResetState(self)
-
 
     def Update(self) -> "void":
         """
@@ -10109,7 +9445,6 @@ class btkForcePlatformsExtractor(_object):
         """
         return _btk.btkForcePlatformsExtractor_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -10118,8 +9453,10 @@ class btkForcePlatformsExtractor(_object):
         """
         return _btk.btkForcePlatformsExtractor_GetTimestamp(self)
 
+
 btkForcePlatformsExtractor_swigregister = _btk.btkForcePlatformsExtractor_swigregister
 btkForcePlatformsExtractor_swigregister(btkForcePlatformsExtractor)
+
 
 class btkForcePlatformWrenchFilter(_object):
     """
@@ -10167,7 +9504,6 @@ class btkForcePlatformWrenchFilter(_object):
         """
         return _btk.btkForcePlatformWrenchFilter_GetInput(self)
 
-
     def SetInput(self, *args) -> "void":
         """
         SetInput(self, btkForcePlatform)
@@ -10177,7 +9513,6 @@ class btkForcePlatformWrenchFilter(_object):
         """
         return _btk.btkForcePlatformWrenchFilter_SetInput(self, *args)
 
-
     def GetOutput(self) -> "btkWrenchCollection":
         """
         GetOutput(self) -> btkWrenchCollection
@@ -10186,8 +9521,7 @@ class btkForcePlatformWrenchFilter(_object):
         """
         return _btk.btkForcePlatformWrenchFilter_GetOutput(self)
 
-
-    def SetTransformToGlobalFrame(self, activation: 'bool'=False) -> "void":
+    def SetTransformToGlobalFrame(self, activation: 'bool' = False) -> "void":
         """
         SetTransformToGlobalFrame(self, activation=False)
         SetTransformToGlobalFrame(self)
@@ -10195,7 +9529,6 @@ class btkForcePlatformWrenchFilter(_object):
         Activate or deactivate the computation of the wrenches in the global frame.
         """
         return _btk.btkForcePlatformWrenchFilter_SetTransformToGlobalFrame(self, activation)
-
 
     def GetTransformToGlobalFrame(self) -> "bool":
         """
@@ -10205,7 +9538,6 @@ class btkForcePlatformWrenchFilter(_object):
         """
         return _btk.btkForcePlatformWrenchFilter_GetTransformToGlobalFrame(self)
 
-
     def GetInputNumber(self) -> "int":
         """
         GetInputNumber(self) -> int
@@ -10213,7 +9545,6 @@ class btkForcePlatformWrenchFilter(_object):
         Returns the number of inputs.
         """
         return _btk.btkForcePlatformWrenchFilter_GetInputNumber(self)
-
 
     def GetValidInputNumber(self) -> "int":
         """
@@ -10223,7 +9554,6 @@ class btkForcePlatformWrenchFilter(_object):
         """
         return _btk.btkForcePlatformWrenchFilter_GetValidInputNumber(self)
 
-
     def GetOutputNumber(self) -> "int":
         """
         GetOutputNumber(self) -> int
@@ -10232,7 +9562,6 @@ class btkForcePlatformWrenchFilter(_object):
         """
         return _btk.btkForcePlatformWrenchFilter_GetOutputNumber(self)
 
-
     def ResetState(self) -> "void":
         """
         ResetState(self)
@@ -10240,7 +9569,6 @@ class btkForcePlatformWrenchFilter(_object):
         Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkForcePlatformWrenchFilter_ResetState(self)
-
 
     def Update(self) -> "void":
         """
@@ -10252,7 +9580,6 @@ class btkForcePlatformWrenchFilter(_object):
         """
         return _btk.btkForcePlatformWrenchFilter_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -10261,8 +9588,10 @@ class btkForcePlatformWrenchFilter(_object):
         """
         return _btk.btkForcePlatformWrenchFilter_GetTimestamp(self)
 
+
 btkForcePlatformWrenchFilter_swigregister = _btk.btkForcePlatformWrenchFilter_swigregister
 btkForcePlatformWrenchFilter_swigregister(btkForcePlatformWrenchFilter)
+
 
 class btkGroundReactionWrenchFilter(_object):
     """
@@ -10340,7 +9669,6 @@ class btkGroundReactionWrenchFilter(_object):
         """
         return _btk.btkGroundReactionWrenchFilter_GetInput(self)
 
-
     def SetInput(self, *args) -> "void":
         """
         SetInput(self, btkForcePlatform)
@@ -10350,7 +9678,6 @@ class btkGroundReactionWrenchFilter(_object):
         """
         return _btk.btkGroundReactionWrenchFilter_SetInput(self, *args)
 
-
     def GetOutput(self) -> "btkWrenchCollection":
         """
         GetOutput(self) -> btkWrenchCollection
@@ -10359,8 +9686,7 @@ class btkGroundReactionWrenchFilter(_object):
         """
         return _btk.btkGroundReactionWrenchFilter_GetOutput(self)
 
-
-    def SetTransformToGlobalFrame(self, activation: 'bool'=False) -> "void":
+    def SetTransformToGlobalFrame(self, activation: 'bool' = False) -> "void":
         """
         SetTransformToGlobalFrame(self, activation=False)
         SetTransformToGlobalFrame(self)
@@ -10368,7 +9694,6 @@ class btkGroundReactionWrenchFilter(_object):
         Activate or deactivate the computation of the wrenches in the global frame.
         """
         return _btk.btkGroundReactionWrenchFilter_SetTransformToGlobalFrame(self, activation)
-
 
     def GetTransformToGlobalFrame(self) -> "bool":
         """
@@ -10378,7 +9703,6 @@ class btkGroundReactionWrenchFilter(_object):
         """
         return _btk.btkGroundReactionWrenchFilter_GetTransformToGlobalFrame(self)
 
-
     def GetThresholdState(self) -> "bool":
         """
         GetThresholdState(self) -> bool
@@ -10387,8 +9711,7 @@ class btkGroundReactionWrenchFilter(_object):
         """
         return _btk.btkGroundReactionWrenchFilter_GetThresholdState(self)
 
-
-    def SetThresholdState(self, activated: 'bool'=False) -> "void":
+    def SetThresholdState(self, activated: 'bool' = False) -> "void":
         """
         SetThresholdState(self, activated=False)
         SetThresholdState(self)
@@ -10396,7 +9719,6 @@ class btkGroundReactionWrenchFilter(_object):
         Sets the threshold state.
         """
         return _btk.btkGroundReactionWrenchFilter_SetThresholdState(self, activated)
-
 
     def GetThresholdValue(self) -> "double":
         """
@@ -10406,7 +9728,6 @@ class btkGroundReactionWrenchFilter(_object):
         """
         return _btk.btkGroundReactionWrenchFilter_GetThresholdValue(self)
 
-
     def SetThresholdValue(self, arg2: 'double') -> "void":
         """
         SetThresholdValue(self, double)
@@ -10414,7 +9735,6 @@ class btkGroundReactionWrenchFilter(_object):
         Sets the threshold value.
         """
         return _btk.btkGroundReactionWrenchFilter_SetThresholdValue(self, arg2)
-
 
     def GetInputNumber(self) -> "int":
         """
@@ -10424,7 +9744,6 @@ class btkGroundReactionWrenchFilter(_object):
         """
         return _btk.btkGroundReactionWrenchFilter_GetInputNumber(self)
 
-
     def GetValidInputNumber(self) -> "int":
         """
         GetValidInputNumber(self) -> int
@@ -10432,7 +9751,6 @@ class btkGroundReactionWrenchFilter(_object):
         Returns the number of inputs which are valid (i.e. not null).
         """
         return _btk.btkGroundReactionWrenchFilter_GetValidInputNumber(self)
-
 
     def GetOutputNumber(self) -> "int":
         """
@@ -10442,7 +9760,6 @@ class btkGroundReactionWrenchFilter(_object):
         """
         return _btk.btkGroundReactionWrenchFilter_GetOutputNumber(self)
 
-
     def ResetState(self) -> "void":
         """
         ResetState(self)
@@ -10450,7 +9767,6 @@ class btkGroundReactionWrenchFilter(_object):
         Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkGroundReactionWrenchFilter_ResetState(self)
-
 
     def Update(self) -> "void":
         """
@@ -10462,7 +9778,6 @@ class btkGroundReactionWrenchFilter(_object):
         """
         return _btk.btkGroundReactionWrenchFilter_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -10471,8 +9786,10 @@ class btkGroundReactionWrenchFilter(_object):
         """
         return _btk.btkGroundReactionWrenchFilter_GetTimestamp(self)
 
+
 btkGroundReactionWrenchFilter_swigregister = _btk.btkGroundReactionWrenchFilter_swigregister
 btkGroundReactionWrenchFilter_swigregister(btkGroundReactionWrenchFilter)
+
 
 class btkIMUsExtractor(_object):
     """
@@ -10545,7 +9862,6 @@ class btkIMUsExtractor(_object):
         """
         return _btk.btkIMUsExtractor_GetInput(self, *args)
 
-
     def SetInput(self, *args) -> "void":
         """
         SetInput(self, btkAcquisition)
@@ -10555,7 +9871,6 @@ class btkIMUsExtractor(_object):
         """
         return _btk.btkIMUsExtractor_SetInput(self, *args)
 
-
     def GetOutput(self) -> "btkIMUCollection":
         """
         GetOutput(self) -> btkIMUCollection
@@ -10563,7 +9878,6 @@ class btkIMUsExtractor(_object):
         Returns the output created with this process.
         """
         return _btk.btkIMUsExtractor_GetOutput(self)
-
 
     def GetInputNumber(self) -> "int":
         """
@@ -10573,7 +9887,6 @@ class btkIMUsExtractor(_object):
         """
         return _btk.btkIMUsExtractor_GetInputNumber(self)
 
-
     def GetValidInputNumber(self) -> "int":
         """
         GetValidInputNumber(self) -> int
@@ -10581,7 +9894,6 @@ class btkIMUsExtractor(_object):
         Returns the number of inputs which are valid (i.e. not null).
         """
         return _btk.btkIMUsExtractor_GetValidInputNumber(self)
-
 
     def GetOutputNumber(self) -> "int":
         """
@@ -10591,7 +9903,6 @@ class btkIMUsExtractor(_object):
         """
         return _btk.btkIMUsExtractor_GetOutputNumber(self)
 
-
     def ResetState(self) -> "void":
         """
         ResetState(self)
@@ -10599,7 +9910,6 @@ class btkIMUsExtractor(_object):
         Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkIMUsExtractor_ResetState(self)
-
 
     def Update(self) -> "void":
         """
@@ -10611,7 +9921,6 @@ class btkIMUsExtractor(_object):
         """
         return _btk.btkIMUsExtractor_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -10620,8 +9929,10 @@ class btkIMUsExtractor(_object):
         """
         return _btk.btkIMUsExtractor_GetTimestamp(self)
 
+
 btkIMUsExtractor_swigregister = _btk.btkIMUsExtractor_swigregister
 btkIMUsExtractor_swigregister(btkIMUsExtractor)
+
 
 class btkMergeAcquisitionFilter(_object):
     """
@@ -10733,7 +10044,6 @@ class btkMergeAcquisitionFilter(_object):
         """
         return _btk.btkMergeAcquisitionFilter_GetFirstFrameRule(self)
 
-
     def SetFirstFrameRule(self, arg2: 'int') -> "void":
         """
         SetFirstFrameRule(self, int)
@@ -10741,7 +10051,6 @@ class btkMergeAcquisitionFilter(_object):
         Returns the rule for the first frame kept.
         """
         return _btk.btkMergeAcquisitionFilter_SetFirstFrameRule(self, arg2)
-
 
     def GetInput(self, arg2: 'int') -> "btkAcquisition":
         """
@@ -10751,7 +10060,6 @@ class btkMergeAcquisitionFilter(_object):
         """
         return _btk.btkMergeAcquisitionFilter_GetInput(self, arg2)
 
-
     def SetInput(self, arg2: 'int', arg3: 'btkAcquisition') -> "void":
         """
         SetInput(self, int, btkAcquisition)
@@ -10759,7 +10067,6 @@ class btkMergeAcquisitionFilter(_object):
         Sets the input required with this process.
         """
         return _btk.btkMergeAcquisitionFilter_SetInput(self, arg2, arg3)
-
 
     def GetOutput(self) -> "btkAcquisition":
         """
@@ -10769,7 +10076,6 @@ class btkMergeAcquisitionFilter(_object):
         """
         return _btk.btkMergeAcquisitionFilter_GetOutput(self)
 
-
     def GetInputNumber(self) -> "int":
         """
         GetInputNumber(self) -> int
@@ -10777,7 +10083,6 @@ class btkMergeAcquisitionFilter(_object):
         Returns the number of inputs.
         """
         return _btk.btkMergeAcquisitionFilter_GetInputNumber(self)
-
 
     def GetValidInputNumber(self) -> "int":
         """
@@ -10787,7 +10092,6 @@ class btkMergeAcquisitionFilter(_object):
         """
         return _btk.btkMergeAcquisitionFilter_GetValidInputNumber(self)
 
-
     def GetOutputNumber(self) -> "int":
         """
         GetOutputNumber(self) -> int
@@ -10796,7 +10100,6 @@ class btkMergeAcquisitionFilter(_object):
         """
         return _btk.btkMergeAcquisitionFilter_GetOutputNumber(self)
 
-
     def ResetState(self) -> "void":
         """
         ResetState(self)
@@ -10804,7 +10107,6 @@ class btkMergeAcquisitionFilter(_object):
         Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkMergeAcquisitionFilter_ResetState(self)
-
 
     def Update(self) -> "void":
         """
@@ -10816,7 +10118,6 @@ class btkMergeAcquisitionFilter(_object):
         """
         return _btk.btkMergeAcquisitionFilter_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -10825,8 +10126,10 @@ class btkMergeAcquisitionFilter(_object):
         """
         return _btk.btkMergeAcquisitionFilter_GetTimestamp(self)
 
+
 btkMergeAcquisitionFilter_swigregister = _btk.btkMergeAcquisitionFilter_swigregister
 btkMergeAcquisitionFilter_swigregister(btkMergeAcquisitionFilter)
+
 
 class btkSeparateKnownVirtualMarkersFilter(_object):
     """
@@ -10952,7 +10255,6 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_AppendVirtualReferenceFrame(self, *args)
 
-
     def AppendVirtualReferenceFrames(self, arg2: 'btkStringAxesList') -> "void":
         """
         AppendKnownVirtualMarkerLabelForAxes(self, btkStringAxesList)
@@ -10960,7 +10262,6 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         Append a list of axes' definition in the category of the virtual markers used to defined frames.
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_AppendVirtualReferenceFrames(self, arg2)
-
 
     def SetVirtualReferenceFrames(self, arg2: 'btkStringAxesList') -> "void":
         """
@@ -10970,7 +10271,6 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_SetVirtualReferenceFrames(self, arg2)
 
-
     def GetVirtualReferenceFrames(self) -> "std::list< btkStringAxes,std::allocator< btkStringAxes > > const &":
         """
         GetVirtualReferenceFrames(self) -> btkStringAxesList
@@ -10978,7 +10278,6 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         Returns the list of labels for the virtual markers used to create frame.
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_GetVirtualReferenceFrames(self)
-
 
     def AppendVirtualMarker(self, arg2: 'std::string const &') -> "void":
         """
@@ -10988,7 +10287,6 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_AppendVirtualMarker(self, arg2)
 
-
     def AppendVirtualMarkers(self, arg2: 'btkStringList') -> "void":
         """
         AppendVirtualMarkers(self, btkStringList)
@@ -10996,7 +10294,6 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         Append a list of labels in the category of the other virtual markers.
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_AppendVirtualMarkers(self, arg2)
-
 
     def SetVirtualMarkers(self, arg2: 'btkStringList') -> "void":
         """
@@ -11006,7 +10303,6 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_SetVirtualMarkers(self, arg2)
 
-
     def GetVirtualMarkers(self) -> "std::list< std::string,std::allocator< std::string > > const &":
         """
         GetVirtualMarkers(self) -> btkStringList
@@ -11014,7 +10310,6 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         Returns the list of labels for the virtual markers used in another context than virtual frames
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_GetVirtualMarkers(self)
-
 
     def SetLabelPrefix(self, arg2: 'std::string const &') -> "void":
         """
@@ -11024,7 +10319,6 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_SetLabelPrefix(self, arg2)
 
-
     def GetLabelPrefix(self) -> "std::string const &":
         """
         GetLabelPrefix(self) -> std::string const &
@@ -11032,7 +10326,6 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         Returns the prefix which will be concatenated to the markers' label during the separation.
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_GetLabelPrefix(self)
-
 
     def GetInput(self) -> "btkPointCollection":
         """
@@ -11042,7 +10335,6 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_GetInput(self)
 
-
     def SetInput(self, arg2: 'btkPointCollection') -> "void":
         """
         SetInput(self, btkAcquisition)
@@ -11050,7 +10342,6 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         Sets the input required with this process.
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_SetInput(self, arg2)
-
 
     def GetOutput(self, arg2: 'int') -> "btkPointCollection":
         """
@@ -11060,7 +10351,6 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_GetOutput(self, arg2)
 
-
     def GetInputNumber(self) -> "int":
         """
         GetInputNumber(self) -> int
@@ -11068,7 +10358,6 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         Returns the number of inputs.
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_GetInputNumber(self)
-
 
     def GetValidInputNumber(self) -> "int":
         """
@@ -11078,7 +10367,6 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_GetValidInputNumber(self)
 
-
     def GetOutputNumber(self) -> "int":
         """
         GetOutputNumber(self) -> int
@@ -11087,7 +10375,6 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_GetOutputNumber(self)
 
-
     def ResetState(self) -> "void":
         """
         ResetState(self)
@@ -11095,7 +10382,6 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_ResetState(self)
-
 
     def Update(self) -> "void":
         """
@@ -11107,7 +10393,6 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -11116,8 +10401,10 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_GetTimestamp(self)
 
+
 btkSeparateKnownVirtualMarkersFilter_swigregister = _btk.btkSeparateKnownVirtualMarkersFilter_swigregister
 btkSeparateKnownVirtualMarkersFilter_swigregister(btkSeparateKnownVirtualMarkersFilter)
+
 
 class btkSpecializedPointsExtractor(_object):
     """
@@ -11163,7 +10450,6 @@ class btkSpecializedPointsExtractor(_object):
         """
         return _btk.btkSpecializedPointsExtractor_GetInput(self)
 
-
     def SetInput(self, input: 'btkAcquisition') -> "void":
         """
         SetInput(self, input)
@@ -11171,7 +10457,6 @@ class btkSpecializedPointsExtractor(_object):
         Sets the input required with this process.
         """
         return _btk.btkSpecializedPointsExtractor_SetInput(self, input)
-
 
     def GetOutput(self) -> "btkPointCollection":
         """
@@ -11181,7 +10466,6 @@ class btkSpecializedPointsExtractor(_object):
         """
         return _btk.btkSpecializedPointsExtractor_GetOutput(self)
 
-
     def GetPointType(self) -> "btkPoint_impl::Type":
         """
         GetPointType(self) -> btkPoint_impl::Type
@@ -11189,7 +10473,6 @@ class btkSpecializedPointsExtractor(_object):
         Returns the type of points to extract.
         """
         return _btk.btkSpecializedPointsExtractor_GetPointType(self)
-
 
     def SetPointType(self, arg2: 'btkPoint_impl::Type') -> "void":
         """
@@ -11199,7 +10482,6 @@ class btkSpecializedPointsExtractor(_object):
         """
         return _btk.btkSpecializedPointsExtractor_SetPointType(self, arg2)
 
-
     def GetInputNumber(self) -> "int":
         """
         GetInputNumber(self) -> int
@@ -11207,7 +10489,6 @@ class btkSpecializedPointsExtractor(_object):
         Returns the number of inputs.
         """
         return _btk.btkSpecializedPointsExtractor_GetInputNumber(self)
-
 
     def GetValidInputNumber(self) -> "int":
         """
@@ -11217,7 +10498,6 @@ class btkSpecializedPointsExtractor(_object):
         """
         return _btk.btkSpecializedPointsExtractor_GetValidInputNumber(self)
 
-
     def GetOutputNumber(self) -> "int":
         """
         GetOutputNumber(self) -> int
@@ -11226,7 +10506,6 @@ class btkSpecializedPointsExtractor(_object):
         """
         return _btk.btkSpecializedPointsExtractor_GetOutputNumber(self)
 
-
     def ResetState(self) -> "void":
         """
         ResetState(self)
@@ -11234,7 +10513,6 @@ class btkSpecializedPointsExtractor(_object):
         Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkSpecializedPointsExtractor_ResetState(self)
-
 
     def Update(self) -> "void":
         """
@@ -11246,7 +10524,6 @@ class btkSpecializedPointsExtractor(_object):
         """
         return _btk.btkSpecializedPointsExtractor_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -11255,8 +10532,10 @@ class btkSpecializedPointsExtractor(_object):
         """
         return _btk.btkSpecializedPointsExtractor_GetTimestamp(self)
 
+
 btkSpecializedPointsExtractor_swigregister = _btk.btkSpecializedPointsExtractor_swigregister
 btkSpecializedPointsExtractor_swigregister(btkSpecializedPointsExtractor)
+
 
 class btkSubAcquisitionFilter(_object):
     """
@@ -11331,14 +10610,12 @@ class btkSubAcquisitionFilter(_object):
         """__deref__(self) -> btkSubAcquisitionFilter_impl *"""
         return _btk.btkSubAcquisitionFilter___deref__(self)
 
-
     def GetExtractionOption(self, *args) -> "btkSubAcquisitionFilter::ExtractionOption":
         """
         GetExtractionOption(self) -> btkSubAcquisitionFilter::ExtractionOption
         GetExtractionOption(self, ids) -> btkSubAcquisitionFilter::ExtractionOption
         """
         return _btk.btkSubAcquisitionFilter_GetExtractionOption(self, *args)
-
 
     def SetExtractionOption(self, *args) -> "void":
         """
@@ -11358,7 +10635,6 @@ class btkSubAcquisitionFilter(_object):
         """
         return _btk.btkSubAcquisitionFilter_SetInput(self, arg2)
 
-
     def GetInput(self) -> "btkAcquisition":
         """
         GetInput(self) -> btkAcquisition
@@ -11367,7 +10643,6 @@ class btkSubAcquisitionFilter(_object):
         """
         return _btk.btkSubAcquisitionFilter_GetInput(self)
 
-
     def GetOutput(self) -> "btkAcquisition":
         """
         GetOutput(self) -> btkAcquisition
@@ -11375,7 +10650,6 @@ class btkSubAcquisitionFilter(_object):
         Returns the output created with this process.
         """
         return _btk.btkSubAcquisitionFilter_GetOutput(self)
-
 
     def GetFramesIndex(self) -> "int const *":
         """
@@ -11386,8 +10660,7 @@ class btkSubAcquisitionFilter(_object):
         """
         return _btk.btkSubAcquisitionFilter_GetFramesIndex(self)
 
-
-    def SetFramesIndex(self, lb: 'int'=-1, ub: 'int'=-1) -> "void":
+    def SetFramesIndex(self, lb: 'int' = -1, ub: 'int' = -1) -> "void":
         """
         SetFramesIndex(self, lb=-1, ub=-1)
         SetFramesIndex(self, lb=-1)
@@ -11397,7 +10670,6 @@ class btkSubAcquisitionFilter(_object):
         """
         return _btk.btkSubAcquisitionFilter_SetFramesIndex(self, lb, ub)
 
-
     def GetInputNumber(self) -> "int":
         """
         GetInputNumber(self) -> int
@@ -11405,7 +10677,6 @@ class btkSubAcquisitionFilter(_object):
         Returns the number of inputs.
         """
         return _btk.btkSubAcquisitionFilter_GetInputNumber(self)
-
 
     def GetValidInputNumber(self) -> "int":
         """
@@ -11415,7 +10686,6 @@ class btkSubAcquisitionFilter(_object):
         """
         return _btk.btkSubAcquisitionFilter_GetValidInputNumber(self)
 
-
     def GetOutputNumber(self) -> "int":
         """
         GetOutputNumber(self) -> int
@@ -11424,7 +10694,6 @@ class btkSubAcquisitionFilter(_object):
         """
         return _btk.btkSubAcquisitionFilter_GetOutputNumber(self)
 
-
     def ResetState(self) -> "void":
         """
         ResetState(self)
@@ -11432,7 +10701,6 @@ class btkSubAcquisitionFilter(_object):
         Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkSubAcquisitionFilter_ResetState(self)
-
 
     def Update(self) -> "void":
         """
@@ -11444,7 +10712,6 @@ class btkSubAcquisitionFilter(_object):
         """
         return _btk.btkSubAcquisitionFilter_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -11453,14 +10720,17 @@ class btkSubAcquisitionFilter(_object):
         """
         return _btk.btkSubAcquisitionFilter_GetTimestamp(self)
 
+
 btkSubAcquisitionFilter_swigregister = _btk.btkSubAcquisitionFilter_swigregister
 btkSubAcquisitionFilter_swigregister(btkSubAcquisitionFilter)
+
 
 class btkVerticalGroundReactionForceGaitEventDetector(_object):
     """Proxy of C++ btkVerticalGroundReactionForceGaitEventDetector class."""
 
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, btkVerticalGroundReactionForceGaitEventDetector, name, value)
+    __setattr__ = lambda self, name, value: _swig_setattr(self, btkVerticalGroundReactionForceGaitEventDetector, name,
+                                                          value)
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, btkVerticalGroundReactionForceGaitEventDetector, name)
     __repr__ = _swig_repr
@@ -11488,7 +10758,6 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_GetInput(self)
 
-
     def SetInput(self, *args) -> "void":
         """
         SetInput(self, arg2)
@@ -11498,7 +10767,6 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_SetInput(self, *args)
 
-
     def GetOutput(self) -> "btkEventCollection":
         """
         GetOutput(self) -> btkEventCollection
@@ -11506,7 +10774,6 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         Gets the output created with this process.
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_GetOutput(self)
-
 
     def SetThresholdValue(self, arg2: 'int') -> "void":
         """
@@ -11516,7 +10783,6 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_SetThresholdValue(self, arg2)
 
-
     def GetThresholdValue(self) -> "int":
         """
         GetThresholdValue(self) -> int
@@ -11524,7 +10790,6 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         Returns the threshold used to detect gait events.
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_GetThresholdValue(self)
-
 
     def SetForceplateContextMapping(self, arg2: 'btkStringArray') -> "void":
         """
@@ -11534,7 +10799,6 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_SetForceplateContextMapping(self, arg2)
 
-
     def GetForceplateContextMapping(self) -> "std::vector< std::string,std::allocator< std::string > > const &":
         """
         GetForceplateContextMapping(self) -> btkStringArray
@@ -11543,8 +10807,7 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_GetForceplateContextMapping(self)
 
-
-    def SetRegionOfInterest(self, lb: 'int'=-1, ub: 'int'=-1) -> "void":
+    def SetRegionOfInterest(self, lb: 'int' = -1, ub: 'int' = -1) -> "void":
         """
         SetRegionOfInterest(self, lb=-1, ub=-1)
         SetRegionOfInterest(self, lb=-1)
@@ -11555,7 +10818,6 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_SetRegionOfInterest(self, lb, ub)
 
-
     def GetRegionOfInterest(self) -> "int const *":
         """
         GetRegionOfInterest(self) -> int const *
@@ -11563,7 +10825,6 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         Returns the region of interest to use to detect gait events.
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_GetRegionOfInterest(self)
-
 
     def SetAcquisitionInformation(self, arg2: 'int', arg3: 'double', arg4: 'std::string const &') -> "void":
         """
@@ -11573,7 +10834,6 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_SetAcquisitionInformation(self, arg2, arg3, arg4)
 
-
     def GetAcquisitionInformation(self, arg2: 'int &', arg3: 'double &', arg4: 'std::string &') -> "void":
         """
         GetAcquisitionInformation(int& ff, double& sampleRate, string& subjectLabel)
@@ -11581,7 +10841,6 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         Returns the informations required to set correctly the detected events.
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_GetAcquisitionInformation(self, arg2, arg3, arg4)
-
 
     def GetInputNumber(self) -> "int":
         """
@@ -11591,7 +10850,6 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_GetInputNumber(self)
 
-
     def GetValidInputNumber(self) -> "int":
         """
         GetValidInputNumber(self) -> int
@@ -11599,7 +10857,6 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         Returns the number of inputs which are valid (i.e. not null).
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_GetValidInputNumber(self)
-
 
     def GetOutputNumber(self) -> "int":
         """
@@ -11609,7 +10866,6 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_GetOutputNumber(self)
 
-
     def ResetState(self) -> "void":
         """
         ResetState(self)
@@ -11617,7 +10873,6 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_ResetState(self)
-
 
     def Update(self) -> "void":
         """
@@ -11629,7 +10884,6 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -11638,8 +10892,10 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_GetTimestamp(self)
 
+
 btkVerticalGroundReactionForceGaitEventDetector_swigregister = _btk.btkVerticalGroundReactionForceGaitEventDetector_swigregister
 btkVerticalGroundReactionForceGaitEventDetector_swigregister(btkVerticalGroundReactionForceGaitEventDetector)
+
 
 class btkWrenchDirectionAngleFilter(_object):
     """
@@ -11697,7 +10953,6 @@ class btkWrenchDirectionAngleFilter(_object):
         """
         return _btk.btkWrenchDirectionAngleFilter_GetInput(self)
 
-
     def SetInput(self, input: 'btkWrenchCollection') -> "void":
         """
         SetInput(self, input)
@@ -11705,7 +10960,6 @@ class btkWrenchDirectionAngleFilter(_object):
         Sets the input required with this process.
         """
         return _btk.btkWrenchDirectionAngleFilter_SetInput(self, input)
-
 
     def GetOutput(self) -> "btkPointCollection":
         """
@@ -11715,7 +10969,6 @@ class btkWrenchDirectionAngleFilter(_object):
         """
         return _btk.btkWrenchDirectionAngleFilter_GetOutput(self)
 
-
     def GetInputNumber(self) -> "int":
         """
         GetInputNumber(self) -> int
@@ -11723,7 +10976,6 @@ class btkWrenchDirectionAngleFilter(_object):
         Returns the number of inputs.
         """
         return _btk.btkWrenchDirectionAngleFilter_GetInputNumber(self)
-
 
     def GetValidInputNumber(self) -> "int":
         """
@@ -11733,7 +10985,6 @@ class btkWrenchDirectionAngleFilter(_object):
         """
         return _btk.btkWrenchDirectionAngleFilter_GetValidInputNumber(self)
 
-
     def GetOutputNumber(self) -> "int":
         """
         GetOutputNumber(self) -> int
@@ -11742,7 +10993,6 @@ class btkWrenchDirectionAngleFilter(_object):
         """
         return _btk.btkWrenchDirectionAngleFilter_GetOutputNumber(self)
 
-
     def ResetState(self) -> "void":
         """
         ResetState(self)
@@ -11750,7 +11000,6 @@ class btkWrenchDirectionAngleFilter(_object):
         Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkWrenchDirectionAngleFilter_ResetState(self)
-
 
     def Update(self) -> "void":
         """
@@ -11762,7 +11011,6 @@ class btkWrenchDirectionAngleFilter(_object):
         """
         return _btk.btkWrenchDirectionAngleFilter_Update(self)
 
-
     def GetTimestamp(self) -> "unsigned long":
         """
         GetTimestamp(self) -> unsigned long
@@ -11771,8 +11019,10 @@ class btkWrenchDirectionAngleFilter(_object):
         """
         return _btk.btkWrenchDirectionAngleFilter_GetTimestamp(self)
 
+
 btkWrenchDirectionAngleFilter_swigregister = _btk.btkWrenchDirectionAngleFilter_swigregister
 btkWrenchDirectionAngleFilter_swigregister(btkWrenchDirectionAngleFilter)
+
 
 class btkStringAxes(_object):
     """
@@ -11788,7 +11038,8 @@ class btkStringAxes(_object):
     __getattr__ = lambda self, name: _swig_getattr(self, btkStringAxes, name)
     __repr__ = _swig_repr
 
-    def __init__(self, o: 'std::string const &', a1: 'std::string const &', a2: 'std::string const &', a3: 'std::string const &'):
+    def __init__(self, o: 'std::string const &', a1: 'std::string const &', a2: 'std::string const &',
+                 a3: 'std::string const &'):
         """
         __init__(self, o, a1, a2, a3) -> btkStringAxes
 
@@ -11802,6 +11053,7 @@ class btkStringAxes(_object):
             self.this.append(this)
         except Exception:
             self.this = this
+
     __swig_setmethods__["Origin"] = _btk.btkStringAxes_Origin_set
     __swig_getmethods__["Origin"] = _btk.btkStringAxes_Origin_get
     if _newclass:
@@ -11820,8 +11072,11 @@ class btkStringAxes(_object):
         Axis3 = _swig_property(_btk.btkStringAxes_Axis3_get, _btk.btkStringAxes_Axis3_set)
     __swig_destroy__ = _btk.delete_btkStringAxes
     __del__ = lambda self: None
+
+
 btkStringAxes_swigregister = _btk.btkStringAxes_swigregister
 btkStringAxes_swigregister(btkStringAxes)
+
 
 class btkStringAxesList(_object):
     """Proxy of C++ std::list<(btkStringAxes)> class."""
@@ -11843,21 +11098,18 @@ class btkStringAxesList(_object):
         """__nonzero__(self) -> bool"""
         return _btk.btkStringAxesList___nonzero__(self)
 
-
     def __bool__(self) -> "bool":
         """__bool__(self) -> bool"""
         return _btk.btkStringAxesList___bool__(self)
-
 
     def __len__(self) -> "std::list< btkStringAxes >::size_type":
         """__len__(self) -> std::list< btkStringAxes >::size_type"""
         return _btk.btkStringAxesList___len__(self)
 
-
-    def __getslice__(self, i: 'std::list< btkStringAxes >::difference_type', j: 'std::list< btkStringAxes >::difference_type') -> "std::list< btkStringAxes,std::allocator< btkStringAxes > > *":
+    def __getslice__(self, i: 'std::list< btkStringAxes >::difference_type',
+                     j: 'std::list< btkStringAxes >::difference_type') -> "std::list< btkStringAxes,std::allocator< btkStringAxes > > *":
         """__getslice__(self, i, j) -> btkStringAxesList"""
         return _btk.btkStringAxesList___getslice__(self, i, j)
-
 
     def __setslice__(self, *args) -> "void":
         """
@@ -11866,11 +11118,10 @@ class btkStringAxesList(_object):
         """
         return _btk.btkStringAxesList___setslice__(self, *args)
 
-
-    def __delslice__(self, i: 'std::list< btkStringAxes >::difference_type', j: 'std::list< btkStringAxes >::difference_type') -> "void":
+    def __delslice__(self, i: 'std::list< btkStringAxes >::difference_type',
+                     j: 'std::list< btkStringAxes >::difference_type') -> "void":
         """__delslice__(self, i, j)"""
         return _btk.btkStringAxesList___delslice__(self, i, j)
-
 
     def __delitem__(self, *args) -> "void":
         """
@@ -11879,14 +11130,12 @@ class btkStringAxesList(_object):
         """
         return _btk.btkStringAxesList___delitem__(self, *args)
 
-
     def __getitem__(self, *args) -> "std::list< btkStringAxes >::value_type const &":
         """
         __getitem__(self, slice) -> btkStringAxesList
         __getitem__(self, i) -> btkStringAxes
         """
         return _btk.btkStringAxesList___getitem__(self, *args)
-
 
     def __setitem__(self, *args) -> "void":
         """
@@ -11896,66 +11145,53 @@ class btkStringAxesList(_object):
         """
         return _btk.btkStringAxesList___setitem__(self, *args)
 
-
     def pop(self) -> "std::list< btkStringAxes >::value_type":
         """pop(self) -> btkStringAxes"""
         return _btk.btkStringAxesList_pop(self)
-
 
     def append(self, x: 'btkStringAxes') -> "void":
         """append(self, x)"""
         return _btk.btkStringAxesList_append(self, x)
 
-
     def empty(self) -> "bool":
         """empty(self) -> bool"""
         return _btk.btkStringAxesList_empty(self)
-
 
     def size(self) -> "std::list< btkStringAxes >::size_type":
         """size(self) -> std::list< btkStringAxes >::size_type"""
         return _btk.btkStringAxesList_size(self)
 
-
     def swap(self, v: 'btkStringAxesList') -> "void":
         """swap(self, v)"""
         return _btk.btkStringAxesList_swap(self, v)
-
 
     def begin(self) -> "std::list< btkStringAxes >::iterator":
         """begin(self) -> std::list< btkStringAxes >::iterator"""
         return _btk.btkStringAxesList_begin(self)
 
-
     def end(self) -> "std::list< btkStringAxes >::iterator":
         """end(self) -> std::list< btkStringAxes >::iterator"""
         return _btk.btkStringAxesList_end(self)
-
 
     def rbegin(self) -> "std::list< btkStringAxes >::reverse_iterator":
         """rbegin(self) -> std::list< btkStringAxes >::reverse_iterator"""
         return _btk.btkStringAxesList_rbegin(self)
 
-
     def rend(self) -> "std::list< btkStringAxes >::reverse_iterator":
         """rend(self) -> std::list< btkStringAxes >::reverse_iterator"""
         return _btk.btkStringAxesList_rend(self)
-
 
     def clear(self) -> "void":
         """clear(self)"""
         return _btk.btkStringAxesList_clear(self)
 
-
     def get_allocator(self) -> "std::list< btkStringAxes >::allocator_type":
         """get_allocator(self) -> std::list< btkStringAxes >::allocator_type"""
         return _btk.btkStringAxesList_get_allocator(self)
 
-
     def pop_back(self) -> "void":
         """pop_back(self)"""
         return _btk.btkStringAxesList_pop_back(self)
-
 
     def erase(self, *args) -> "std::list< btkStringAxes >::iterator":
         """
@@ -11963,7 +11199,6 @@ class btkStringAxesList(_object):
         erase(self, first, last) -> std::list< btkStringAxes >::iterator
         """
         return _btk.btkStringAxesList_erase(self, *args)
-
 
     def __init__(self, *args):
         """
@@ -11982,21 +11217,17 @@ class btkStringAxesList(_object):
         """push_back(self, x)"""
         return _btk.btkStringAxesList_push_back(self, x)
 
-
     def front(self) -> "std::list< btkStringAxes >::value_type const &":
         """front(self) -> btkStringAxes"""
         return _btk.btkStringAxesList_front(self)
-
 
     def back(self) -> "std::list< btkStringAxes >::value_type const &":
         """back(self) -> btkStringAxes"""
         return _btk.btkStringAxesList_back(self)
 
-
     def assign(self, n: 'std::list< btkStringAxes >::size_type', x: 'btkStringAxes') -> "void":
         """assign(self, n, x)"""
         return _btk.btkStringAxesList_assign(self, n, x)
-
 
     def resize(self, *args) -> "void":
         """
@@ -12005,7 +11236,6 @@ class btkStringAxesList(_object):
         """
         return _btk.btkStringAxesList_resize(self, *args)
 
-
     def insert(self, *args) -> "void":
         """
         insert(self, pos, x) -> std::list< btkStringAxes >::iterator
@@ -12013,16 +11243,13 @@ class btkStringAxesList(_object):
         """
         return _btk.btkStringAxesList_insert(self, *args)
 
-
     def pop_front(self) -> "void":
         """pop_front(self)"""
         return _btk.btkStringAxesList_pop_front(self)
 
-
     def push_front(self, x: 'btkStringAxes') -> "void":
         """push_front(self, x)"""
         return _btk.btkStringAxesList_push_front(self, x)
-
 
     def reverse(self) -> "void":
         """reverse(self)"""
@@ -12030,8 +11257,11 @@ class btkStringAxesList(_object):
 
     __swig_destroy__ = _btk.delete_btkStringAxesList
     __del__ = lambda self: None
+
+
 btkStringAxesList_swigregister = _btk.btkStringAxesList_swigregister
 btkStringAxesList_swigregister(btkStringAxesList)
+
 
 class btkStringList(_object):
     """Proxy of C++ std::list<(std::string)> class."""
@@ -12053,21 +11283,18 @@ class btkStringList(_object):
         """__nonzero__(self) -> bool"""
         return _btk.btkStringList___nonzero__(self)
 
-
     def __bool__(self) -> "bool":
         """__bool__(self) -> bool"""
         return _btk.btkStringList___bool__(self)
-
 
     def __len__(self) -> "std::list< std::string >::size_type":
         """__len__(self) -> std::list< std::string >::size_type"""
         return _btk.btkStringList___len__(self)
 
-
-    def __getslice__(self, i: 'std::list< std::string >::difference_type', j: 'std::list< std::string >::difference_type') -> "std::list< std::string,std::allocator< std::string > > *":
+    def __getslice__(self, i: 'std::list< std::string >::difference_type',
+                     j: 'std::list< std::string >::difference_type') -> "std::list< std::string,std::allocator< std::string > > *":
         """__getslice__(self, i, j) -> btkStringList"""
         return _btk.btkStringList___getslice__(self, i, j)
-
 
     def __setslice__(self, *args) -> "void":
         """
@@ -12076,11 +11303,10 @@ class btkStringList(_object):
         """
         return _btk.btkStringList___setslice__(self, *args)
 
-
-    def __delslice__(self, i: 'std::list< std::string >::difference_type', j: 'std::list< std::string >::difference_type') -> "void":
+    def __delslice__(self, i: 'std::list< std::string >::difference_type',
+                     j: 'std::list< std::string >::difference_type') -> "void":
         """__delslice__(self, i, j)"""
         return _btk.btkStringList___delslice__(self, i, j)
-
 
     def __delitem__(self, *args) -> "void":
         """
@@ -12089,14 +11315,12 @@ class btkStringList(_object):
         """
         return _btk.btkStringList___delitem__(self, *args)
 
-
     def __getitem__(self, *args) -> "std::list< std::string >::value_type const &":
         """
         __getitem__(self, slice) -> btkStringList
         __getitem__(self, i) -> std::list< std::string >::value_type const &
         """
         return _btk.btkStringList___getitem__(self, *args)
-
 
     def __setitem__(self, *args) -> "void":
         """
@@ -12106,66 +11330,53 @@ class btkStringList(_object):
         """
         return _btk.btkStringList___setitem__(self, *args)
 
-
     def pop(self) -> "std::list< std::string >::value_type":
         """pop(self) -> std::list< std::string >::value_type"""
         return _btk.btkStringList_pop(self)
-
 
     def append(self, x: 'std::list< std::string >::value_type const &') -> "void":
         """append(self, x)"""
         return _btk.btkStringList_append(self, x)
 
-
     def empty(self) -> "bool":
         """empty(self) -> bool"""
         return _btk.btkStringList_empty(self)
-
 
     def size(self) -> "std::list< std::string >::size_type":
         """size(self) -> std::list< std::string >::size_type"""
         return _btk.btkStringList_size(self)
 
-
     def swap(self, v: 'btkStringList') -> "void":
         """swap(self, v)"""
         return _btk.btkStringList_swap(self, v)
-
 
     def begin(self) -> "std::list< std::string >::iterator":
         """begin(self) -> std::list< std::string >::iterator"""
         return _btk.btkStringList_begin(self)
 
-
     def end(self) -> "std::list< std::string >::iterator":
         """end(self) -> std::list< std::string >::iterator"""
         return _btk.btkStringList_end(self)
-
 
     def rbegin(self) -> "std::list< std::string >::reverse_iterator":
         """rbegin(self) -> std::list< std::string >::reverse_iterator"""
         return _btk.btkStringList_rbegin(self)
 
-
     def rend(self) -> "std::list< std::string >::reverse_iterator":
         """rend(self) -> std::list< std::string >::reverse_iterator"""
         return _btk.btkStringList_rend(self)
-
 
     def clear(self) -> "void":
         """clear(self)"""
         return _btk.btkStringList_clear(self)
 
-
     def get_allocator(self) -> "std::list< std::string >::allocator_type":
         """get_allocator(self) -> std::list< std::string >::allocator_type"""
         return _btk.btkStringList_get_allocator(self)
 
-
     def pop_back(self) -> "void":
         """pop_back(self)"""
         return _btk.btkStringList_pop_back(self)
-
 
     def erase(self, *args) -> "std::list< std::string >::iterator":
         """
@@ -12173,7 +11384,6 @@ class btkStringList(_object):
         erase(self, first, last) -> std::list< std::string >::iterator
         """
         return _btk.btkStringList_erase(self, *args)
-
 
     def __init__(self, *args):
         """
@@ -12192,21 +11402,18 @@ class btkStringList(_object):
         """push_back(self, x)"""
         return _btk.btkStringList_push_back(self, x)
 
-
     def front(self) -> "std::list< std::string >::value_type const &":
         """front(self) -> std::list< std::string >::value_type const &"""
         return _btk.btkStringList_front(self)
-
 
     def back(self) -> "std::list< std::string >::value_type const &":
         """back(self) -> std::list< std::string >::value_type const &"""
         return _btk.btkStringList_back(self)
 
-
-    def assign(self, n: 'std::list< std::string >::size_type', x: 'std::list< std::string >::value_type const &') -> "void":
+    def assign(self, n: 'std::list< std::string >::size_type',
+               x: 'std::list< std::string >::value_type const &') -> "void":
         """assign(self, n, x)"""
         return _btk.btkStringList_assign(self, n, x)
-
 
     def resize(self, *args) -> "void":
         """
@@ -12215,7 +11422,6 @@ class btkStringList(_object):
         """
         return _btk.btkStringList_resize(self, *args)
 
-
     def insert(self, *args) -> "void":
         """
         insert(self, pos, x) -> std::list< std::string >::iterator
@@ -12223,16 +11429,13 @@ class btkStringList(_object):
         """
         return _btk.btkStringList_insert(self, *args)
 
-
     def pop_front(self) -> "void":
         """pop_front(self)"""
         return _btk.btkStringList_pop_front(self)
 
-
     def push_front(self, x: 'std::list< std::string >::value_type const &') -> "void":
         """push_front(self, x)"""
         return _btk.btkStringList_push_front(self, x)
-
 
     def reverse(self) -> "void":
         """reverse(self)"""
@@ -12240,9 +11443,9 @@ class btkStringList(_object):
 
     __swig_destroy__ = _btk.delete_btkStringList
     __del__ = lambda self: None
+
+
 btkStringList_swigregister = _btk.btkStringList_swigregister
 btkStringList_swigregister(btkStringList)
 
 # This file is compatible with both classic and new-style classes.
-
-

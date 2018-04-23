@@ -8,22 +8,22 @@ import sys
 
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPalette, QColor
-from vtk import vtkInteractorStyleTrackballCamera
-from vtk import vtkPolyDataMapper
-from vtk import vtkPolyLine
-from vtk import vtkCellArray
-from vtk import vtkSphereSource
 from vtk import vtkActor
-from vtk import vtkRenderer
+from vtk import vtkCellArray
+from vtk import vtkInteractorStyleTrackballCamera
 from vtk import vtkLine
 from vtk import vtkPoints
 from vtk import vtkPolyData
+from vtk import vtkPolyDataMapper
+from vtk import vtkPolyLine
+from vtk import vtkRenderer
+from vtk import vtkSphereSource
 from vtk import vtkUnsignedCharArray
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
+from pyomeca.types.markers import Markers3d
 from pyomeca.types.mesh import Mesh, MeshCollection
 from pyomeca.types.rototrans import RotoTrans, RotoTransCollection
-from pyomeca.types.markers import Markers3d
 
 first = True
 if first:

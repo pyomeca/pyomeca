@@ -1,5 +1,6 @@
-from pyomeca.types.frame_dependent import FrameDependentNpArray
 import numpy as np
+
+from pyomeca.types.frame_dependent import FrameDependentNpArray
 
 
 class Markers3d(FrameDependentNpArray):

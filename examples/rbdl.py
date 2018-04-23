@@ -1,9 +1,8 @@
 import numpy as np
-
-from pyomeca.thirdparty import biorbd
-from pyomeca.types.generalized_coordinates import GeneralizedCoordinate
 from pyomeca.show.vtk import Model as PyoModel
 from pyomeca.show.vtk import Window as PyoWindow
+from pyomeca.thirdparty import biorbd
+from pyomeca.types.generalized_coordinates import GeneralizedCoordinate
 
 # Load
 m = biorbd.new("../tests/data/pyomecaman.s2mMod")
