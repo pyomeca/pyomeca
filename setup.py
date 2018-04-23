@@ -8,9 +8,7 @@ requirements = [
     'numpy',
     'pandas',
     'vtk',
-    'pyqt',
-    'scipy',
-    'matplotlib'
+    'pyqt'
 ]
 
 setup(
