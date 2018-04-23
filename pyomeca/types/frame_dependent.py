@@ -1,7 +1,6 @@
-from pathlib import Path
-
 import numpy as np
 import pandas as pd
+from pathlib import Path
 
 from pyomeca import plot as pyoplot
 from pyomeca import signal as pyosignal
@@ -290,7 +289,7 @@ class FrameDependentNpArray(np.ndarray):
     # --- Plot method
 
     def plot(self, x=None, idx=None, ax=None, fmt='k', lw=1, label=None, alpha=1):
-        return pyoplot.plot_vector3d(self, x, idx, ax, fmt, lw, label, alpha)
+        return pyoplot.plot_vector3d(self, x, ax, fmt, lw, label, alpha)
 
     # --- Signal processing methods
 

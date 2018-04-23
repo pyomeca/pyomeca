@@ -2,10 +2,9 @@
 Signal processing examples in pyomeca
 """
 
-from pathlib import Path
-
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
 from pyomeca import plot as pyoplot
 from pyomeca import signal as pyosignal
 from pyomeca.types.analogs import Analogs3d
@@ -16,6 +15,8 @@ MARKERS_ANALOGS_C3D = DATA_FOLDER / 'markers_analogs.c3d'
 
 # read an emg from a c3d file
 a = Analogs3d.from_c3d(MARKERS_ANALOGS_C3D, names=['EMG1'])
+a[0, 0, :].plot()
+plt.show()
 
 # --- Pyomeca types method implementation
 
