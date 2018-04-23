@@ -6,8 +6,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from pyomeca.types.analogs import Analogs3d
 from pyomeca.types.markers import Markers3d
+from pyomeca.types.analogs import Analogs3d
 
 # Path
 if Path.cwd().parts[-1] == 'pyomeca':

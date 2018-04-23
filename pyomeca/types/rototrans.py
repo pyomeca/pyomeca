@@ -1,7 +1,6 @@
-import numpy as np
-
 from pyomeca.types.frame_dependent import FrameDependentNpArray, FrameDependentNpArrayCollection
 from pyomeca.types.markers import Markers3d
+import numpy as np
 
 
 class RotoTrans(FrameDependentNpArray):
