@@ -1,6 +1,7 @@
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
-from pathlib import Path
 
 from pyomeca import plot as pyoplot
 from pyomeca import signal as pyosignal

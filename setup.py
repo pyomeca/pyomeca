@@ -10,7 +10,9 @@ requirements = [
     'scipy',
     'matplotlib',
     'vtk',
-    'pyqt'
+    'pyqt',
+    'scipy',
+    'matplotlib'
 ]
 
 setup(
