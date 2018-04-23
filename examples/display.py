@@ -6,9 +6,9 @@ from pathlib import Path
 
 import numpy as np
 from pyomeca.show.vtk import Model as VtkModel, Window as VtkWindow
-from pyomeca.types.rototrans import RotoTrans, RotoTransCollection
-from pyomeca.types.mesh import Mesh, MeshCollection
-from pyomeca.types.markers import Markers3d
+from pyomeca.obj.rototrans import RotoTrans, RotoTransCollection
+from pyomeca.obj.mesh import Mesh, MeshCollection
+from pyomeca.obj.markers import Markers3d
 
 # Path to data
 DATA_FOLDER = Path('..') / 'tests' / 'data'
