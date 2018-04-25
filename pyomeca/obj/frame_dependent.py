@@ -1,9 +1,12 @@
-import numpy as np
-import pandas as pd
 from pathlib import Path
 
-from pyomeca import plot as pyoplot
-from pyomeca import signal as pyosignal
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from scipy import fftpack
+from scipy.interpolate import interp1d, UnivariateSpline
+from scipy.signal import filtfilt, medfilt, butter
+
 from pyomeca.thirdparty import btk
 
 not_implemented_in_parent = 'This method should be called from a child class (e.g. Markers3d, Analogs3d, etc.)'
@@ -44,6 +47,21 @@ class FrameDependentNpArray(np.ndarray):
             self.get_rate = getattr(obj, 'get_rate')
             self.get_labels = getattr(obj, 'get_labels')
             self.get_unit = getattr(obj, 'get_unit')
+
+    def dynamic_child_cast(self, x):
+        """
+        Dynamically cast the np.array into type of self (which is probably inherited from FrameDependentNpArray)
+        Parameters
+        ----------
+        x : np.array
+
+        Returns
+        -------
+        x in the same type as self
+        """
+        casted_x = type(self)(x)
+        casted_x.__array_finalize__(self)
+        return casted_x
 
     def __next__(self):
         if self._current_frame > self.shape[2]:
@@ -288,55 +306,402 @@ class FrameDependentNpArray(np.ndarray):
 
     # --- Plot method
 
-    def plot(self, x=None, idx=None, ax=None, fmt='k', lw=1, label=None, alpha=1):
-        return pyoplot.plot_vector3d(self, x, ax, fmt, lw, label, alpha)
+    def plot(self, x=None, ax=None, fmt='k', lw=1, label=None, alpha=1):
+        """
+        Plot a pyomeca vector3d (Markers3d, Analogs3d, etc.)
+
+        Parameters
+        ----------
+        x : np.ndarray, optional
+            data to plot on x axis
+        ax : matplotlib axe, optional
+            axis on which the data will be ploted
+        fmt : str
+            color of the line
+        lw : int
+            line width of the line
+        label : str
+            label associated with the data (useful to plot legend)
+        alpha : int, float
+            alpha
+        """
+        if not ax:
+            _, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 4))
+
+        if self.shape[0] == 1 and self.shape[1] == 1:
+            current = self.squeeze()
+        else:
+            current = self
+        if np.any(x):
+            ax.plot(x, current, fmt, lw=lw, label=label, alpha=alpha)
+        else:
+            ax.plot(current, fmt, lw=lw, label=label, alpha=alpha)
+        return ax
 
     # --- Signal processing methods
 
     def rectify(self):
-        return pyosignal.rectify(self)
+        """
+        Rectify a signal (i.e., get absolute values)
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        return np.abs(self)
 
     def center(self, mu=None, axis=-1):
-        return pyosignal.center(self, mu, axis)
+        """
+        Center a signal (i.e., subtract the mean)
+
+        Parameters
+        ----------
+        mu : np.ndarray, float, int
+            mean of the signal to subtract, optional
+        axis : int, optional
+            axis along which the means are computed. The default is to compute
+            the mean on the last axis.
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        if not np.any(mu):
+            mu = np.nanmean(self, axis=axis)
+        if self.ndim > mu.ndim:
+            # add one dimension if the input is a 3d matrix
+            mu = np.expand_dims(mu, axis=-1)
+        return self - mu
 
     def normalization(self, ref=None, scale=100):
-        return pyosignal.normalization(self, ref, scale)
+        """
+        Normalize a signal against `ref` (x's max if empty) on a scale of `scale`
 
-    def fft(self, freq, only_positive=True):
-        amp, freqs = pyosignal.fft(self, freq, only_positive)
+        Parameters
+        ----------
+        ref : Union(int, float)
+            reference value
+        scale
+            Scale on which to express x (100 by default)
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        if not ref:
+            ref = np.nanmax(self, axis=-1)
+            # add one dimension
+            ref = np.expand_dims(ref, axis=-1)
+        return self / (ref / scale)
+
+    def time_normalization(self, time_vector=np.linspace(0, 100, 101), axis=-1):
+        """
+        Time normalization used for temporal alignment of data
+
+        Parameters
+        ----------
+        x : np.ndarray
+            vector or matrix of data
+        time_vector : np.ndarray
+            desired time vector (0 to 100 by step of 1 by default)
+        axis : int
+            specifies the axis along which to interpolate. Interpolation defaults to the last axis (over frames)
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        original_time_vector = np.linspace(time_vector[0], time_vector[-1], self.shape[axis])
+        f = interp1d(original_time_vector, self, axis=axis)
+        return f(time_vector)
+
+    def fill_values(self, axis=-1):
+        """
+        Fill values. Warning: this function can be used only for very small gaps in your data.
+
+        Parameters
+        ----------
+        axis : int
+            specifies the axis along which to interpolate. Interpolation defaults to the last axis (over frames)
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        original_time_vector = np.arange(0, self.shape[axis])
+        x = self.copy()
+
+        def fct(m):
+            """Simple function to interpolate along an axis"""
+            w = np.isnan(m)
+            m[w] = 0
+            f = UnivariateSpline(original_time_vector, m, w=~w)
+            return f(original_time_vector)
+
+        return np.apply_along_axis(fct, axis=axis, arr=x)
+
+    def moving_rms(self, window_size, method='filtfilt'):
+        """
+        Moving root mean square
+
+        Parameters
+        ----------
+        window_size : Union(int, float)
+            Window size
+        method : str
+            method to use:
+                - 'convolution': faster and behaves better to abrupt changes, but works only for one dimensional array.
+                - 'filtfilt': the go-to solution.
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        if method == 'convolution':
+            if self.ndim > 1:
+                raise ValueError('moving_rms with convolution take only one dimension array')
+            window = 2 * window_size + 1
+            return self.dynamic_child_cast(np.sqrt(np.convolve(self * self, np.ones(window) / window, 'same')))
+        elif method == 'filtfilt':
+            return self.dynamic_child_cast(np.sqrt(filtfilt(np.ones(window_size) / window_size, 1, self * self)))
+        else:
+            raise ValueError(f'method should be filtfilt or convolution. You provided {method}')
+
+    def moving_average(self, window_size, method='filtfilt'):
+        """
+        Moving average
+
+        Parameters
+        ----------
+        window_size : Union(int, float)
+            Window size
+        method : str
+            method to use:
+                - 'cumsum': fastest method.
+                - 'convolution': produces a result without a lag between the input and the output.
+                - 'filtfilt': The go-to method.
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        if method == 'cumsum':
+            if self.ndim > 2:
+                raise ValueError('moving_average with cumsum take only one or two dimensions array')
+            xsum = np.cumsum(self)
+            xsum[window_size:] = xsum[window_size:] - xsum[:-window_size]
+            return xsum[window_size - 1:] / window_size
+        elif method == 'convolution':
+            if self.ndim > 1:
+                raise ValueError('moving_average with convolution take only one dimension array')
+            return np.convolve(self, np.ones(window_size) / window_size, 'same')
+        elif method == 'filtfilt':
+            return filtfilt(np.ones(window_size) / window_size, 1, self)
+        else:
+            raise ValueError(f'method should be filtfilt, cumsum or convolution. You provided {method}')
+
+    def moving_median(self, window_size):
+        """
+        Moving median (has a sharper response to abrupt changes than the moving average)
+
+        Parameters
+        ----------
+        window_size : Union(int, float)
+            Window size (use around [3, 11])
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        if window_size % 2 == 0:
+            raise ValueError(f'window_size should be odd. Add or subtract 1. You provided {window_size}')
+        if self.ndim == 3:
+            window_size = [1, 1, window_size]
+        elif self.ndim == 2:
+            window_size = [1, window_size]
+        elif self.ndim == 1:
+            pass
+        else:
+            raise ValueError(f'x.dim should be 1, 2 or 3. You provided an array with {x.ndim} dimensions.')
+        return medfilt(self, window_size)
+
+    def low_pass(self, freq, order, cutoff):
+        """
+        Low-pass Butterworth filter
+
+        Parameters
+        ----------
+        freq : Union(int, float)
+            Sample frequency
+        order : Int
+            Order of the filter
+        cutoff : Int
+            Cut-off frequency
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        nyquist = freq / 2
+        corrected_freq = np.array(cutoff) / nyquist
+        b, a = butter(N=order, Wn=corrected_freq, btype='low')
+        return filtfilt(b, a, self)
+
+    def band_pass(self, freq, order, cutoff):
+        """
+        Band-pass Butterworth filter
+
+        Parameters
+        ----------
+        freq : Union(int, float)
+            Sample frequency
+        order : Int
+            Order of the filter
+        cutoff : List-like
+            Cut-off frequencies ([lower, upper])
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        nyquist = freq / 2
+        corrected_freq = np.array(cutoff) / nyquist
+        b, a = butter(N=order, Wn=corrected_freq, btype='bandpass')
+        return filtfilt(b, a, self)
+
+    def band_stop(self, freq, order, cutoff):
+        """
+        Band-stop Butterworth filter
+
+        Parameters
+        ----------
+        freq : Union(int, float)
+            Sample frequency
+        order : Int
+            Order of the filter
+        cutoff : List-like
+            Cut-off frequencies ([lower, upper])
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        nyquist = freq / 2
+        corrected_freq = np.array(cutoff) / nyquist
+        b, a = butter(N=order, Wn=corrected_freq, btype='bandstop')
+        return filtfilt(b, a, self)
+
+    def high_pass(self, freq, order, cutoff):
+        """
+        Band-stop Butterworth filter
+
+        Parameters
+        ----------
+        freq : Union(int, float)
+            Sample frequency
+        order : Int
+            Order of the filter
+        cutoff : List-like
+            Cut-off frequencies ([lower, upper])
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        nyquist = freq / 2
+        corrected_freq = np.array(cutoff) / nyquist
+        b, a = butter(N=order, Wn=corrected_freq, btype='high')
+        return filtfilt(b, a, self)
+
+    def fft(self, freq, only_positive=True, axis=-1):
+        """
+        Performs a discrete Fourier Transform and return amplitudes and frequencies
+
+        Parameters
+        ----------
+        freq : Union(int, float)
+            Sample frequency
+        only_positive : bool
+            Returns only the positives frequencies if true (True by default)
+        axis : int
+            specifies the axis along which to performs the FFT. Performs defaults to the last axis (over frames)
+
+        Returns
+        -------
+        amp (numpy.ndarray) and freqs (numpy.ndarray)
+        """
+        n = self.shape[axis]
+        yfft = fftpack.fft(self, n)
+        freqs = fftpack.fftfreq(n, 1. / freq)
+
+        if only_positive:
+            amp = 2 * np.abs(yfft) / n
+            amp = amp[:int(np.floor(n / 2))]
+            freqs = freqs[:int(np.floor(n / 2))]
+        else:
+            amp = np.abs(yfft) / n
         return amp, freqs
 
     def norm(self, axis=(0, 1)):
-        return pyosignal.norm(self, axis)
+        """
+        Compute the matrix norm. Same as np.sqrt(np.sum(np.power(x, 2), axis=0))
 
-    # TODO: find to way to call the following methods from the parent class?
+        Parameters
+        ----------
+        axis : int, tuple
+            specifies the axis along which to compute the norm
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        return np.linalg.norm(self, axis=axis)
 
-    def moving_rms(self, window_size, method='filtfilt'):
-        raise ValueError(not_implemented_in_parent)
+    def detect_onset(self, threshold=0, above=1, below=0, threshold2=None, above2=1):
+        """
+        Detects onset in vector data. Inspired by Marcos Duarte's works.
 
-    def moving_average(self, window_size, method='filtfilt'):
-        raise ValueError(not_implemented_in_parent)
+        Parameters
+        ----------
+        threshold : double, optional
+            minimum amplitude to detect
+        above : double, optional
+            minimum sample of continuous samples above `threshold` to detect
+        below : double, optional
+            minimum sample of continuous samples below `threshold` to ignore
+        threshold2 : double, None, optional
+            minimum amplitude of `above2` values in `x` to detect.
+        above2
+            minimum sample of continuous samples above `threshold2` to detect
 
-    def moving_median(self, window_size):
-        raise ValueError(not_implemented_in_parent)
+        Returns
+        -------
+        idx : np.ndarray
+            onset events
+        """
+        if self.ndim > 1:
+            raise ValueError(f'detect_onset works only for vector (ndim < 2). Your data have {self.ndim} dimensions.')
+        self[np.isnan(self)] = -np.inf
+        idx = np.argwhere(self >= threshold).ravel()
 
-    def low_pass(self, freq, order, cutoff):
-        raise ValueError(not_implemented_in_parent)
+        if np.any(idx):
+            # initial & final indexes of almost continuous data
+            idx = np.vstack(
+                (idx[np.diff(np.hstack((-np.inf, idx))) > below + 1],
+                 idx[np.diff(np.hstack((idx, np.inf))) > below + 1])
+            ).T
+            # indexes of almost continuous data longer or equal to `above`
+            idx = idx[idx[:, 1] - idx[:, 0] >= above - 1, :]
 
-    def band_pass(self, freq, order, cutoff):
-        raise ValueError(not_implemented_in_parent)
+            if np.any(idx) and threshold2:
+                # minimum amplitude of above2 values in x
+                ic = np.ones(idx.shape[0], dtype=bool)
+                for irow in range(idx.shape[0]):
+                    if np.count_nonzero(self[idx[irow, 0]: idx[irow, 1] + 1] >= threshold2) < above2:
+                        ic[irow] = False
+                idx = idx[ic, :]
 
-    def band_stop(self, freq, order, cutoff):
-        raise ValueError(not_implemented_in_parent)
-
-    def high_pass(self, freq, order, cutoff):
-        raise ValueError(not_implemented_in_parent)
-
-    def time_normalization(self, time_vector=np.linspace(0, 100, 101), axis=-1):
-        raise ValueError(not_implemented_in_parent)
-
-    def fill_values(self, axis=-1):
-        raise ValueError(not_implemented_in_parent)
+        if not np.any(idx):
+            idx = np.array([])
+        return idx
 
 
 class FrameDependentNpArrayCollection(list):

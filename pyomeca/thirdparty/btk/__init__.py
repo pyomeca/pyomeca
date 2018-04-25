@@ -5663,7 +5663,7 @@ class btkAcquisitionFileReader(_object):
         """
         ResetState(self)
 
-        Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
+        Reset the state of the process_trials. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkAcquisitionFileReader_ResetState(self)
 
@@ -5809,7 +5809,7 @@ class btkAcquisitionFileWriter(_object):
         """
         ResetState(self)
 
-        Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
+        Reset the state of the process_trials. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkAcquisitionFileWriter_ResetState(self)
 
@@ -9420,7 +9420,7 @@ class btkAcquisitionUnitConverter(_object):
         """
         GetInput(self) -> btkAcquisition
 
-        Gets the input registered with this process.
+        Gets the input registered with this process_trials.
         """
         return _btk.btkAcquisitionUnitConverter_GetInput(self)
 
@@ -9429,7 +9429,7 @@ class btkAcquisitionUnitConverter(_object):
         """
         SetInput(self, btkAcquisition)
 
-        Sets the input required with this process.
+        Sets the input required with this process_trials.
         """
         return _btk.btkAcquisitionUnitConverter_SetInput(self, arg2)
 
@@ -9438,7 +9438,7 @@ class btkAcquisitionUnitConverter(_object):
         """
         GetOutput(self) -> btkAcquisition
 
-        Returns the output created with this process.
+        Returns the output created with this process_trials.
         """
         return _btk.btkAcquisitionUnitConverter_GetOutput(self)
 
@@ -9492,7 +9492,7 @@ class btkAcquisitionUnitConverter(_object):
         """
         ResetState(self)
 
-        Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
+        Reset the state of the process_trials. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkAcquisitionUnitConverter_ResetState(self)
 
@@ -9563,7 +9563,7 @@ class btkAnalogOffsetRemover(_object):
         """
         SetRawInput(self, btkAcquisition)
 
-        Sets the input required with this process which is used as the input to process.
+        Sets the input required with this process_trials which is used as the input to process_trials.
         """
         return _btk.btkAnalogOffsetRemover_SetRawInput(self, arg2)
 
@@ -9572,7 +9572,7 @@ class btkAnalogOffsetRemover(_object):
         """
         GetRawInput(self) -> btkAcquisition
 
-        Gets the input registered with this process which is used as the input to process.
+        Gets the input registered with this process_trials which is used as the input to process_trials.
         """
         return _btk.btkAnalogOffsetRemover_GetRawInput(self)
 
@@ -9581,7 +9581,7 @@ class btkAnalogOffsetRemover(_object):
         """
         SetOffsetInput(self, btkAcquisition)
 
-        Sets the input required with this process which corresponds to the offsets to remove.
+        Sets the input required with this process_trials which corresponds to the offsets to remove.
         """
         return _btk.btkAnalogOffsetRemover_SetOffsetInput(self, arg2)
 
@@ -9590,7 +9590,7 @@ class btkAnalogOffsetRemover(_object):
         """
         GetOffsetInput(self) -> btkAcquisition
 
-        Gets the input registered with this process which corresponds to the offsets to remove.
+        Gets the input registered with this process_trials which corresponds to the offsets to remove.
         """
         return _btk.btkAnalogOffsetRemover_GetOffsetInput(self)
 
@@ -9599,7 +9599,7 @@ class btkAnalogOffsetRemover(_object):
         """
         GetOutput(self) -> btkAcquisition
 
-        Returns the output created with this process.
+        Returns the output created with this process_trials.
         """
         return _btk.btkAnalogOffsetRemover_GetOutput(self)
 
@@ -9635,7 +9635,7 @@ class btkAnalogOffsetRemover(_object):
         """
         ResetState(self)
 
-        Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
+        Reset the state of the process_trials. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkAnalogOffsetRemover_ResetState(self)
 
@@ -9706,7 +9706,7 @@ class btkWrenchDownsampleFilter(_object):
         """
         GetInput(self) -> btkWrench
 
-        Gets the input registered with this process.
+        Gets the input registered with this process_trials.
         """
         return _btk.btkWrenchDownsampleFilter_GetInput(self)
 
@@ -9715,7 +9715,7 @@ class btkWrenchDownsampleFilter(_object):
         """
         SetInput(self, btkWrench)
 
-        Sets the input required with this process.
+        Sets the input required with this process_trials.
         """
         return _btk.btkWrenchDownsampleFilter_SetInput(self, arg2)
 
@@ -9724,7 +9724,7 @@ class btkWrenchDownsampleFilter(_object):
         """
         GetOutput(self) -> btkWrench
 
-        Returns the output created with this process.
+        Returns the output created with this process_trials.
         """
         return _btk.btkWrenchDownsampleFilter_GetOutput(self)
 
@@ -9778,7 +9778,7 @@ class btkWrenchDownsampleFilter(_object):
         """
         ResetState(self)
 
-        Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
+        Reset the state of the process_trials. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkWrenchDownsampleFilter_ResetState(self)
 
@@ -9849,7 +9849,7 @@ class btkWrenchCollectionDownsampleFilter(_object):
         """
         GetInput(self) -> btkWrenchCollection
 
-        Gets the input registered with this process.
+        Gets the input registered with this process_trials.
         """
         return _btk.btkWrenchCollectionDownsampleFilter_GetInput(self)
 
@@ -9858,7 +9858,7 @@ class btkWrenchCollectionDownsampleFilter(_object):
         """
         SetInput(self, btkWrenchCollection)
 
-        Sets the input required with this process.
+        Sets the input required with this process_trials.
         """
         return _btk.btkWrenchCollectionDownsampleFilter_SetInput(self, arg2)
 
@@ -9867,7 +9867,7 @@ class btkWrenchCollectionDownsampleFilter(_object):
         """
         GetOutput(self) -> btkWrenchCollection
 
-        Returns the output created with this process.
+        Returns the output created with this process_trials.
         """
         return _btk.btkWrenchCollectionDownsampleFilter_GetOutput(self)
 
@@ -9921,7 +9921,7 @@ class btkWrenchCollectionDownsampleFilter(_object):
         """
         ResetState(self)
 
-        Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
+        Reset the state of the process_trials. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkWrenchCollectionDownsampleFilter_ResetState(self)
 
@@ -10040,7 +10040,7 @@ class btkForcePlatformsExtractor(_object):
         """
         GetInput(self) -> btkAcquisition
 
-        Gets the input registered with this process.
+        Gets the input registered with this process_trials.
         """
         return _btk.btkForcePlatformsExtractor_GetInput(self)
 
@@ -10049,7 +10049,7 @@ class btkForcePlatformsExtractor(_object):
         """
         SetInput(self, arg2)
 
-        Sets the input required with this process.
+        Sets the input required with this process_trials.
         """
         return _btk.btkForcePlatformsExtractor_SetInput(self, arg2)
 
@@ -10058,7 +10058,7 @@ class btkForcePlatformsExtractor(_object):
         """
         GetOutput(self) -> btkForcePlatformCollection
 
-        Returns the output created with this process.
+        Returns the output created with this process_trials.
         """
         return _btk.btkForcePlatformsExtractor_GetOutput(self)
 
@@ -10094,7 +10094,7 @@ class btkForcePlatformsExtractor(_object):
         """
         ResetState(self)
 
-        Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
+        Reset the state of the process_trials. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkForcePlatformsExtractor_ResetState(self)
 
@@ -10163,7 +10163,7 @@ class btkForcePlatformWrenchFilter(_object):
         """
         GetInput(self) -> btkForcePlatformCollection
 
-        Gets the input registered with this process.
+        Gets the input registered with this process_trials.
         """
         return _btk.btkForcePlatformWrenchFilter_GetInput(self)
 
@@ -10173,7 +10173,7 @@ class btkForcePlatformWrenchFilter(_object):
         SetInput(self, btkForcePlatform)
         SetInput(self, btkForcePlatformCollection)
 
-        Sets the input required with this process.
+        Sets the input required with this process_trials.
         """
         return _btk.btkForcePlatformWrenchFilter_SetInput(self, *args)
 
@@ -10182,7 +10182,7 @@ class btkForcePlatformWrenchFilter(_object):
         """
         GetOutput(self) -> btkWrenchCollection
 
-        Returns the output created with this process.
+        Returns the output created with this process_trials.
         """
         return _btk.btkForcePlatformWrenchFilter_GetOutput(self)
 
@@ -10237,7 +10237,7 @@ class btkForcePlatformWrenchFilter(_object):
         """
         ResetState(self)
 
-        Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
+        Reset the state of the process_trials. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkForcePlatformWrenchFilter_ResetState(self)
 
@@ -10336,7 +10336,7 @@ class btkGroundReactionWrenchFilter(_object):
         """
         GetInput(self) -> btkForcePlatformCollection
 
-        Gets the input registered with this process.
+        Gets the input registered with this process_trials.
         """
         return _btk.btkGroundReactionWrenchFilter_GetInput(self)
 
@@ -10346,7 +10346,7 @@ class btkGroundReactionWrenchFilter(_object):
         SetInput(self, btkForcePlatform)
         SetInput(self, btkForcePlatformCollection)
 
-        Sets the input required with this process.
+        Sets the input required with this process_trials.
         """
         return _btk.btkGroundReactionWrenchFilter_SetInput(self, *args)
 
@@ -10355,7 +10355,7 @@ class btkGroundReactionWrenchFilter(_object):
         """
         GetOutput(self) -> btkWrenchCollection
 
-        Returns the output created with this process.
+        Returns the output created with this process_trials.
         """
         return _btk.btkGroundReactionWrenchFilter_GetOutput(self)
 
@@ -10447,7 +10447,7 @@ class btkGroundReactionWrenchFilter(_object):
         """
         ResetState(self)
 
-        Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
+        Reset the state of the process_trials. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkGroundReactionWrenchFilter_ResetState(self)
 
@@ -10541,7 +10541,7 @@ class btkIMUsExtractor(_object):
         GetInput(self) -> btkAcquisition
         GetInput(self, int) -> btkAcquisition
 
-        Gets the input registered with this process.
+        Gets the input registered with this process_trials.
         """
         return _btk.btkIMUsExtractor_GetInput(self, *args)
 
@@ -10551,7 +10551,7 @@ class btkIMUsExtractor(_object):
         SetInput(self, btkAcquisition)
         SetInput(self, int, btkAcquisition)
 
-        Sets the input required with this process.
+        Sets the input required with this process_trials.
         """
         return _btk.btkIMUsExtractor_SetInput(self, *args)
 
@@ -10560,7 +10560,7 @@ class btkIMUsExtractor(_object):
         """
         GetOutput(self) -> btkIMUCollection
 
-        Returns the output created with this process.
+        Returns the output created with this process_trials.
         """
         return _btk.btkIMUsExtractor_GetOutput(self)
 
@@ -10596,7 +10596,7 @@ class btkIMUsExtractor(_object):
         """
         ResetState(self)
 
-        Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
+        Reset the state of the process_trials. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkIMUsExtractor_ResetState(self)
 
@@ -10747,7 +10747,7 @@ class btkMergeAcquisitionFilter(_object):
         """
         GetInput(self, int) -> btkAcquisition
 
-        Gets the input registered with this process.
+        Gets the input registered with this process_trials.
         """
         return _btk.btkMergeAcquisitionFilter_GetInput(self, arg2)
 
@@ -10756,7 +10756,7 @@ class btkMergeAcquisitionFilter(_object):
         """
         SetInput(self, int, btkAcquisition)
 
-        Sets the input required with this process.
+        Sets the input required with this process_trials.
         """
         return _btk.btkMergeAcquisitionFilter_SetInput(self, arg2, arg3)
 
@@ -10765,7 +10765,7 @@ class btkMergeAcquisitionFilter(_object):
         """
         GetOutput(self) -> btkAcquisition
 
-        Returns the output created with this process.
+        Returns the output created with this process_trials.
         """
         return _btk.btkMergeAcquisitionFilter_GetOutput(self)
 
@@ -10801,7 +10801,7 @@ class btkMergeAcquisitionFilter(_object):
         """
         ResetState(self)
 
-        Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
+        Reset the state of the process_trials. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkMergeAcquisitionFilter_ResetState(self)
 
@@ -11038,7 +11038,7 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         """
         GetInput(self) -> btkPointCollection
 
-        Gets the input registered with this process.
+        Gets the input registered with this process_trials.
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_GetInput(self)
 
@@ -11047,7 +11047,7 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         """
         SetInput(self, btkAcquisition)
 
-        Sets the input required with this process.
+        Sets the input required with this process_trials.
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_SetInput(self, arg2)
 
@@ -11056,7 +11056,7 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         """
         GetOutput(self, int) -> btkPointCollection
 
-        Returns the output created with this process.
+        Returns the output created with this process_trials.
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_GetOutput(self, arg2)
 
@@ -11092,7 +11092,7 @@ class btkSeparateKnownVirtualMarkersFilter(_object):
         """
         ResetState(self)
 
-        Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
+        Reset the state of the process_trials. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkSeparateKnownVirtualMarkersFilter_ResetState(self)
 
@@ -11159,7 +11159,7 @@ class btkSpecializedPointsExtractor(_object):
         """
         GetInput(self) -> btkAcquisition
 
-        Gets the input registered with this process.
+        Gets the input registered with this process_trials.
         """
         return _btk.btkSpecializedPointsExtractor_GetInput(self)
 
@@ -11168,7 +11168,7 @@ class btkSpecializedPointsExtractor(_object):
         """
         SetInput(self, input)
 
-        Sets the input required with this process.
+        Sets the input required with this process_trials.
         """
         return _btk.btkSpecializedPointsExtractor_SetInput(self, input)
 
@@ -11177,7 +11177,7 @@ class btkSpecializedPointsExtractor(_object):
         """
         GetOutput(self) -> btkPointCollection
 
-        Returns the output created with this process.
+        Returns the output created with this process_trials.
         """
         return _btk.btkSpecializedPointsExtractor_GetOutput(self)
 
@@ -11231,7 +11231,7 @@ class btkSpecializedPointsExtractor(_object):
         """
         ResetState(self)
 
-        Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
+        Reset the state of the process_trials. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkSpecializedPointsExtractor_ResetState(self)
 
@@ -11354,7 +11354,7 @@ class btkSubAcquisitionFilter(_object):
         """
         SetInput(self, btkAcquisition)
 
-        Sets the input required with this process.
+        Sets the input required with this process_trials.
         """
         return _btk.btkSubAcquisitionFilter_SetInput(self, arg2)
 
@@ -11363,7 +11363,7 @@ class btkSubAcquisitionFilter(_object):
         """
         GetInput(self) -> btkAcquisition
 
-        Gets the input registered with this process.
+        Gets the input registered with this process_trials.
         """
         return _btk.btkSubAcquisitionFilter_GetInput(self)
 
@@ -11372,7 +11372,7 @@ class btkSubAcquisitionFilter(_object):
         """
         GetOutput(self) -> btkAcquisition
 
-        Returns the output created with this process.
+        Returns the output created with this process_trials.
         """
         return _btk.btkSubAcquisitionFilter_GetOutput(self)
 
@@ -11429,7 +11429,7 @@ class btkSubAcquisitionFilter(_object):
         """
         ResetState(self)
 
-        Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
+        Reset the state of the process_trials. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkSubAcquisitionFilter_ResetState(self)
 
@@ -11484,7 +11484,7 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         """
         GetInput(self) -> btkWrenchCollection
 
-        Gets the input registered with this process.
+        Gets the input registered with this process_trials.
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_GetInput(self)
 
@@ -11494,7 +11494,7 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         SetInput(self, arg2)
         SetInput(self, arg2)
 
-        Sets the input required with this process.
+        Sets the input required with this process_trials.
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_SetInput(self, *args)
 
@@ -11503,7 +11503,7 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         """
         GetOutput(self) -> btkEventCollection
 
-        Gets the output created with this process.
+        Gets the output created with this process_trials.
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_GetOutput(self)
 
@@ -11614,7 +11614,7 @@ class btkVerticalGroundReactionForceGaitEventDetector(_object):
         """
         ResetState(self)
 
-        Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
+        Reset the state of the process_trials. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkVerticalGroundReactionForceGaitEventDetector_ResetState(self)
 
@@ -11693,7 +11693,7 @@ class btkWrenchDirectionAngleFilter(_object):
         """
         GetInput(self) -> btkWrenchCollection
 
-        Gets the input registered with this process.
+        Gets the input registered with this process_trials.
         """
         return _btk.btkWrenchDirectionAngleFilter_GetInput(self)
 
@@ -11702,7 +11702,7 @@ class btkWrenchDirectionAngleFilter(_object):
         """
         SetInput(self, input)
 
-        Sets the input required with this process.
+        Sets the input required with this process_trials.
         """
         return _btk.btkWrenchDirectionAngleFilter_SetInput(self, input)
 
@@ -11711,7 +11711,7 @@ class btkWrenchDirectionAngleFilter(_object):
         """
         GetOutput(self) -> btkPointCollection
 
-        Returns the output created with this process.
+        Returns the output created with this process_trials.
         """
         return _btk.btkWrenchDirectionAngleFilter_GetOutput(self)
 
@@ -11747,7 +11747,7 @@ class btkWrenchDirectionAngleFilter(_object):
         """
         ResetState(self)
 
-        Reset the state of the process. Usefull when an exception was thrown during the generation of the data.
+        Reset the state of the process_trials. Usefull when an exception was thrown during the generation of the data.
         """
         return _btk.btkWrenchDirectionAngleFilter_ResetState(self)
 
