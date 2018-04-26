@@ -84,35 +84,6 @@ class Analogs3d(FrameDependentNpArray):
         """
         return np.squeeze(self.T, axis=2)
 
-    # --- Signal processing methods
-
-    def moving_rms(self, window_size, method='filtfilt'):
-        return Analogs3d(pyosignal.moving_rms(self, window_size, method))
-
-    def moving_average(self, window_size, method='filtfilt'):
-        return Analogs3d(pyosignal.moving_average(self, window_size, method))
-
-    def moving_median(self, window_size):
-        return Analogs3d(pyosignal.moving_median(self, window_size))
-
-    def low_pass(self, freq, order, cutoff):
-        return Analogs3d(pyosignal.low_pass(self, freq, order, cutoff))
-
-    def band_pass(self, freq, order, cutoff):
-        return Analogs3d(pyosignal.band_pass(self, freq, order, cutoff))
-
-    def band_stop(self, freq, order, cutoff):
-        return Analogs3d(pyosignal.band_stop(self, freq, order, cutoff))
-
-    def high_pass(self, freq, order, cutoff):
-        return Analogs3d(pyosignal.high_pass(self, freq, order, cutoff))
-
-    def time_normalization(self, time_vector=np.linspace(0, 100, 101), axis=-1):
-        return Analogs3d(pyosignal.time_normalization(self, time_vector, axis=axis))
-
-    def fill_values(self, axis=-1):
-        return Analogs3d(pyosignal.fill_values(self, axis))
-
 
 class MVC:
 

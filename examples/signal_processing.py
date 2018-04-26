@@ -2,12 +2,11 @@
 Signal processing examples in pyomeca
 """
 
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
-from pathlib import Path
-from pyomeca import plot as pyoplot
-from pyomeca import signal as pyosignal
-from pyomeca.types.analogs import Analogs3d
+from pyomeca.obj.analogs import Analogs3d
 
 # Path to data
 DATA_FOLDER = Path('..') / 'tests' / 'data'
@@ -21,6 +20,7 @@ plt.show()
 # --- Pyomeca types method implementation
 
 # every function described below are implemented as method in pyomeca types and can be chained:
+
 amp_, freqs_ = a \
     .rectify() \
     .center() \
@@ -51,18 +51,12 @@ plt.show()
 # --- Moving rms
 WINDOW_SIZE = 100
 
-mv_rms = {
-    # standard filtfilt method
-    'filt': pyosignal.moving_rms(a, window_size=WINDOW_SIZE),
-    # with the convolution method (works only for one dimensional array)
-    'conv': pyosignal.moving_rms(a.squeeze(), window_size=WINDOW_SIZE, method='convolution'),
-}
+mv_rms = a.moving_rms(window_size=WINDOW_SIZE)
 
 _, ax = plt.subplots(nrows=1, ncols=1)
 
 a.plot(ax=ax, fmt='k-', label='raw')
-pyoplot.plot_vector3d(mv_rms['filt'], ax=ax, fmt='r-', lw=2, label='with filtfilt')
-pyoplot.plot_vector3d(mv_rms['conv'], ax=ax, fmt='b-', lw=2, label='with convolution')
+mv_rms.plot(ax=ax, fmt='r-', lw=2, label='moving rms')
 
 ax.set_title(f'Moving RMS (window = {WINDOW_SIZE})')
 ax.legend()
@@ -71,34 +65,28 @@ plt.show()
 # --- Moving average
 b = Analogs3d(a.moving_rms(window_size=10))
 
-mv_mu = {
-    # standard filtfilt method
-    'filtfilt': pyosignal.moving_average(b, window_size=WINDOW_SIZE, method='filtfilt'),
-    'cumsum': pyosignal.moving_average(b.squeeze(), window_size=WINDOW_SIZE, method='cumsum'),
-    'conv': pyosignal.moving_average(b.squeeze(), window_size=WINDOW_SIZE, method='convolution')
-}
+mv_mu = b.moving_average(window_size=WINDOW_SIZE)
 
 _, ax = plt.subplots(nrows=1, ncols=1)
 
 b.plot(ax=ax, fmt='k-', label='raw')
-pyoplot.plot_vector3d(mv_mu['cumsum'], ax=ax, fmt='r-', lw=2, label='with cumsum')
-pyoplot.plot_vector3d(mv_mu['filtfilt'], ax=ax, fmt='b-', lw=2, label='with filtfilt')
-pyoplot.plot_vector3d(mv_mu['conv'], ax=ax, fmt='g-', lw=2, label='with convolution')
+mv_mu.plot(ax=ax, fmt='b-', lw=2, label='moving average')
 
 ax.set_title(f'Moving average (window = {WINDOW_SIZE})')
 ax.legend()
 plt.show()
 
 # --- Moving median (sharper response to abrupt changes than the moving average)
-mv_med = pyosignal.moving_median(b, window_size=WINDOW_SIZE - 1)
+mv_med = b.moving_median(window_size=WINDOW_SIZE - 1)
 
 _, ax = plt.subplots(nrows=1, ncols=1)
 
 b.plot(ax=ax, fmt='k-', label='raw')
-pyoplot.plot_vector3d(mv_med, ax=ax, fmt='r-', lw=2, label='moving median')
-pyoplot.plot_vector3d(mv_mu['filtfilt'], ax=ax, fmt='b-', lw=2, label='moving average')
+mv_rms.plot(ax=ax, fmt='r-', lw=2, label='moving rms')
+mv_mu.plot(ax=ax, fmt='g-', lw=2, label='moving average')
+mv_med.plot(ax=ax, fmt='m-', lw=2, label='moving median')
 
-ax.set_title(f'Moving median (window = {WINDOW_SIZE - 1})')
+ax.set_title(f'Comparison of moving methods (window = {WINDOW_SIZE - 1})')
 ax.legend()
 plt.show()
 
@@ -107,13 +95,14 @@ freq = 100
 t = np.arange(0, 1, .01)
 w = 2 * np.pi * 1
 y = np.sin(w * t) + 0.1 * np.sin(10 * w * t)
+y = Analogs3d(y.reshape(1, 1, -1))
 
-low_pass = pyosignal.low_pass(y, freq=freq, order=2, cutoff=5)
+low_pass = y.low_pass(freq=freq, order=2, cutoff=5)
 
 _, ax = plt.subplots(nrows=1, ncols=1)
 
-pyoplot.plot_vector3d(y, ax=ax, fmt='k-', label='raw')
-pyoplot.plot_vector3d(low_pass, ax=ax, fmt='r-', label='low-pass @ 5Hz')
+y.plot(ax=ax, fmt='k-', label='raw')
+low_pass.plot(ax=ax, fmt='r-', label='low-pass @ 5Hz')
 
 ax.set_title('Low-pass Butterworth filter')
 ax.legend()
@@ -157,11 +146,11 @@ plt.show()
 
 # --- Time normalization
 
-time_normalized = pyosignal.time_normalization(a, time_vector=np.linspace(0, 100, 101))
+time_normalized = a.time_normalization(time_vector=np.linspace(0, 100, 101))
 
 # --- Amplitude normalization
 
-amp_normalized = pyosignal.normalization(a)
+amp_normalized = a.normalization()
 
 # --- EMG: a complete example
 
@@ -186,18 +175,18 @@ plt.show()
 # --- FFT
 
 # fft on raw data
-amp, freqs = pyosignal.fft(y, freq=freq)
+amp, freqs = y.fft(freq=freq)
 # compare with low-pass filtered data
-amp_filtered, freqs_filtered = pyosignal.fft(low_pass, freq=freq)
+amp_filtered, freqs_filtered = low_pass.fft(freq=freq)
 
 _, ax = plt.subplots(nrows=2, ncols=1)
 
-pyoplot.plot_vector3d(y, ax=ax[0], fmt='k-', label='raw')
-pyoplot.plot_vector3d(low_pass, ax=ax[0], fmt='r-', alpha=.7, label='low-pass @ 5Hz')
+y.plot(ax=ax[0], fmt='k-', label='raw')
+low_pass.plot(ax=ax[0], fmt='r-', alpha=.7, label='low-pass @ 5Hz')
 ax[0].set_title('Temporal domain')
 
-pyoplot.plot_vector3d(x=freqs, y=amp, ax=ax[1], fmt='k-', label='raw')
-pyoplot.plot_vector3d(x=freqs_filtered, y=amp_filtered, ax=ax[1], fmt='r-', label='low-pass @ 5Hz')
+ax[1].plot(freqs, amp.squeeze(), 'k-', label='raw')
+ax[1].plot(freqs_filtered, amp_filtered.squeeze(), 'r-', label='low-pass @ 5Hz')
 ax[1].set_title('Frequency domain')
 
 ax[1].legend()
@@ -215,10 +204,8 @@ emg_with_a_low_pass = a \
     .rectify() \
     .low_pass(freq=a.get_rate, order=4, cutoff=5)
 
-amp_a, freqs_a = pyosignal.fft(emg_without_low_pass.squeeze(), freq=freq)
-
-# compare with low-pass filtered data
-amp_a_filtered, freqs_a_filtered = pyosignal.fft(emg_with_a_low_pass.squeeze(), freq=a.get_rate)
+amp_a, freqs_a = emg_without_low_pass.fft(freq=freq)
+amp_a_filtered, freqs_a_filtered = emg_with_a_low_pass.fft(freq=freq)
 
 _, ax = plt.subplots(nrows=2, ncols=1)
 
@@ -226,23 +213,11 @@ emg_without_low_pass.plot(ax=ax[0], fmt='k-', label='raw', alpha=.7)
 emg_with_a_low_pass.plot(ax=ax[0], fmt='r-', label='low-pass @ 5Hz', alpha=.7)
 ax[0].set_title('Temporal domain')
 
-pyoplot.plot_vector3d(x=freqs_a, y=amp_a, ax=ax[1], fmt='k-', label='raw')
-pyoplot.plot_vector3d(x=freqs_a_filtered, y=amp_a_filtered, ax=ax[1], fmt='r-', label='low-pass @ 5Hz')
+ax[1].plot(freqs_a, amp_a.squeeze(), 'k-', label='raw')
+ax[1].plot(freqs_a_filtered, amp_a_filtered.squeeze(), 'r-', label='low-pass @ 5Hz')
 ax[1].set_xlim(-2, 10)
 ax[1].set_title('Frequency domain')
 ax[1].legend()
-
-plt.show()
-
-ax[0].plot(emg_without_low_pass.squeeze(), 'k-', label='raw', alpha=0.7)
-ax[0].plot(emg_with_a_low_pass.squeeze(), 'r-', label='low-pass @ 5Hz', alpha=0.7)
-ax[0].set_title('Raw data')
-ax[0].legend(fontsize=12)
-
-ax[1].plot(freqs_a, amp_a, 'k-', label='raw')
-ax[1].plot(freqs_a_filtered, amp_a_filtered, 'r-', label='low-pass @ 5Hz')
-ax[1].set_title('Frequency domain')
-ax[1].legend(fontsize=12)
 
 plt.show()
 
@@ -255,22 +230,24 @@ norm = b \
     .center(mu=np.nanmean(b[..., :int(b.get_rate)], axis=-1), axis=-1) \
     .norm()
 
-pyoplot.plot_vector3d(norm)
+plt.plot(norm)
 plt.show()
 
 # --- Onset detection
 two_norm = np.hstack((norm, norm / 4))
+two_norm = Analogs3d(two_norm.reshape(1, 1, -1))
 
 # threshold = mean during the first second
-idx = pyosignal.detect_onset(two_norm,
-                             threshold=np.nanmean(norm[..., :int(b.get_rate)]),
-                             above=int(b.get_rate) / 2,
-                             below=3,
-                             threshold2=np.nanmean(norm[..., :int(b.get_rate)]) * 2,
-                             above2=5)
+idx = two_norm[0, 0, :].detect_onset(
+    threshold=np.nanmean(two_norm[..., :int(b.get_rate)]),
+    above=int(b.get_rate) / 2,
+    below=3,
+    threshold2=np.nanmean(two_norm[..., :int(b.get_rate)]) * 2,
+    above2=5
+)
 
 _, ax = plt.subplots(nrows=1, ncols=1)
-pyoplot.plot_vector3d(two_norm, ax=ax)
+two_norm.plot(ax=ax)
 for (inf, sup) in idx:
     ax.axvline(x=inf, color='r', lw=2, ls='--')
     ax.axvline(x=sup, color='r', lw=2, ls='--')

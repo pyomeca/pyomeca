@@ -9,8 +9,6 @@ from scipy.signal import filtfilt, medfilt, butter
 
 from pyomeca.thirdparty import btk
 
-not_implemented_in_parent = 'This method should be called from a child class (e.g. Markers3d, Analogs3d, etc.)'
-
 
 class FrameDependentNpArray(np.ndarray):
     def __new__(cls, array=np.ndarray((0, 0, 0)), *args, **kwargs):
@@ -298,12 +296,6 @@ class FrameDependentNpArray(np.ndarray):
         # Write into the csv file
         data.to_csv(file_name, index=False, header=header)
 
-    def to_2d(self):
-        raise ValueError(not_implemented_in_parent)
-
-    def get_2d_labels(self):
-        raise ValueError(not_implemented_in_parent)
-
     # --- Plot method
 
     def plot(self, x=None, ax=None, fmt='k', lw=1, label=None, alpha=1):
@@ -399,8 +391,6 @@ class FrameDependentNpArray(np.ndarray):
 
         Parameters
         ----------
-        x : np.ndarray
-            vector or matrix of data
         time_vector : np.ndarray
             desired time vector (0 to 100 by step of 1 by default)
         axis : int
@@ -412,7 +402,7 @@ class FrameDependentNpArray(np.ndarray):
         """
         original_time_vector = np.linspace(time_vector[0], time_vector[-1], self.shape[axis])
         f = interp1d(original_time_vector, self, axis=axis)
-        return f(time_vector)
+        return self.dynamic_child_cast(f(time_vector))
 
     def fill_values(self, axis=-1):
         """
@@ -437,9 +427,9 @@ class FrameDependentNpArray(np.ndarray):
             f = UnivariateSpline(original_time_vector, m, w=~w)
             return f(original_time_vector)
 
-        return np.apply_along_axis(fct, axis=axis, arr=x)
+        return self.dynamic_child_cast(np.apply_along_axis(fct, axis=axis, arr=x))
 
-    def moving_rms(self, window_size, method='filtfilt'):
+    def moving_rms(self, window_size):
         """
         Moving root mean square
 
@@ -447,26 +437,14 @@ class FrameDependentNpArray(np.ndarray):
         ----------
         window_size : Union(int, float)
             Window size
-        method : str
-            method to use:
-                - 'convolution': faster and behaves better to abrupt changes, but works only for one dimensional array.
-                - 'filtfilt': the go-to solution.
 
         Returns
         -------
         FrameDependentNpArray
         """
-        if method == 'convolution':
-            if self.ndim > 1:
-                raise ValueError('moving_rms with convolution take only one dimension array')
-            window = 2 * window_size + 1
-            return self.dynamic_child_cast(np.sqrt(np.convolve(self * self, np.ones(window) / window, 'same')))
-        elif method == 'filtfilt':
-            return self.dynamic_child_cast(np.sqrt(filtfilt(np.ones(window_size) / window_size, 1, self * self)))
-        else:
-            raise ValueError(f'method should be filtfilt or convolution. You provided {method}')
+        return self.dynamic_child_cast(np.sqrt(filtfilt(np.ones(window_size) / window_size, 1, self * self)))
 
-    def moving_average(self, window_size, method='filtfilt'):
+    def moving_average(self, window_size):
         """
         Moving average
 
@@ -474,30 +452,12 @@ class FrameDependentNpArray(np.ndarray):
         ----------
         window_size : Union(int, float)
             Window size
-        method : str
-            method to use:
-                - 'cumsum': fastest method.
-                - 'convolution': produces a result without a lag between the input and the output.
-                - 'filtfilt': The go-to method.
 
         Returns
         -------
         FrameDependentNpArray
         """
-        if method == 'cumsum':
-            if self.ndim > 2:
-                raise ValueError('moving_average with cumsum take only one or two dimensions array')
-            xsum = np.cumsum(self)
-            xsum[window_size:] = xsum[window_size:] - xsum[:-window_size]
-            return xsum[window_size - 1:] / window_size
-        elif method == 'convolution':
-            if self.ndim > 1:
-                raise ValueError('moving_average with convolution take only one dimension array')
-            return np.convolve(self, np.ones(window_size) / window_size, 'same')
-        elif method == 'filtfilt':
-            return filtfilt(np.ones(window_size) / window_size, 1, self)
-        else:
-            raise ValueError(f'method should be filtfilt, cumsum or convolution. You provided {method}')
+        return self.dynamic_child_cast(filtfilt(np.ones(window_size) / window_size, 1, self))
 
     def moving_median(self, window_size):
         """
@@ -522,7 +482,7 @@ class FrameDependentNpArray(np.ndarray):
             pass
         else:
             raise ValueError(f'x.dim should be 1, 2 or 3. You provided an array with {x.ndim} dimensions.')
-        return medfilt(self, window_size)
+        return self.dynamic_child_cast(medfilt(self, window_size))
 
     def low_pass(self, freq, order, cutoff):
         """
@@ -544,7 +504,7 @@ class FrameDependentNpArray(np.ndarray):
         nyquist = freq / 2
         corrected_freq = np.array(cutoff) / nyquist
         b, a = butter(N=order, Wn=corrected_freq, btype='low')
-        return filtfilt(b, a, self)
+        return self.dynamic_child_cast(filtfilt(b, a, self))
 
     def band_pass(self, freq, order, cutoff):
         """
@@ -566,7 +526,7 @@ class FrameDependentNpArray(np.ndarray):
         nyquist = freq / 2
         corrected_freq = np.array(cutoff) / nyquist
         b, a = butter(N=order, Wn=corrected_freq, btype='bandpass')
-        return filtfilt(b, a, self)
+        return self.dynamic_child_cast(filtfilt(b, a, self))
 
     def band_stop(self, freq, order, cutoff):
         """
@@ -588,7 +548,7 @@ class FrameDependentNpArray(np.ndarray):
         nyquist = freq / 2
         corrected_freq = np.array(cutoff) / nyquist
         b, a = butter(N=order, Wn=corrected_freq, btype='bandstop')
-        return filtfilt(b, a, self)
+        return self.dynamic_child_cast(filtfilt(b, a, self))
 
     def high_pass(self, freq, order, cutoff):
         """
@@ -610,7 +570,7 @@ class FrameDependentNpArray(np.ndarray):
         nyquist = freq / 2
         corrected_freq = np.array(cutoff) / nyquist
         b, a = butter(N=order, Wn=corrected_freq, btype='high')
-        return filtfilt(b, a, self)
+        return self.dynamic_child_cast(filtfilt(b, a, self))
 
     def fft(self, freq, only_positive=True, axis=-1):
         """
@@ -635,7 +595,7 @@ class FrameDependentNpArray(np.ndarray):
 
         if only_positive:
             amp = 2 * np.abs(yfft) / n
-            amp = amp[:int(np.floor(n / 2))]
+            amp = amp[..., :int(np.floor(n / 2))]
             freqs = freqs[:int(np.floor(n / 2))]
         else:
             amp = np.abs(yfft) / n
