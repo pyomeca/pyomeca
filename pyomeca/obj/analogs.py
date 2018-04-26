@@ -106,9 +106,18 @@ class MVC:
         If the plot of each trial must be displayed
     plot_mva : bool
         If the plot of each mva must be displayed
+    outlier : int
+        Multiple of standard deviation from which data is considered outlier
+    band_pass_cutoff : list
+        Band-pass cut-off frequencies
+    low_pass_cutoff : int
+        Low-pass cut-off frequencies
+    order : int
+        Order of the filter
     """
 
-    def __init__(self, directories, channels, plot_trials=False, plot_mva=False):
+    def __init__(self, directories, channels, plot_trials=False, plot_mva=False, outlier=3,
+                 band_pass_cutoff=None, low_pass_cutoff=None, order=4):
         self.trials_path = []
         for idir in directories:
             idir = Path(idir)
@@ -123,11 +132,10 @@ class MVC:
         self.plot_trials = plot_trials
         self.plot_mva = plot_mva
 
-        self.params = {
-            'band_pass': {'order': 4, 'cutoff': [10, 425]},
-            'low_pass': {'order': 4, 'cutoff': 5},
-            'outlier': 3
-        }
+        self.band_pass_cutoff = band_pass_cutoff if band_pass_cutoff else [10, 425]
+        self.low_pass_cutoff = low_pass_cutoff if low_pass_cutoff else 5
+        self.order = order
+        self.outlier = outlier
 
         self.trials = self.read_files()
         self.concatenated = self.process_trials()
@@ -179,12 +187,12 @@ class MVC:
         for i, itrial in enumerate(self.trials):
             # emg processing
             itrial = itrial \
-                .band_pass(freq=itrial.get_rate, order=self.params['band_pass']['order'],
-                           cutoff=self.params['band_pass']['cutoff']) \
+                .band_pass(freq=itrial.get_rate, order=self.order,
+                           cutoff=self.band_pass_cutoff) \
                 .center() \
                 .rectify() \
-                .low_pass(freq=itrial.get_rate, order=self.params['low_pass']['order'],
-                          cutoff=self.params['low_pass']['cutoff'])
+                .low_pass(freq=itrial.get_rate, order=self.order,
+                          cutoff=self.low_pass_cutoff)
 
             for imuscle in range(itrial.shape[1]):
                 if self.channels[0][imuscle] == '':
@@ -201,7 +209,7 @@ class MVC:
                     )
 
                     # outliers detection
-                    x_without_outliers = x.detect_outliers(onset_idx=idx, threshold=self.params['outlier'])
+                    x_without_outliers = x.detect_outliers(onset_idx=idx, threshold=self.outlier)
 
                     # append the current trial to a dictionary concatenating all trials for each of the muscles
                     concatenated[imuscle] = np.append(concatenated[imuscle], np.ma.compressed(x_without_outliers))
@@ -233,13 +241,12 @@ class MVC:
         numpy.ndarray
         """
         seconds = int(time * self.trials[0].get_rate)
-        mva = np.full((len(self.channels[0])), np.nan)
-
+        mva = []
         for imuscle, values in self.concatenated.items():
             if not np.isnan(values).all():
                 sorted_values = np.sort(values)
                 mu = np.nanmean(sorted_values[-seconds:])
-                mva[imuscle] = mu
+                mva.append(mu)
 
                 if self.plot_mva:
                     plt.plot(sorted_values[-seconds:], 'b-', label='sorted activation')
@@ -247,6 +254,8 @@ class MVC:
                     plt.title(f'Last {time} seconds | {self.channels[0][imuscle]}')
                     plt.legend()
                     plt.show()
+            else:
+                mva.append(None)
         return mva
 
 
