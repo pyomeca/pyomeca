@@ -663,6 +663,33 @@ class FrameDependentNpArray(np.ndarray):
             idx = np.array([])
         return idx
 
+    def detect_outliers(self, onset_idx=None, threshold=3):
+        """
+        Detects data that is `threshold` times the standard deviation calculated on the `onset_idx`
+
+        Parameters
+        ----------
+        onset_idx : numpy.ndarray
+            Array of onset (first column) and offset (second column). You can use detect_onset to have such a table
+        threshold : int
+            Multiple of standard deviation from which data is considered outlier
+
+        Returns
+        -------
+        numpy masked array
+        """
+        if np.any(onset_idx):
+            mask = np.zeros(self.shape, dtype='bool')
+            for (inf, sup) in onset_idx:
+                mask[inf:sup] = 1
+            sigma = np.nanstd(self[mask])
+            mu = np.nanmean(self[mask])
+        else:
+            sigma = np.nanstd(self)
+            mu = np.nanmean(self)
+        y = np.ma.masked_where(np.abs(self) > mu + (threshold * sigma), self)
+        return y
+
 
 class FrameDependentNpArrayCollection(list):
     """
