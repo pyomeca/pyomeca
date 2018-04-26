@@ -182,7 +182,7 @@ class FrameDependentNpArray(np.ndarray):
         channel_names = []
 
         current_class = cls._get_class_name()
-        if current_class == 'Markers3d':
+        if current_class == 'Markers3d' or current_class == 'Markers3dOsim':
             flat_data = {i.GetLabel(): i.GetValues() for i in btk.Iterate(acq.GetPoints())}
             metadata = {
                 'get_num_markers': acq.GetPointNumber(),
@@ -196,7 +196,7 @@ class FrameDependentNpArray(np.ndarray):
             for i, (key, value) in enumerate(flat_data.items()):
                 data[:, i * 3: i * 3 + 3] = value
                 channel_names.append(key.split(prefix)[-1])
-        elif current_class == 'Analogs3d':
+        elif current_class == 'Analogs3d' or current_class == 'Analogs3dOsim':
             flat_data = {i.GetLabel(): i.GetValues() for i in btk.Iterate(acq.GetAnalogs())}
             metadata = {
                 'get_num_analogs': acq.GetAnalogNumber(),
@@ -370,7 +370,7 @@ class FrameDependentNpArray(np.ndarray):
 
         Parameters
         ----------
-        ref : Union(int, float)
+        ref : np.ndarray
             reference value
         scale
             Scale on which to express x (100 by default)
@@ -379,10 +379,10 @@ class FrameDependentNpArray(np.ndarray):
         -------
         FrameDependentNpArray
         """
-        if not ref:
+        if not np.any(ref):
             ref = np.nanmax(self, axis=-1)
-            # add one dimension
-            ref = np.expand_dims(ref, axis=-1)
+        # add one dimension
+        ref = np.expand_dims(ref, axis=-1)
         return self / (ref / scale)
 
     def time_normalization(self, time_vector=np.linspace(0, 100, 101), axis=-1):
