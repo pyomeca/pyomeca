@@ -213,7 +213,7 @@ class FrameDependentNpArray(np.ndarray):
             for i, m in enumerate(target_names):
                 idx.append([i for i, s in enumerate(all_names) if m in s][0])
 
-        data = cls.__new__(cls, data)
+        data = cls.__new__(cls, data)  # Dynamically cast the data to fit the child
         data = data.get_specific_data(idx)
 
         data.get_first_frame = metadata['get_first_frame']
