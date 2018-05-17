@@ -2,7 +2,7 @@ import numpy as np
 from pathlib import Path
 import pandas as pd
 
-from pyomeca.thirdparty import btk
+import ezC3D
 
 
 class FrameDependentNpArray(np.ndarray):
@@ -154,42 +154,33 @@ class FrameDependentNpArray(np.ndarray):
         """
         if names and idx:
             raise ValueError("names and idx can't be set simultaneously, please select only one")
-        reader = btk.btkAcquisitionFileReader()
-        reader.SetFilename(str(filename))
-        reader.Update()
-        acq = reader.GetOutput()
-
-        channel_names = []
+        reader = ezC3D.C3D(str(filename))
 
         current_class = cls._get_class_name()
         if current_class == 'Markers3d':
-            flat_data = {i.GetLabel(): i.GetValues() for i in btk.Iterate(acq.GetPoints())}
+            channel_names = [i.c_str().split(prefix)[-1] for i in reader.parameters().group('POINT')
+                                                                        .parameter('LABELS').valuesAsString()]
             metadata = {
-                'get_num_markers': acq.GetPointNumber(),
-                'get_num_frames': acq.GetPointFrameNumber(),
-                'get_first_frame': acq.GetFirstFrame(),
-                'get_last_frame': acq.GetLastFrame(),
-                'get_rate': acq.GetPointFrequency(),
-                'get_unit': acq.GetPointUnit()
+                'get_num_markers': reader.header().nb3dPoints(),
+                'get_num_frames': reader.header().nbFrames(),
+                'get_first_frame': reader.header().firstFrame(),
+                'get_last_frame': reader.header().lastFrame(),
+                'get_rate': reader.header().frameRate(),
+                'get_unit': reader.parameters().group('POINT').parameter('UNITS').valuesAsString()[0].c_str()
             }
-            data = np.full([metadata['get_num_frames'], 3 * metadata['get_num_markers']], np.nan)
-            for i, (key, value) in enumerate(flat_data.items()):
-                data[:, i * 3: i * 3 + 3] = value
-                channel_names.append(key.split(prefix)[-1])
+            data = reader.get_points()
         elif current_class == 'Analogs3d':
-            flat_data = {i.GetLabel(): i.GetValues() for i in btk.Iterate(acq.GetAnalogs())}
+            channel_names = [i.c_str().split(prefix)[-1] for i in reader.parameters().group('ANALOG')
+                                                                        .parameter('LABELS').valuesAsString()]
             metadata = {
-                'get_num_analogs': acq.GetAnalogNumber(),
-                'get_num_frames': acq.GetAnalogFrameNumber(),
-                'get_first_frame': acq.GetFirstFrame(),
-                'get_last_frame': acq.GetLastFrame(),
-                'get_rate': acq.GetAnalogFrequency(),
+                'get_num_analogs': reader.header().nbAnalogs(),
+                'get_num_frames': reader.header().nbAnalogsMeasurement(),
+                'get_first_frame': reader.header().firstFrame() * reader.header().nbAnalogByFrame(),
+                'get_last_frame': reader.header().lastFrame() * reader.header().nbAnalogByFrame(),
+                'get_rate': reader.header().frameRate() * reader.header().nbAnalogByFrame(),
                 'get_unit': []
             }
-            data = np.full([metadata['get_num_frames'], metadata['get_num_analogs']], np.nan)
-            for i, (key, value) in enumerate(flat_data.items()):
-                data[:, i] = value.ravel()
-                channel_names.append(key.split(prefix)[-1])
+            data = reader.get_analogs()
         else:
             raise ValueError('from_c3d should be called from Markers3d or Analogs3d')
         if names:
