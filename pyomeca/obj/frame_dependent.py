@@ -2,7 +2,7 @@ import numpy as np
 from pathlib import Path
 import pandas as pd
 
-import ezC3D
+import ezc3d
 
 
 class FrameDependentNpArray(np.ndarray):
@@ -154,7 +154,7 @@ class FrameDependentNpArray(np.ndarray):
         """
         if names and idx:
             raise ValueError("names and idx can't be set simultaneously, please select only one")
-        reader = ezC3D.C3D(str(filename))
+        reader = ezc3d.c3d(str(filename))
 
         current_class = cls._get_class_name()
         if current_class == 'Markers3d':
@@ -197,7 +197,6 @@ class FrameDependentNpArray(np.ndarray):
 
     @classmethod
     def _to_vectors(cls, data, idx, all_names, target_names, metadata=None):
-        data[data == 0.0] = np.nan  # because sometimes nan are replace by 0.0
         if not idx:
             # find names in column_names
             idx = []
