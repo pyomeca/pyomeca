@@ -1,6 +1,11 @@
-import numpy as np
 from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+from scipy import fftpack
+from scipy.interpolate import interp1d, UnivariateSpline
+from scipy.signal import filtfilt, medfilt, butter
 
 import ezc3d
 
@@ -40,6 +45,21 @@ class FrameDependentNpArray(np.ndarray):
             self.get_rate = getattr(obj, 'get_rate')
             self.get_labels = getattr(obj, 'get_labels')
             self.get_unit = getattr(obj, 'get_unit')
+
+    def dynamic_child_cast(self, x):
+        """
+        Dynamically cast the np.array into type of self (which is probably inherited from FrameDependentNpArray)
+        Parameters
+        ----------
+        x : np.array
+
+        Returns
+        -------
+        x in the same type as self
+        """
+        casted_x = type(self)(x)
+        casted_x.__array_finalize__(self)
+        return casted_x
 
     def __next__(self):
         if self._current_frame > self.shape[2]:
@@ -133,6 +153,21 @@ class FrameDependentNpArray(np.ndarray):
 
         return cls._to_vectors(data=data.values, idx=idx, all_names=column_names, target_names=names, metadata=metadata)
 
+    @staticmethod
+    def _parse_c3d_info(c3d, prefix):
+        """
+        Abstract function on how to read c3d header and parameter for markers. Must be
+        implemented for each subclasses of frame_dependent
+        Parameters
+        ----------
+        c3d : ezc3d
+
+        Returns
+        -------
+        metadata, channel_names, data
+        """
+        raise NotImplementedError('_parse_c3d_info is an abstract function')
+
     @classmethod
     def from_c3d(cls, filename, idx=None, names=None, prefix=None):
         """
@@ -155,34 +190,8 @@ class FrameDependentNpArray(np.ndarray):
         if names and idx:
             raise ValueError("names and idx can't be set simultaneously, please select only one")
         reader = ezc3d.c3d(str(filename))
+        metadata, channel_names, data = cls._parse_c3d_info(reader, prefix)
 
-        current_class = cls._get_class_name()
-        if current_class == 'Markers3d':
-            channel_names = [i.c_str().split(prefix)[-1] for i in reader.parameters().group('POINT')
-                                                                        .parameter('LABELS').valuesAsString()]
-            metadata = {
-                'get_num_markers': reader.header().nb3dPoints(),
-                'get_num_frames': reader.header().nbFrames(),
-                'get_first_frame': reader.header().firstFrame(),
-                'get_last_frame': reader.header().lastFrame(),
-                'get_rate': reader.header().frameRate(),
-                'get_unit': reader.parameters().group('POINT').parameter('UNITS').valuesAsString()[0].c_str()
-            }
-            data = reader.get_points()
-        elif current_class == 'Analogs3d':
-            channel_names = [i.c_str().split(prefix)[-1] for i in reader.parameters().group('ANALOG')
-                                                                        .parameter('LABELS').valuesAsString()]
-            metadata = {
-                'get_num_analogs': reader.header().nbAnalogs(),
-                'get_num_frames': reader.header().nbAnalogsMeasurement(),
-                'get_first_frame': reader.header().firstFrame() * reader.header().nbAnalogByFrame(),
-                'get_last_frame': reader.header().lastFrame() * reader.header().nbAnalogByFrame(),
-                'get_rate': reader.header().frameRate() * reader.header().nbAnalogByFrame(),
-                'get_unit': []
-            }
-            data = reader.get_analogs()
-        else:
-            raise ValueError('from_c3d should be called from Markers3d or Analogs3d')
         if names:
             metadata.update({'get_labels': names})
         else:
@@ -266,13 +275,399 @@ class FrameDependentNpArray(np.ndarray):
         # Write into the csv file
         data.to_csv(file_name, index=False, header=header)
 
-    @staticmethod
-    def to_2d():
-        raise ValueError('to_2d should be called from a child class (e.g. Markers3d, Analogs3d, etc.)')
+    # --- Plot method
 
-    @staticmethod
-    def get_2d_labels():
-        raise ValueError('get_2d_labels should be called from a child class (e.g. Markers3d, Analogs3d, etc.)')
+    def plot(self, x=None, ax=None, fmt='k', lw=1, label=None, alpha=1):
+        """
+        Plot a pyomeca vector3d (Markers3d, Analogs3d, etc.)
+
+        Parameters
+        ----------
+        x : np.ndarray, optional
+            data to plot on x axis
+        ax : matplotlib axe, optional
+            axis on which the data will be ploted
+        fmt : str
+            color of the line
+        lw : int
+            line width of the line
+        label : str
+            label associated with the data (useful to plot legend)
+        alpha : int, float
+            alpha
+        """
+        if not ax:
+            _, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 4))
+
+        if self.shape[0] == 1 and self.shape[1] == 1:
+            current = self.squeeze()
+        else:
+            current = self
+        if np.any(x):
+            ax.plot(x, current, fmt, lw=lw, label=label, alpha=alpha)
+        else:
+            ax.plot(current, fmt, lw=lw, label=label, alpha=alpha)
+        return ax
+
+    # --- Signal processing methods
+
+    def rectify(self):
+        """
+        Rectify a signal (i.e., get absolute values)
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        return np.abs(self)
+
+    def center(self, mu=None, axis=-1):
+        """
+        Center a signal (i.e., subtract the mean)
+
+        Parameters
+        ----------
+        mu : np.ndarray, float, int
+            mean of the signal to subtract, optional
+        axis : int, optional
+            axis along which the means are computed. The default is to compute
+            the mean on the last axis.
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        if not np.any(mu):
+            mu = np.nanmean(self, axis=axis)
+        if self.ndim > mu.ndim:
+            # add one dimension if the input is a 3d matrix
+            mu = np.expand_dims(mu, axis=-1)
+        return self - mu
+
+    def normalization(self, ref=None, scale=100):
+        """
+        Normalize a signal against `ref` (x's max if empty) on a scale of `scale`
+
+        Parameters
+        ----------
+        ref : np.ndarray
+            reference value
+        scale
+            Scale on which to express x (100 by default)
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        if not np.any(ref):
+            ref = np.nanmax(self, axis=-1)
+        # add one dimension
+        ref = np.expand_dims(ref, axis=-1)
+        return self / (ref / scale)
+
+    def time_normalization(self, time_vector=np.linspace(0, 100, 101), axis=-1):
+        """
+        Time normalization used for temporal alignment of data
+
+        Parameters
+        ----------
+        time_vector : np.ndarray
+            desired time vector (0 to 100 by step of 1 by default)
+        axis : int
+            specifies the axis along which to interpolate. Interpolation defaults to the last axis (over frames)
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        original_time_vector = np.linspace(time_vector[0], time_vector[-1], self.shape[axis])
+        f = interp1d(original_time_vector, self, axis=axis)
+        return self.dynamic_child_cast(f(time_vector))
+
+    def fill_values(self, axis=-1):
+        """
+        Fill values. Warning: this function can be used only for very small gaps in your data.
+
+        Parameters
+        ----------
+        axis : int
+            specifies the axis along which to interpolate. Interpolation defaults to the last axis (over frames)
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        original_time_vector = np.arange(0, self.shape[axis])
+        x = self.copy()
+
+        def fct(m):
+            """Simple function to interpolate along an axis"""
+            w = np.isnan(m)
+            m[w] = 0
+            f = UnivariateSpline(original_time_vector, m, w=~w)
+            return f(original_time_vector)
+
+        return self.dynamic_child_cast(np.apply_along_axis(fct, axis=axis, arr=x))
+
+    def moving_rms(self, window_size):
+        """
+        Moving root mean square
+
+        Parameters
+        ----------
+        window_size : Union(int, float)
+            Window size
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        return self.dynamic_child_cast(np.sqrt(filtfilt(np.ones(window_size) / window_size, 1, self * self)))
+
+    def moving_average(self, window_size):
+        """
+        Moving average
+
+        Parameters
+        ----------
+        window_size : Union(int, float)
+            Window size
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        return self.dynamic_child_cast(filtfilt(np.ones(window_size) / window_size, 1, self))
+
+    def moving_median(self, window_size):
+        """
+        Moving median (has a sharper response to abrupt changes than the moving average)
+
+        Parameters
+        ----------
+        window_size : Union(int, float)
+            Window size (use around [3, 11])
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        if window_size % 2 == 0:
+            raise ValueError(f'window_size should be odd. Add or subtract 1. You provided {window_size}')
+        if self.ndim == 3:
+            window_size = [1, 1, window_size]
+        elif self.ndim == 2:
+            window_size = [1, window_size]
+        elif self.ndim == 1:
+            pass
+        else:
+            raise ValueError(f'x.dim should be 1, 2 or 3. You provided an array with {x.ndim} dimensions.')
+        return self.dynamic_child_cast(medfilt(self, window_size))
+
+    def low_pass(self, freq, order, cutoff):
+        """
+        Low-pass Butterworth filter
+
+        Parameters
+        ----------
+        freq : Union(int, float)
+            Sample frequency
+        order : Int
+            Order of the filter
+        cutoff : Int
+            Cut-off frequency
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        nyquist = freq / 2
+        corrected_freq = np.array(cutoff) / nyquist
+        b, a = butter(N=order, Wn=corrected_freq, btype='low')
+        return self.dynamic_child_cast(filtfilt(b, a, self))
+
+    def band_pass(self, freq, order, cutoff):
+        """
+        Band-pass Butterworth filter
+
+        Parameters
+        ----------
+        freq : Union(int, float)
+            Sample frequency
+        order : Int
+            Order of the filter
+        cutoff : List-like
+            Cut-off frequencies ([lower, upper])
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        nyquist = freq / 2
+        corrected_freq = np.array(cutoff) / nyquist
+        b, a = butter(N=order, Wn=corrected_freq, btype='bandpass')
+        return self.dynamic_child_cast(filtfilt(b, a, self))
+
+    def band_stop(self, freq, order, cutoff):
+        """
+        Band-stop Butterworth filter
+
+        Parameters
+        ----------
+        freq : Union(int, float)
+            Sample frequency
+        order : Int
+            Order of the filter
+        cutoff : List-like
+            Cut-off frequencies ([lower, upper])
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        nyquist = freq / 2
+        corrected_freq = np.array(cutoff) / nyquist
+        b, a = butter(N=order, Wn=corrected_freq, btype='bandstop')
+        return self.dynamic_child_cast(filtfilt(b, a, self))
+
+    def high_pass(self, freq, order, cutoff):
+        """
+        Band-stop Butterworth filter
+
+        Parameters
+        ----------
+        freq : Union(int, float)
+            Sample frequency
+        order : Int
+            Order of the filter
+        cutoff : List-like
+            Cut-off frequencies ([lower, upper])
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        nyquist = freq / 2
+        corrected_freq = np.array(cutoff) / nyquist
+        b, a = butter(N=order, Wn=corrected_freq, btype='high')
+        return self.dynamic_child_cast(filtfilt(b, a, self))
+
+    def fft(self, freq, only_positive=True, axis=-1):
+        """
+        Performs a discrete Fourier Transform and return amplitudes and frequencies
+
+        Parameters
+        ----------
+        freq : Union(int, float)
+            Sample frequency
+        only_positive : bool
+            Returns only the positives frequencies if true (True by default)
+        axis : int
+            specifies the axis along which to performs the FFT. Performs defaults to the last axis (over frames)
+
+        Returns
+        -------
+        amp (numpy.ndarray) and freqs (numpy.ndarray)
+        """
+        n = self.shape[axis]
+        yfft = fftpack.fft(self, n)
+        freqs = fftpack.fftfreq(n, 1. / freq)
+
+        if only_positive:
+            amp = 2 * np.abs(yfft) / n
+            amp = amp[..., :int(np.floor(n / 2))]
+            freqs = freqs[:int(np.floor(n / 2))]
+        else:
+            amp = np.abs(yfft) / n
+        return amp, freqs
+
+    def norm(self, axis=(0, 1)):
+        """
+        Compute the matrix norm. Same as np.sqrt(np.sum(np.power(x, 2), axis=0))
+
+        Parameters
+        ----------
+        axis : int, tuple
+            specifies the axis along which to compute the norm
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        return np.linalg.norm(self, axis=axis)
+
+    def detect_onset(self, threshold=0, above=1, below=0, threshold2=None, above2=1):
+        """
+        Detects onset in vector data. Inspired by Marcos Duarte's works.
+
+        Parameters
+        ----------
+        threshold : double, optional
+            minimum amplitude to detect
+        above : double, optional
+            minimum sample of continuous samples above `threshold` to detect
+        below : double, optional
+            minimum sample of continuous samples below `threshold` to ignore
+        threshold2 : double, None, optional
+            minimum amplitude of `above2` values in `x` to detect.
+        above2
+            minimum sample of continuous samples above `threshold2` to detect
+
+        Returns
+        -------
+        idx : np.ndarray
+            onset events
+        """
+        if self.ndim > 1:
+            raise ValueError(f'detect_onset works only for vector (ndim < 2). Your data have {self.ndim} dimensions.')
+        self[np.isnan(self)] = -np.inf
+        idx = np.argwhere(self >= threshold).ravel()
+
+        if np.any(idx):
+            # initial & final indexes of almost continuous data
+            idx = np.vstack(
+                (idx[np.diff(np.hstack((-np.inf, idx))) > below + 1],
+                 idx[np.diff(np.hstack((idx, np.inf))) > below + 1])
+            ).T
+            # indexes of almost continuous data longer or equal to `above`
+            idx = idx[idx[:, 1] - idx[:, 0] >= above - 1, :]
+
+            if np.any(idx) and threshold2:
+                # minimum amplitude of above2 values in x
+                ic = np.ones(idx.shape[0], dtype=bool)
+                for irow in range(idx.shape[0]):
+                    if np.count_nonzero(self[idx[irow, 0]: idx[irow, 1] + 1] >= threshold2) < above2:
+                        ic[irow] = False
+                idx = idx[ic, :]
+
+        if not np.any(idx):
+            idx = np.array([])
+        return idx
+
+    def detect_outliers(self, onset_idx=None, threshold=3):
+        """
+        Detects data that is `threshold` times the standard deviation calculated on the `onset_idx`
+
+        Parameters
+        ----------
+        onset_idx : numpy.ndarray
+            Array of onset (first column) and offset (second column). You can use detect_onset to have such a table
+        threshold : int
+            Multiple of standard deviation from which data is considered outlier
+
+        Returns
+        -------
+        numpy masked array
+        """
+        if np.any(onset_idx):
+            mask = np.zeros(self.shape, dtype='bool')
+            for (inf, sup) in onset_idx:
+                mask[inf:sup] = 1
+            sigma = np.nanstd(self[mask])
+            mu = np.nanmean(self[mask])
+        else:
+            sigma = np.nanstd(self)
+            mu = np.nanmean(self)
+        y = np.ma.masked_where(np.abs(self) > mu + (threshold * sigma), self)
+        return y
 
 
 class FrameDependentNpArrayCollection(list):
