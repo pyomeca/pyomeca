@@ -94,6 +94,10 @@ class Markers3d(FrameDependentNpArray):
         Parameters
         ----------
         c3d : ezc3d
+            ezc3d class
+
+        prefix : str, optional
+            Participant's prefix
 
         Returns
         -------
