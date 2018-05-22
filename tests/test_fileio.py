@@ -6,8 +6,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from pyomeca.obj.markers import Markers3d
 from pyomeca.obj.analogs import Analogs3d
+from pyomeca.obj.markers import Markers3d
 
 # Path
 if Path.cwd().parts[-1] == 'pyomeca':
@@ -94,7 +94,7 @@ analogs_param = [(idx[i], names[i], expected_shape[i], expected_values[i]) for i
 
 @pytest.mark.parametrize('idx, names, expected_shape, expected_values', analogs_param)
 @pytest.mark.parametrize('extension', ['c3d', 'csv'])
-def test_analogs_shapes(idx, names, expected_shape, expected_values, extension):
+def test_analogs(idx, names, expected_shape, expected_values, extension):
     """Assert markers shape."""
     if extension == 'csv':
         arr = Analogs3d.from_csv(ANALOGS_CSV, first_row=5, first_column=2, header=3, prefix=':',
