@@ -117,7 +117,7 @@ class MVC:
             2. process trial (band-pass, center, rectify, low-pass). You can modify the parameters of these steps in
                 self.params
             3. detect onset
-            4. remove data that are more than three standard deviations from the average of the onset
+            4. remove data that are more than `outlier` standard deviations from the average of the onset
             5. concatenate all trials for a given muscle
             6. get mean of the highest sorted_values activation during `time` seconds
 
@@ -181,15 +181,16 @@ class MVC:
                     emg = Analogs3d.from_c3d(itrial, names=iassign_without_nans, prefix=':')
                     if nan_idx:
                         # if there is any empty assignment, fill the dimension with nan
+                        emg.get_nan_idx = np.array(nan_idx)
                         for i in nan_idx:
                             emg = np.insert(emg, i, np.nan, axis=1)
                         # check if nan dimension are correctly inserted
                         n = np.isnan(emg).sum(axis=2).ravel()
                         if not np.array_equal(n.argsort()[-len(nan_idx):], nan_idx):
                             raise ValueError('NaN dimensions misplaced')
-                        print(f'trial: {itrial.parts[-1]} (NaNs: {nan_idx})')
+                        print(f'\ttrial: {itrial.parts[-1]} (NaNs: {nan_idx})')
                     else:
-                        print(f'trial: {itrial.parts[-1]}')
+                        print(f'\ttrial: {itrial.parts[-1]}')
 
                     # check if dimensions are ok
                     if not emg.shape[1] == len(iassign):
