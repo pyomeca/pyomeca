@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from scipy import fftpack
-from scipy.interpolate import interp1d, UnivariateSpline
+from scipy.interpolate import interp1d
 from scipy.signal import filtfilt, medfilt, butter
 
 import ezc3d
@@ -38,6 +38,7 @@ class FrameDependentNpArray(np.ndarray):
             self.get_rate = []
             self.get_labels = []
             self.get_unit = []
+            self.get_nan_idx = []
         else:
             self._current_frame = getattr(obj, '_current_frame')
             self.get_first_frame = getattr(obj, 'get_first_frame')
@@ -45,6 +46,7 @@ class FrameDependentNpArray(np.ndarray):
             self.get_rate = getattr(obj, 'get_rate')
             self.get_labels = getattr(obj, 'get_labels')
             self.get_unit = getattr(obj, 'get_unit')
+            self.get_nan_idx = getattr(obj, 'get_nan_idx')
 
     def dynamic_child_cast(self, x):
         """
@@ -415,17 +417,76 @@ class FrameDependentNpArray(np.ndarray):
         -------
         FrameDependentNpArray
         """
-        original_time_vector = np.arange(0, self.shape[axis])
-        x = self.copy()
 
         def fct(m):
             """Simple function to interpolate along an axis"""
-            w = np.isnan(m)
-            m[w] = 0
-            f = UnivariateSpline(original_time_vector, m, w=~w)
-            return f(original_time_vector)
+            nans, y = np.isnan(m), lambda z: z.nonzero()[0]
+            m[nans] = np.interp(y(nans), y(~nans), m[~nans])
+            return m
 
-        return self.dynamic_child_cast(np.apply_along_axis(fct, axis=axis, arr=x))
+        if np.any(self.get_nan_idx):
+            # do not take nan dimensions
+            index = np.ones(self.shape[1], dtype=bool)
+            index[self.get_nan_idx] = False
+            x = self[:, index, :].copy()
+
+            out = np.apply_along_axis(fct, axis=axis, arr=x)
+            # reinsert nan dimensions
+            for i in self.get_nan_idx:
+                out = np.insert(out, i, np.nan, axis=1)
+        else:
+            x = self.copy()
+            out = np.apply_along_axis(fct, axis=axis, arr=x)
+        return self.dynamic_child_cast(out)
+
+    def check_for_nans(self, threshold_channel=10, threshold_consecutive=5):
+        """
+        1. Check if there is less than `threshold_channel`% of nans on each channel
+        2. Check if there is not more than `threshold_consecutive`% of the rate of consecutive nans
+
+        Parameters
+        ----------
+        threshold_channel : int
+            Threshold of tolerated nans on each channel
+        threshold_consecutive : int
+            Threshold of tolerated consecutive nans on each channel
+        """
+        # check if there is nans
+        nans = np.isnan(self)
+        if nans.any():
+            # check if there is less than `threshold_channel`% of nans on each channel
+            percentage = (nans.sum(axis=-1) / self.shape[-1] * 100).ravel()
+            above = np.argwhere(percentage > threshold_channel)
+            if above.any():
+                for iabove in above:
+                    if iabove not in self.get_nan_idx:
+                        raise ValueError(
+                            f'There is more than {threshold_channel}% ({percentage[iabove]}) '
+                            f'NaNs on the channel ({iabove})'
+                        )
+
+            # check if there is not more than `threshold_consecutive`% of the rate of consecutive nans
+            def max_consecutive_nans(a):
+                mask = np.concatenate(([False], np.isnan(a), [False]))
+                if ~mask.any():
+                    return 0
+                else:
+                    idx = np.nonzero(mask[1:] != mask[:-1])[0]
+                    return (idx[1::2] - idx[::2]).max()
+
+            consecutive_nans = np.apply_along_axis(max_consecutive_nans, axis=-1, arr=self).ravel()
+            above = np.argwhere(consecutive_nans > self.get_rate / threshold_consecutive)
+            percentage = (consecutive_nans / self.shape[-1] * 100).ravel()
+            if above.any():
+                for iabove in above:
+                    if iabove not in self.get_nan_idx:
+                        raise ValueError(
+                            f'There is more than {threshold_consecutive}% ({percentage[iabove]}) '
+                            f'consecutive NaNs on the channel ({iabove})'
+                        )
+            return True
+        else:
+            return False
 
     def moving_rms(self, window_size):
         """
