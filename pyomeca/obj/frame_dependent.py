@@ -311,6 +311,21 @@ class FrameDependentNpArray(np.ndarray):
 
     # --- Signal processing methods
 
+    def matmul(self, other):
+        """
+        Matrix product of two arrays.
+
+        Parameters
+        ----------
+        other : np.ndarray
+            Second matrix to multiply
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        return self.dynamic_child_cast(np.matmul(self, other))
+
     def rectify(self):
         """
         Rectify a signal (i.e., get absolute values)
