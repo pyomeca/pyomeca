@@ -540,10 +540,48 @@ class FrameDependentNpArray(np.ndarray):
         elif self.ndim == 1:
             pass
         else:
-            raise ValueError(f'x.dim should be 1, 2 or 3. You provided an array with {x.ndim} dimensions.')
+            raise ValueError(f'dim should be 1, 2 or 3. You provided an array with {self.ndim} dimensions.')
         return self.dynamic_child_cast(medfilt(self, window_size))
 
-    def low_pass(self, freq, order, cutoff):
+    def _base_filter(self, freq, order, cutoff, interp_nans, btype):
+        """
+        Butterworth filter
+
+        Parameters
+        ----------
+        freq : Union(int, float)
+            Sample frequency
+        order : Int
+            Order of the filter
+        cutoff : Int
+            Cut-off frequency
+        interp_nans : bool
+            As this function does not work with nans, check if it is safe to interpolate and then interpolate over nans
+        btype : str
+            Filter type
+
+        Returns
+        -------
+
+        """
+        check_for_nans = self.check_for_nans()
+
+        if not check_for_nans:
+            # if there is no nans
+            x = self.dynamic_child_cast(self)
+        elif interp_nans and check_for_nans:
+            # if there is some nans and it is safe to interpolate
+            x = self.dynamic_child_cast(self.fill_values())
+        else:
+            # there is nans and we don't want to interpolate
+            raise ValueError('filters do not work well with nans. Try interp_nans=True flag')
+
+        nyquist = freq / 2
+        corrected_freq = np.array(cutoff) / nyquist
+        b, a = butter(N=order, Wn=corrected_freq, btype=btype)
+        return filtfilt(b, a, x)
+
+    def low_pass(self, freq, order, cutoff, interp_nans=True):
         """
         Low-pass Butterworth filter
 
@@ -555,17 +593,18 @@ class FrameDependentNpArray(np.ndarray):
             Order of the filter
         cutoff : Int
             Cut-off frequency
+        interp_nans : bool
+            As this function does not work with nans, check if it is safe to interpolate and then interpolate over nans
 
         Returns
         -------
         FrameDependentNpArray
         """
-        nyquist = freq / 2
-        corrected_freq = np.array(cutoff) / nyquist
-        b, a = butter(N=order, Wn=corrected_freq, btype='low')
-        return self.dynamic_child_cast(filtfilt(b, a, self))
+        return self.dynamic_child_cast(
+            self._base_filter(freq, order, cutoff, interp_nans, btype='low')
+        )
 
-    def band_pass(self, freq, order, cutoff):
+    def band_pass(self, freq, order, cutoff, interp_nans):
         """
         Band-pass Butterworth filter
 
@@ -577,17 +616,18 @@ class FrameDependentNpArray(np.ndarray):
             Order of the filter
         cutoff : List-like
             Cut-off frequencies ([lower, upper])
+        interp_nans : bool
+            As this function does not work with nans, check if it is safe to interpolate and then interpolate over nans
 
         Returns
         -------
         FrameDependentNpArray
         """
-        nyquist = freq / 2
-        corrected_freq = np.array(cutoff) / nyquist
-        b, a = butter(N=order, Wn=corrected_freq, btype='bandpass')
-        return self.dynamic_child_cast(filtfilt(b, a, self))
+        return self.dynamic_child_cast(
+            self._base_filter(freq, order, cutoff, interp_nans, btype='bandpass')
+        )
 
-    def band_stop(self, freq, order, cutoff):
+    def band_stop(self, freq, order, cutoff, interp_nans):
         """
         Band-stop Butterworth filter
 
@@ -599,17 +639,18 @@ class FrameDependentNpArray(np.ndarray):
             Order of the filter
         cutoff : List-like
             Cut-off frequencies ([lower, upper])
+        interp_nans : bool
+            As this function does not work with nans, check if it is safe to interpolate and then interpolate over nans
 
         Returns
         -------
         FrameDependentNpArray
         """
-        nyquist = freq / 2
-        corrected_freq = np.array(cutoff) / nyquist
-        b, a = butter(N=order, Wn=corrected_freq, btype='bandstop')
-        return self.dynamic_child_cast(filtfilt(b, a, self))
+        return self.dynamic_child_cast(
+            self._base_filter(freq, order, cutoff, interp_nans, btype='bandstop')
+        )
 
-    def high_pass(self, freq, order, cutoff):
+    def high_pass(self, freq, order, cutoff, interp_nans):
         """
         Band-stop Butterworth filter
 
@@ -621,15 +662,16 @@ class FrameDependentNpArray(np.ndarray):
             Order of the filter
         cutoff : List-like
             Cut-off frequencies ([lower, upper])
+        interp_nans : bool
+            As this function does not work with nans, check if it is safe to interpolate and then interpolate over nans
 
         Returns
         -------
         FrameDependentNpArray
         """
-        nyquist = freq / 2
-        corrected_freq = np.array(cutoff) / nyquist
-        b, a = butter(N=order, Wn=corrected_freq, btype='high')
-        return self.dynamic_child_cast(filtfilt(b, a, self))
+        return self.dynamic_child_cast(
+            self._base_filter(freq, order, cutoff, interp_nans, btype='high')
+        )
 
     def fft(self, freq, only_positive=True, axis=-1):
         """
