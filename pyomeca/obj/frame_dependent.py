@@ -156,11 +156,15 @@ class FrameDependentNpArray(np.ndarray):
     @staticmethod
     def _parse_c3d_info(c3d, prefix):
         """
-        Abstract function on how to read c3d header and parameter for markers. Must be
-        implemented for each subclasses of frame_dependent
+        Abstract function on how to read c3d header and parameter for markers or analogs.
+        Must be implemented for each subclasses of frame_dependent.
+
         Parameters
         ----------
         c3d : ezc3d
+            ezc3d class
+        prefix : str, optional
+            Participant's prefix
 
         Returns
         -------
