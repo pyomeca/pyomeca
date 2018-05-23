@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from scipy import fftpack
-from scipy.interpolate import interp1d, UnivariateSpline
+from scipy.interpolate import interp1d
 from scipy.signal import filtfilt, medfilt, butter
 
 import ezc3d
@@ -38,6 +38,7 @@ class FrameDependentNpArray(np.ndarray):
             self.get_rate = []
             self.get_labels = []
             self.get_unit = []
+            self.get_nan_idx = []
         else:
             self._current_frame = getattr(obj, '_current_frame')
             self.get_first_frame = getattr(obj, 'get_first_frame')
@@ -45,6 +46,7 @@ class FrameDependentNpArray(np.ndarray):
             self.get_rate = getattr(obj, 'get_rate')
             self.get_labels = getattr(obj, 'get_labels')
             self.get_unit = getattr(obj, 'get_unit')
+            self.get_nan_idx = getattr(obj, 'get_nan_idx')
 
     def dynamic_child_cast(self, x):
         """
@@ -156,13 +158,15 @@ class FrameDependentNpArray(np.ndarray):
     @staticmethod
     def _parse_c3d(c3d, prefix):
         """
+        Abstract function on how to read c3d header and parameter for markers or analogs.
+        Must be implemented for each subclasses of frame_dependent.
 
         Parameters
         ----------
-        c3d : ezc3d
+        c3d : ezc3d class
             Pointer on the read c3d
-        prefix : string
-            Prefix which is before the proper name of the channel
+        prefix : str, optional
+            Participant's prefix
         Returns
         -------
         data : np.ndarray
@@ -172,7 +176,8 @@ class FrameDependentNpArray(np.ndarray):
         metadata
             Structure of properties in the c3d files
         """
-        raise NotImplementedError('_parse_c3d should not be called without a inherited parent')
+        raise NotImplementedError('_parse_c3d_info is an abstract function')
+
 
     @classmethod
     def from_c3d(cls, filename, idx=None, names=None, prefix=None):
@@ -317,6 +322,21 @@ class FrameDependentNpArray(np.ndarray):
 
     # --- Signal processing methods
 
+    def matmul(self, other):
+        """
+        Matrix product of two arrays.
+
+        Parameters
+        ----------
+        other : np.ndarray
+            Second matrix to multiply
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        return self.dynamic_child_cast(np.matmul(self, other))
+
     def rectify(self):
         """
         Rectify a signal (i.e., get absolute values)
@@ -402,17 +422,76 @@ class FrameDependentNpArray(np.ndarray):
         -------
         FrameDependentNpArray
         """
-        original_time_vector = np.arange(0, self.shape[axis])
-        x = self.copy()
 
         def fct(m):
             """Simple function to interpolate along an axis"""
-            w = np.isnan(m)
-            m[w] = 0
-            f = UnivariateSpline(original_time_vector, m, w=~w)
-            return f(original_time_vector)
+            nans, y = np.isnan(m), lambda z: z.nonzero()[0]
+            m[nans] = np.interp(y(nans), y(~nans), m[~nans])
+            return m
 
-        return self.dynamic_child_cast(np.apply_along_axis(fct, axis=axis, arr=x))
+        if np.any(self.get_nan_idx):
+            # do not take nan dimensions
+            index = np.ones(self.shape[1], dtype=bool)
+            index[self.get_nan_idx] = False
+            x = self[:, index, :].copy()
+
+            out = np.apply_along_axis(fct, axis=axis, arr=x)
+            # reinsert nan dimensions
+            for i in self.get_nan_idx:
+                out = np.insert(out, i, np.nan, axis=1)
+        else:
+            x = self.copy()
+            out = np.apply_along_axis(fct, axis=axis, arr=x)
+        return self.dynamic_child_cast(out)
+
+    def check_for_nans(self, threshold_channel=10, threshold_consecutive=5):
+        """
+        1. Check if there is less than `threshold_channel`% of nans on each channel
+        2. Check if there is not more than `threshold_consecutive`% of the rate of consecutive nans
+
+        Parameters
+        ----------
+        threshold_channel : int
+            Threshold of tolerated nans on each channel
+        threshold_consecutive : int
+            Threshold of tolerated consecutive nans on each channel
+        """
+        # check if there is nans
+        nans = np.isnan(self)
+        if nans.any():
+            # check if there is less than `threshold_channel`% of nans on each channel
+            percentage = (nans.sum(axis=-1) / self.shape[-1] * 100).ravel()
+            above = np.argwhere(percentage > threshold_channel)
+            if above.any():
+                for iabove in above:
+                    if iabove not in self.get_nan_idx:
+                        raise ValueError(
+                            f'There is more than {threshold_channel}% ({percentage[iabove]}) '
+                            f'NaNs on the channel ({iabove})'
+                        )
+
+            # check if there is not more than `threshold_consecutive`% of the rate of consecutive nans
+            def max_consecutive_nans(a):
+                mask = np.concatenate(([False], np.isnan(a), [False]))
+                if ~mask.any():
+                    return 0
+                else:
+                    idx = np.nonzero(mask[1:] != mask[:-1])[0]
+                    return (idx[1::2] - idx[::2]).max()
+
+            consecutive_nans = np.apply_along_axis(max_consecutive_nans, axis=-1, arr=self).ravel()
+            above = np.argwhere(consecutive_nans > self.get_rate / threshold_consecutive)
+            percentage = (consecutive_nans / self.shape[-1] * 100).ravel()
+            if above.any():
+                for iabove in above:
+                    if iabove not in self.get_nan_idx:
+                        raise ValueError(
+                            f'There is more than {threshold_consecutive}% ({percentage[iabove]}) '
+                            f'consecutive NaNs on the channel ({iabove})'
+                        )
+            return True
+        else:
+            return False
 
     def moving_rms(self, window_size):
         """
@@ -466,10 +545,48 @@ class FrameDependentNpArray(np.ndarray):
         elif self.ndim == 1:
             pass
         else:
-            raise ValueError(f'x.dim should be 1, 2 or 3. You provided an array with {x.ndim} dimensions.')
+            raise ValueError(f'dim should be 1, 2 or 3. You provided an array with {self.ndim} dimensions.')
         return self.dynamic_child_cast(medfilt(self, window_size))
 
-    def low_pass(self, freq, order, cutoff):
+    def _base_filter(self, freq, order, cutoff, interp_nans, btype):
+        """
+        Butterworth filter
+
+        Parameters
+        ----------
+        freq : Union(int, float)
+            Sample frequency
+        order : Int
+            Order of the filter
+        cutoff : Int
+            Cut-off frequency
+        interp_nans : bool
+            As this function does not work with nans, check if it is safe to interpolate and then interpolate over nans
+        btype : str
+            Filter type
+
+        Returns
+        -------
+
+        """
+        check_for_nans = self.check_for_nans()
+
+        if not check_for_nans:
+            # if there is no nans
+            x = self.dynamic_child_cast(self)
+        elif interp_nans and check_for_nans:
+            # if there is some nans and it is safe to interpolate
+            x = self.dynamic_child_cast(self.fill_values())
+        else:
+            # there is nans and we don't want to interpolate
+            raise ValueError('filters do not work well with nans. Try interp_nans=True flag')
+
+        nyquist = freq / 2
+        corrected_freq = np.array(cutoff) / nyquist
+        b, a = butter(N=order, Wn=corrected_freq, btype=btype)
+        return filtfilt(b, a, x)
+
+    def low_pass(self, freq, order, cutoff, interp_nans=True):
         """
         Low-pass Butterworth filter
 
@@ -481,17 +598,18 @@ class FrameDependentNpArray(np.ndarray):
             Order of the filter
         cutoff : Int
             Cut-off frequency
+        interp_nans : bool
+            As this function does not work with nans, check if it is safe to interpolate and then interpolate over nans
 
         Returns
         -------
         FrameDependentNpArray
         """
-        nyquist = freq / 2
-        corrected_freq = np.array(cutoff) / nyquist
-        b, a = butter(N=order, Wn=corrected_freq, btype='low')
-        return self.dynamic_child_cast(filtfilt(b, a, self))
+        return self.dynamic_child_cast(
+            self._base_filter(freq, order, cutoff, interp_nans, btype='low')
+        )
 
-    def band_pass(self, freq, order, cutoff):
+    def band_pass(self, freq, order, cutoff, interp_nans):
         """
         Band-pass Butterworth filter
 
@@ -503,17 +621,18 @@ class FrameDependentNpArray(np.ndarray):
             Order of the filter
         cutoff : List-like
             Cut-off frequencies ([lower, upper])
+        interp_nans : bool
+            As this function does not work with nans, check if it is safe to interpolate and then interpolate over nans
 
         Returns
         -------
         FrameDependentNpArray
         """
-        nyquist = freq / 2
-        corrected_freq = np.array(cutoff) / nyquist
-        b, a = butter(N=order, Wn=corrected_freq, btype='bandpass')
-        return self.dynamic_child_cast(filtfilt(b, a, self))
+        return self.dynamic_child_cast(
+            self._base_filter(freq, order, cutoff, interp_nans, btype='bandpass')
+        )
 
-    def band_stop(self, freq, order, cutoff):
+    def band_stop(self, freq, order, cutoff, interp_nans):
         """
         Band-stop Butterworth filter
 
@@ -525,17 +644,18 @@ class FrameDependentNpArray(np.ndarray):
             Order of the filter
         cutoff : List-like
             Cut-off frequencies ([lower, upper])
+        interp_nans : bool
+            As this function does not work with nans, check if it is safe to interpolate and then interpolate over nans
 
         Returns
         -------
         FrameDependentNpArray
         """
-        nyquist = freq / 2
-        corrected_freq = np.array(cutoff) / nyquist
-        b, a = butter(N=order, Wn=corrected_freq, btype='bandstop')
-        return self.dynamic_child_cast(filtfilt(b, a, self))
+        return self.dynamic_child_cast(
+            self._base_filter(freq, order, cutoff, interp_nans, btype='bandstop')
+        )
 
-    def high_pass(self, freq, order, cutoff):
+    def high_pass(self, freq, order, cutoff, interp_nans):
         """
         Band-stop Butterworth filter
 
@@ -547,15 +667,16 @@ class FrameDependentNpArray(np.ndarray):
             Order of the filter
         cutoff : List-like
             Cut-off frequencies ([lower, upper])
+        interp_nans : bool
+            As this function does not work with nans, check if it is safe to interpolate and then interpolate over nans
 
         Returns
         -------
         FrameDependentNpArray
         """
-        nyquist = freq / 2
-        corrected_freq = np.array(cutoff) / nyquist
-        b, a = butter(N=order, Wn=corrected_freq, btype='high')
-        return self.dynamic_child_cast(filtfilt(b, a, self))
+        return self.dynamic_child_cast(
+            self._base_filter(freq, order, cutoff, interp_nans, btype='high')
+        )
 
     def fft(self, freq, only_positive=True, axis=-1):
         """

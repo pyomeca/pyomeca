@@ -1,4 +1,5 @@
 import numpy as np
+import ezc3d
 
 from pyomeca.obj.frame_dependent import FrameDependentNpArray
 
@@ -37,21 +38,6 @@ class Markers3d(FrameDependentNpArray):
             return
 
     # --- Get metadata methods
-
-    @staticmethod
-    def _parse_c3d(c3d, prefix):
-        channel_names = [i.c_str().split(prefix)[-1] for i in c3d.parameters().group('POINT')
-                                                                 .parameter('LABELS').valuesAsString()]
-        metadata = {
-            'get_num_markers': c3d.header().nb3dPoints(),
-            'get_num_frames': c3d.header().nbFrames(),
-            'get_first_frame': c3d.header().firstFrame(),
-            'get_last_frame': c3d.header().lastFrame(),
-            'get_rate': c3d.header().frameRate(),
-            'get_unit': c3d.parameters().group('POINT').parameter('UNITS').valuesAsString()[0].c_str()
-        }
-        data = c3d.get_points()
-        return data, channel_names, metadata
 
     def get_num_markers(self):
         """
@@ -100,6 +86,35 @@ class Markers3d(FrameDependentNpArray):
         Tabular matrix
         """
         return np.reshape(self[0:3, :, :], (3 * self.get_num_markers(), self.get_num_frames()), 'F').T
+
+    @staticmethod
+    def _parse_c3d(c3d, prefix):
+        """
+        Implementation on how to read c3d header and parameter for markers
+        Parameters
+        ----------
+        c3d : ezc3d
+            ezc3d class
+
+        prefix : str, optional
+            Participant's prefix
+
+        Returns
+        -------
+        metadata, channel_names, data
+        """
+        channel_names = [i.c_str().split(prefix)[-1] for i in c3d.parameters().group('POINT')
+                                                                 .parameter('LABELS').valuesAsString()]
+        metadata = {
+            'get_num_markers': c3d.header().nb3dPoints(),
+            'get_num_frames': c3d.header().nbFrames(),
+            'get_first_frame': c3d.header().firstFrame(),
+            'get_last_frame': c3d.header().lastFrame(),
+            'get_rate': c3d.header().frameRate(),
+            'get_unit': c3d.parameters().group('POINT').parameter('UNITS').valuesAsString()[0].c_str()
+        }
+        data = c3d.get_points()
+        return data, channel_names, metadata
 
     # --- Linear algebra methods
 

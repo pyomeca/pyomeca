@@ -34,22 +34,6 @@ class Analogs3d(FrameDependentNpArray):
         # Allow slicing
         if obj is None or not isinstance(obj, Analogs3d):
             return
-
-    @staticmethod
-    def _parse_c3d(c3d, prefix):
-        channel_names = [i.c_str().split(prefix)[-1] for i in c3d.parameters().group('ANALOG')
-                                                                 .parameter('LABELS').valuesAsString()]
-        metadata = {
-            'get_num_analogs': c3d.header().nbAnalogs(),
-            'get_num_frames': c3d.header().nbAnalogsMeasurement(),
-            'get_first_frame': c3d.header().firstFrame() * c3d.header().nbAnalogByFrame(),
-            'get_last_frame': c3d.header().lastFrame() * c3d.header().nbAnalogByFrame(),
-            'get_rate': c3d.header().frameRate() * c3d.header().nbAnalogByFrame(),
-            'get_unit': []
-        }
-        data = c3d.get_analogs()
-        return data, channel_names, metadata
-
     # --- Get metadata methods
 
     def get_num_analogs(self):
@@ -98,6 +82,34 @@ class Analogs3d(FrameDependentNpArray):
         """
         return np.squeeze(self.T, axis=2)
 
+    @staticmethod
+    def _parse_c3d(c3d, prefix):
+        """
+        Implementation on how to read c3d header and parameter for analogs
+        Parameters
+        ----------
+        c3d : ezc3d
+
+        prefix : str, optional
+            Participant's prefix
+
+        Returns
+        -------
+        metadata, channel_names, data
+        """
+        channel_names = [i.c_str().split(prefix)[-1] for i in c3d.parameters().group('ANALOG')
+            .parameter('LABELS').valuesAsString()]
+        metadata = {
+            'get_num_analogs': c3d.header().nbAnalogs(),
+            'get_num_frames': c3d.header().nbAnalogsMeasurement(),
+            'get_first_frame': c3d.header().firstFrame() * c3d.header().nbAnalogByFrame(),
+            'get_last_frame': c3d.header().lastFrame() * c3d.header().nbAnalogByFrame(),
+            'get_rate': c3d.header().frameRate() * c3d.header().nbAnalogByFrame(),
+            'get_unit': []
+        }
+        data = c3d.get_analogs()
+        return data, channel_names, metadata
+
 
 class MVC:
     """
@@ -107,7 +119,7 @@ class MVC:
             2. process trial (band-pass, center, rectify, low-pass). You can modify the parameters of these steps in
                 self.params
             3. detect onset
-            4. remove data that are more than three standard deviations from the average of the onset
+            4. remove data that are more than `outlier` standard deviations from the average of the onset
             5. concatenate all trials for a given muscle
             6. get mean of the highest sorted_values activation during `time` seconds
 
@@ -168,29 +180,31 @@ class MVC:
                     iassign_without_nans = iassign
 
                 try:
-                    emg = Analogs3d.from_c3d(itrial, names=iassign_without_nans, prefix=':')
+                    emg = Analogs3d.from_c3d(f'{itrial}', prefix=':', names=iassign_without_nans)
                     if nan_idx:
                         # if there is any empty assignment, fill the dimension with nan
+                        emg.get_nan_idx = np.array(nan_idx)
                         for i in nan_idx:
                             emg = np.insert(emg, i, np.nan, axis=1)
                         # check if nan dimension are correctly inserted
                         n = np.isnan(emg).sum(axis=2).ravel()
                         if not np.array_equal(n.argsort()[-len(nan_idx):], nan_idx):
                             raise ValueError('NaN dimensions misplaced')
-                        print(f'trial: {itrial.parts[-1]} (NaNs: {nan_idx})')
+                        print(f'\t{itrial.stem} (NaNs: {nan_idx})')
                     else:
-                        print(f'trial: {itrial.parts[-1]}')
+                        print(f'\t{itrial.stem}')
 
                     # check if dimensions are ok
                     if not emg.shape[1] == len(iassign):
                         raise ValueError('Wrong dimensions')
+                    break
                 except IndexError:
                     emg = []
 
-                if emg is None:
-                    raise ValueError(f'no assignments were found for the trial {itrial.parts[-1]}')
-                else:
-                    trials.append(emg)
+            if np.any(emg):
+                trials.append(emg)
+            else:
+                raise ValueError(f'no assignments were found for the trial {itrial.stem}')
 
         return trials
 
@@ -234,7 +248,7 @@ class MVC:
                         if x_without_outliers.mask.any():
                             plt.plot(np.ma.masked_array(x, ~x_without_outliers.mask), 'r-', label='outlier')
                             plt.legend()
-                        plt.title(f'{self.channels[0][imuscle]} | {self.trials_path[i].parts[-1]}')
+                        plt.title(f'{self.channels[0][imuscle]} | {self.trials_path[i].stem}')
                         plt.show()
         return concatenated
 
@@ -272,26 +286,3 @@ class MVC:
             else:
                 mva.append(None)
         return mva
-
-
-if __name__ == '__main__':
-    DIR = ['/media/romain/E/Projet_MVC/data/C3D_original_files/irsst_hf/ArsT',
-           "/media/romain/F/Data/Shoulder/RAW/IRSST_ArsTd/trials"]
-    channels = [
-        "1-Deltoid Ant",
-        "2-Deltoid Mid",
-        "3-Deltoid Post",
-        "9-Biceps",
-        "10-Triceps",
-        "6-Trapezius Up",
-        "8-Trapezius Low",
-        "11-Serratus Ante",
-        "",
-        "",
-        "",
-        "5-Pectoralis maj",
-        "4-Lassitimus Dor"
-    ]
-    mvc = MVC(directories=DIR, channels=channels, plot_mva=True)
-    mva = mvc.get_mva()
-    print('')
