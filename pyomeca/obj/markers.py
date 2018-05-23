@@ -38,6 +38,21 @@ class Markers3d(FrameDependentNpArray):
 
     # --- Get metadata methods
 
+    @staticmethod
+    def _parse_c3d(c3d, prefix):
+        channel_names = [i.c_str().split(prefix)[-1] for i in c3d.parameters().group('POINT')
+                                                                 .parameter('LABELS').valuesAsString()]
+        metadata = {
+            'get_num_markers': c3d.header().nb3dPoints(),
+            'get_num_frames': c3d.header().nbFrames(),
+            'get_first_frame': c3d.header().firstFrame(),
+            'get_last_frame': c3d.header().lastFrame(),
+            'get_rate': c3d.header().frameRate(),
+            'get_unit': c3d.parameters().group('POINT').parameter('UNITS').valuesAsString()[0].c_str()
+        }
+        data = c3d.get_points()
+        return data, channel_names, metadata
+
     def get_num_markers(self):
         """
         Returns

@@ -7,7 +7,7 @@ from scipy import fftpack
 from scipy.interpolate import interp1d, UnivariateSpline
 from scipy.signal import filtfilt, medfilt, butter
 
-from pyomeca.thirdparty import btk
+import ezc3d
 
 
 class FrameDependentNpArray(np.ndarray):
@@ -153,6 +153,27 @@ class FrameDependentNpArray(np.ndarray):
 
         return cls._to_vectors(data=data.values, idx=idx, all_names=column_names, target_names=names, metadata=metadata)
 
+    @staticmethod
+    def _parse_c3d(c3d, prefix):
+        """
+
+        Parameters
+        ----------
+        c3d : ezc3d
+            Pointer on the read c3d
+        prefix : string
+            Prefix which is before the proper name of the channel
+        Returns
+        -------
+        data : np.ndarray
+            Actual data
+        channel_names : List(string)
+            Name of the channels
+        metadata
+            Structure of properties in the c3d files
+        """
+        raise NotImplementedError('_parse_c3d should not be called without a inherited parent')
+
     @classmethod
     def from_c3d(cls, filename, idx=None, names=None, prefix=None):
         """
@@ -174,44 +195,9 @@ class FrameDependentNpArray(np.ndarray):
         """
         if names and idx:
             raise ValueError("names and idx can't be set simultaneously, please select only one")
-        reader = btk.btkAcquisitionFileReader()
-        reader.SetFilename(str(filename))
-        reader.Update()
-        acq = reader.GetOutput()
+        reader = ezc3d.c3d(str(filename))
+        data, channel_names, metadata = cls._parse_c3d(reader, prefix)
 
-        channel_names = []
-
-        current_class = cls._get_class_name()
-        if current_class == 'Markers3d' or current_class == 'Markers3dOsim':
-            flat_data = {i.GetLabel(): i.GetValues() for i in btk.Iterate(acq.GetPoints())}
-            metadata = {
-                'get_num_markers': acq.GetPointNumber(),
-                'get_num_frames': acq.GetPointFrameNumber(),
-                'get_first_frame': acq.GetFirstFrame(),
-                'get_last_frame': acq.GetLastFrame(),
-                'get_rate': acq.GetPointFrequency(),
-                'get_unit': acq.GetPointUnit()
-            }
-            data = np.full([metadata['get_num_frames'], 3 * metadata['get_num_markers']], np.nan)
-            for i, (key, value) in enumerate(flat_data.items()):
-                data[:, i * 3: i * 3 + 3] = value
-                channel_names.append(key.split(prefix)[-1])
-        elif current_class == 'Analogs3d' or current_class == 'Analogs3dOsim':
-            flat_data = {i.GetLabel(): i.GetValues() for i in btk.Iterate(acq.GetAnalogs())}
-            metadata = {
-                'get_num_analogs': acq.GetAnalogNumber(),
-                'get_num_frames': acq.GetAnalogFrameNumber(),
-                'get_first_frame': acq.GetFirstFrame(),
-                'get_last_frame': acq.GetLastFrame(),
-                'get_rate': acq.GetAnalogFrequency(),
-                'get_unit': []
-            }
-            data = np.full([metadata['get_num_frames'], metadata['get_num_analogs']], np.nan)
-            for i, (key, value) in enumerate(flat_data.items()):
-                data[:, i] = value.ravel()
-                channel_names.append(key.split(prefix)[-1])
-        else:
-            raise ValueError('from_c3d should be called from Markers3d or Analogs3d')
         if names:
             metadata.update({'get_labels': names})
         else:
@@ -226,7 +212,6 @@ class FrameDependentNpArray(np.ndarray):
 
     @classmethod
     def _to_vectors(cls, data, idx, all_names, target_names, metadata=None):
-        data[data == 0.0] = np.nan  # because sometimes nan are replace by 0.0
         if not idx:
             # find names in column_names
             idx = []

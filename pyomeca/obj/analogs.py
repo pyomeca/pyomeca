@@ -35,6 +35,21 @@ class Analogs3d(FrameDependentNpArray):
         if obj is None or not isinstance(obj, Analogs3d):
             return
 
+    @staticmethod
+    def _parse_c3d(c3d, prefix):
+        channel_names = [i.c_str().split(prefix)[-1] for i in c3d.parameters().group('ANALOG')
+                                                                 .parameter('LABELS').valuesAsString()]
+        metadata = {
+            'get_num_analogs': c3d.header().nbAnalogs(),
+            'get_num_frames': c3d.header().nbAnalogsMeasurement(),
+            'get_first_frame': c3d.header().firstFrame() * c3d.header().nbAnalogByFrame(),
+            'get_last_frame': c3d.header().lastFrame() * c3d.header().nbAnalogByFrame(),
+            'get_rate': c3d.header().frameRate() * c3d.header().nbAnalogByFrame(),
+            'get_unit': []
+        }
+        data = c3d.get_analogs()
+        return data, channel_names, metadata
+
     # --- Get metadata methods
 
     def get_num_analogs(self):
