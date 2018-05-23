@@ -165,23 +165,28 @@ class FrameDependentNpArray(np.ndarray):
         return cls._to_vectors(data=data.values, idx=idx, all_names=column_names, target_names=names, metadata=metadata)
 
     @staticmethod
-    def _parse_c3d_info(c3d, prefix):
+    def _parse_c3d(c3d, prefix):
         """
         Abstract function on how to read c3d header and parameter for markers or analogs.
         Must be implemented for each subclasses of frame_dependent.
 
         Parameters
         ----------
-        c3d : ezc3d
-            ezc3d class
+        c3d : ezc3d class
+            Pointer on the read c3d
         prefix : str, optional
             Participant's prefix
-
         Returns
         -------
-        metadata, channel_names, data
+        data : np.ndarray
+            Actual data
+        channel_names : List(string)
+            Name of the channels
+        metadata
+            Structure of properties in the c3d files
         """
         raise NotImplementedError('_parse_c3d_info is an abstract function')
+
 
     @classmethod
     def from_c3d(cls, filename, idx=None, names=None, prefix=None):
@@ -205,7 +210,7 @@ class FrameDependentNpArray(np.ndarray):
         if names and idx:
             raise ValueError("names and idx can't be set simultaneously, please select only one")
         reader = ezc3d.c3d(str(filename))
-        metadata, channel_names, data = cls._parse_c3d_info(reader, prefix)
+        data, channel_names, metadata = cls._parse_c3d(reader, prefix)
 
         if names:
             metadata.update({'get_labels': names})

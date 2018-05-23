@@ -34,7 +34,6 @@ class Analogs3d(FrameDependentNpArray):
         # Allow slicing
         if obj is None or not isinstance(obj, Analogs3d):
             return
-
     # --- Get metadata methods
 
     def get_num_analogs(self):
@@ -84,7 +83,7 @@ class Analogs3d(FrameDependentNpArray):
         return np.squeeze(self.T, axis=2)
 
     @staticmethod
-    def _parse_c3d_info(c3d, prefix):
+    def _parse_c3d(c3d, prefix):
         """
         Implementation on how to read c3d header and parameter for analogs
         Parameters
@@ -109,7 +108,7 @@ class Analogs3d(FrameDependentNpArray):
             'get_unit': []
         }
         data = c3d.get_analogs()
-        return metadata, channel_names, data
+        return data, channel_names, metadata
 
 
 class MVC:

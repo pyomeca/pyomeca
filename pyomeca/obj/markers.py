@@ -88,7 +88,7 @@ class Markers3d(FrameDependentNpArray):
         return np.reshape(self[0:3, :, :], (3 * self.get_num_markers(), self.get_num_frames()), 'F').T
 
     @staticmethod
-    def _parse_c3d_info(c3d, prefix):
+    def _parse_c3d(c3d, prefix):
         """
         Implementation on how to read c3d header and parameter for markers
         Parameters
@@ -114,7 +114,7 @@ class Markers3d(FrameDependentNpArray):
             'get_unit': c3d.parameters().group('POINT').parameter('UNITS').valuesAsString()[0].c_str()
         }
         data = c3d.get_points()
-        return metadata, channel_names, data
+        return data, channel_names, metadata
 
     # --- Linear algebra methods
 
