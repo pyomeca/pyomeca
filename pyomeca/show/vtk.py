@@ -1,32 +1,27 @@
-# -*- coding: utf-8 -*-
 """
-
 Visualization toolkit in pyomeca
-
 """
 
 import sys
 
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPalette, QColor
-from vtk import vtkInteractorStyleTrackballCamera
-from vtk import vtkPolyDataMapper
-from vtk import vtkPolyLine
-from vtk import vtkCellArray
-from vtk import vtkSphereSource
 from vtk import vtkActor
-from vtk import vtkRenderer
+from vtk import vtkCellArray
+from vtk import vtkInteractorStyleTrackballCamera
 from vtk import vtkLine
 from vtk import vtkPoints
 from vtk import vtkPolyData
+from vtk import vtkPolyDataMapper
+from vtk import vtkPolyLine
+from vtk import vtkRenderer
+from vtk import vtkSphereSource
 from vtk import vtkUnsignedCharArray
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
-from pyomeca.types import Markers3d
-from pyomeca.types import Mesh
-from pyomeca.types import MeshCollection
-from pyomeca.types import RotoTrans
-from pyomeca.types import RotoTransCollection
+from pyomeca import Markers3d
+from pyomeca import Mesh, MeshCollection
+from pyomeca import RotoTrans, RotoTransCollection
 
 first = True
 if first:
@@ -34,7 +29,7 @@ if first:
     first = False
 
 
-class Window(QtWidgets.QMainWindow):
+class VtkWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None, background_color=(0, 0, 0)):
         """
         Main window
@@ -100,7 +95,7 @@ class Window(QtWidgets.QMainWindow):
         self.setPalette(QPalette(QColor(color[0] * 255, color[1] * 255, color[2] * 255)))
 
 
-class Model(QtWidgets.QWidget):
+class VtkModel(QtWidgets.QWidget):
     def __init__(self, parent,
                  markers_size=5, markers_color=(1, 1, 1), markers_opacity=1.0,
                  rt_size=25):
@@ -245,6 +240,7 @@ class Model(QtWidgets.QWidget):
         ----------
         mesh : MeshCollection
             One frame of mesh
+            :param all_meshes:
 
         """
         if isinstance(all_meshes, Mesh):
