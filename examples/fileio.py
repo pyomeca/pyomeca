@@ -3,8 +3,8 @@ Example script for file IO
 """
 
 from pathlib import Path
-from pyomeca.obj.markers import Markers3d
-from pyomeca.obj.analogs import Analogs3d
+
+from pyomeca import Markers3d, Analogs3d
 
 # Path to data
 DATA_FOLDER = Path('..') / 'tests' / 'data'

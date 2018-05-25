@@ -34,6 +34,7 @@ class Analogs3d(FrameDependentNpArray):
         # Allow slicing
         if obj is None or not isinstance(obj, Analogs3d):
             return
+
     # --- Get metadata methods
 
     def get_num_analogs(self):

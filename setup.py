@@ -2,20 +2,23 @@ from setuptools import setup
 
 # to install dependencies in a clean conda env, run: `conda env create -f env.yml`
 
-# to install all dependencies (included dev) in a clean conda env, run: `conda env create -f env_dev.yml`
-
 requirements = [
     'numpy',
     'pandas',
-    'scipy',
     'matplotlib',
     'vtk',
-    'pyqt'
+    'scipy',
+    'pyqt',
+    'boost',
+    'rbdl',
+    'dlib',
+    'biorbd',
+    'ezc3d'
 ]
 
 setup(
     name='pyomeca',
-    version='2018.01.22',
+    version='0.1.1',
     description="Toolbox for biomechanics analysis",
     author="Romain Martinez & Pariterre",
     author_email='',

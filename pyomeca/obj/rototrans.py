@@ -1,6 +1,7 @@
-from pyomeca.obj.frame_dependent import FrameDependentNpArray, FrameDependentNpArrayCollection
-from pyomeca.obj.markers import Markers3d
 import numpy as np
+
+from pyomeca import Markers3d
+from pyomeca.obj.frame_dependent import FrameDependentNpArray, FrameDependentNpArrayCollection
 
 
 class RotoTrans(FrameDependentNpArray):

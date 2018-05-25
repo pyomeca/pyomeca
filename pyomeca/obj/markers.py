@@ -1,5 +1,5 @@
-import numpy as np
 import ezc3d
+import numpy as np
 
 from pyomeca.obj.frame_dependent import FrameDependentNpArray
 
