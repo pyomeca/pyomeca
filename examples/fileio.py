@@ -3,6 +3,7 @@ Example script for file IO
 """
 
 from pathlib import Path
+
 from pyomeca import Markers3d, Analogs3d
 
 # Path to data

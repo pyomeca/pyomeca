@@ -5,10 +5,11 @@ Example script for animating models
 from pathlib import Path
 
 import numpy as np
-from pyomeca import VtkModel, VtkWindow
-from pyomeca import RotoTrans, RotoTransCollection
-from pyomeca import Mesh, MeshCollection
+
 from pyomeca import Markers3d
+from pyomeca import Mesh, MeshCollection
+from pyomeca import RotoTrans, RotoTransCollection
+from pyomeca import VtkModel, VtkWindow
 
 # Path to data
 DATA_FOLDER = Path('..') / 'tests' / 'data'

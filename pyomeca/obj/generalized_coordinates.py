@@ -1,5 +1,6 @@
-from pyomeca.obj.frame_dependent import FrameDependentNpArray
 import numpy as np
+
+from pyomeca.obj.frame_dependent import FrameDependentNpArray
 
 
 class GeneralizedCoordinate(FrameDependentNpArray):

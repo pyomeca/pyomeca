@@ -1,9 +1,9 @@
-import numpy as np
-
 from biorbd import pyorbdl
 
-from pyomeca.obj.markers import Markers3d
+import numpy as np
+
 from pyomeca.obj.generalized_coordinates import GeneralizedCoordinate
+from pyomeca.obj.markers import Markers3d
 
 
 def new(path):
