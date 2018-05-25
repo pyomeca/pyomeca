@@ -1,9 +1,8 @@
 import numpy as np
 
 from pyomeca.thirdparty import biorbd
-from pyomeca.obj.generalized_coordinates import GeneralizedCoordinate
-from pyomeca.show.vtk import Model as PyoModel
-from pyomeca.show.vtk import Window as PyoWindow
+from pyomeca import GeneralizedCoordinate
+from pyomeca import VtkModel, VtkWindow
 
 # Load
 m = biorbd.new("../tests/data/pyomecaman.s2mMod")
@@ -34,9 +33,9 @@ q_recons, qdot_recons, qddot_recons = biorbd.kalman_kinematics_reconstruction(m,
 T_recons = biorbd.get_markers(m, q_recons)
 
 # Create a windows with a nice gray background
-window = PyoWindow(background_color=(.5, .5, .5))
-h_simulated_T = PyoModel(window, markers_color=(1, 0, 0), markers_size=0.015, markers_opacity=1)
-h_reconstructed_T = PyoModel(window, markers_color=(0, 0, 0), markers_size=0.03, markers_opacity=.3)
+window = VtkWindow(background_color=(.5, .5, .5))
+h_simulated_T = VtkModel(window, markers_color=(1, 0, 0), markers_size=0.015, markers_opacity=1)
+h_reconstructed_T = VtkModel(window, markers_color=(0, 0, 0), markers_size=0.03, markers_opacity=.3)
 
 # Show and loop data
 i = 0

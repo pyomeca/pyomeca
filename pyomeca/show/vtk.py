@@ -19,9 +19,9 @@ from vtk import vtkPolyData
 from vtk import vtkUnsignedCharArray
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
-from pyomeca.obj.mesh import Mesh, MeshCollection
-from pyomeca.obj.rototrans import RotoTrans, RotoTransCollection
-from pyomeca.obj.markers import Markers3d
+from pyomeca import Mesh, MeshCollection
+from pyomeca import RotoTrans, RotoTransCollection
+from pyomeca import Markers3d
 
 first = True
 if first:
@@ -29,7 +29,7 @@ if first:
     first = False
 
 
-class Window(QtWidgets.QMainWindow):
+class VtkWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None, background_color=(0, 0, 0)):
         """
         Main window
@@ -95,7 +95,7 @@ class Window(QtWidgets.QMainWindow):
         self.setPalette(QPalette(QColor(color[0] * 255, color[1] * 255, color[2] * 255)))
 
 
-class Model(QtWidgets.QWidget):
+class VtkModel(QtWidgets.QWidget):
     def __init__(self, parent,
                  markers_size=5, markers_color=(1, 1, 1), markers_opacity=1.0,
                  rt_size=25):

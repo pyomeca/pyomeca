@@ -6,7 +6,8 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
-from pyomeca.obj.analogs import Analogs3d
+
+from pyomeca import Analogs3d
 
 # Path to data
 DATA_FOLDER = Path('..') / 'tests' / 'data'
