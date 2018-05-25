@@ -1,13 +1,13 @@
 from pathlib import Path
 
+import ezc3d
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from scipy import fftpack
 from scipy.interpolate import interp1d
+from scipy.io import savemat
 from scipy.signal import filtfilt, medfilt, butter
-
-import ezc3d
 
 
 class FrameDependentNpArray(np.ndarray):
@@ -70,9 +70,18 @@ class FrameDependentNpArray(np.ndarray):
             self._current_frame += 1
             return self.get_frame(self._current_frame)
 
+    # --- Utils methods
+
     @classmethod
     def _get_class_name(cls):
         return cls.__name__
+
+    @staticmethod
+    def check_parent_dir(file_name):
+        file_name = Path(file_name)
+        if not file_name.parents[0].is_dir():
+            file_name.parents[0].mkdir()
+        return file_name
 
     # --- Get metadata methods
 
@@ -178,7 +187,6 @@ class FrameDependentNpArray(np.ndarray):
         """
         raise NotImplementedError('_parse_c3d_info is an abstract function')
 
-
     @classmethod
     def from_c3d(cls, filename, idx=None, names=None, prefix=None):
         """
@@ -264,17 +272,15 @@ class FrameDependentNpArray(np.ndarray):
     def to_csv(self, file_name, header=False):
         """
         Write a csv file from a FrameDependentNpArray
+
         Parameters
         ----------
-        file_name : string
+        file_name : str, Path
             path of the file to write
-        header : bool
+        header : bool, optional
             Write header with labels (default False)
         """
-        file_name = Path(file_name)
-        # Make sure the directory exists, otherwise create it
-        if not file_name.parents[0].is_dir():
-            file_name.parents[0].mkdir()
+        file_name = self.check_parent_dir(file_name)
 
         # Convert markers into 2d matrix
         data = pd.DataFrame(self.to_2d())
@@ -285,6 +291,35 @@ class FrameDependentNpArray(np.ndarray):
 
         # Write into the csv file
         data.to_csv(file_name, index=False, header=header)
+
+    def to_mat(self, file_name, metadata=False):
+        """
+        Write a Matlab's mat file from a FrameDependentNpArray
+
+        Parameters
+        ----------
+        file_name : str, Path
+            path of the file to write
+        metadata : bool, optional
+            Write data with metadata (default False)
+
+        Returns
+        -------
+
+        """
+        file_name = self.check_parent_dir(file_name)
+        mat_dict = {}
+        if metadata:
+            mat_dict.update({
+                'get_first_frame': self.get_first_frame,
+                'get_last_frame': self.get_last_frame,
+                'get_rate': self.get_rate,
+                'get_labels': self.get_labels,
+                'get_unit': self.get_unit,
+                'get_nan_idx': self.get_nan_idx
+            })
+        mat_dict.update({'data': self})
+        savemat(file_name, mat_dict)
 
     # --- Plot method
 
@@ -548,7 +583,7 @@ class FrameDependentNpArray(np.ndarray):
             raise ValueError(f'dim should be 1, 2 or 3. You provided an array with {self.ndim} dimensions.')
         return self.dynamic_child_cast(medfilt(self, window_size))
 
-    def _base_filter(self, freq, order, cutoff, interp_nans, btype):
+    def _base_filter(self, freq, order, cutoff, btype, interp_nans):
         """
         Butterworth filter
 
@@ -586,7 +621,7 @@ class FrameDependentNpArray(np.ndarray):
         b, a = butter(N=order, Wn=corrected_freq, btype=btype)
         return filtfilt(b, a, x)
 
-    def low_pass(self, freq, order, cutoff, interp_nans=True):
+    def low_pass(self, freq, order, cutoff, interp_nans=False):
         """
         Low-pass Butterworth filter
 
@@ -606,10 +641,10 @@ class FrameDependentNpArray(np.ndarray):
         FrameDependentNpArray
         """
         return self.dynamic_child_cast(
-            self._base_filter(freq, order, cutoff, interp_nans, btype='low')
+            self._base_filter(freq, order, cutoff, 'low', interp_nans)
         )
 
-    def band_pass(self, freq, order, cutoff, interp_nans):
+    def band_pass(self, freq, order, cutoff, interp_nans=False):
         """
         Band-pass Butterworth filter
 
@@ -629,10 +664,10 @@ class FrameDependentNpArray(np.ndarray):
         FrameDependentNpArray
         """
         return self.dynamic_child_cast(
-            self._base_filter(freq, order, cutoff, interp_nans, btype='bandpass')
+            self._base_filter(freq, order, cutoff, 'bandpass', interp_nans)
         )
 
-    def band_stop(self, freq, order, cutoff, interp_nans):
+    def band_stop(self, freq, order, cutoff, interp_nans=False):
         """
         Band-stop Butterworth filter
 
@@ -652,10 +687,10 @@ class FrameDependentNpArray(np.ndarray):
         FrameDependentNpArray
         """
         return self.dynamic_child_cast(
-            self._base_filter(freq, order, cutoff, interp_nans, btype='bandstop')
+            self._base_filter(freq, order, cutoff, 'bandstop', interp_nans)
         )
 
-    def high_pass(self, freq, order, cutoff, interp_nans):
+    def high_pass(self, freq, order, cutoff, interp_nans=False):
         """
         Band-stop Butterworth filter
 
@@ -675,7 +710,7 @@ class FrameDependentNpArray(np.ndarray):
         FrameDependentNpArray
         """
         return self.dynamic_child_cast(
-            self._base_filter(freq, order, cutoff, interp_nans, btype='high')
+            self._base_filter(freq, order, cutoff, 'high', interp_nans)
         )
 
     def fft(self, freq, only_positive=True, axis=-1):

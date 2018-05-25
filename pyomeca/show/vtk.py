@@ -1,7 +1,5 @@
 """
-
 Visualization toolkit in pyomeca
-
 """
 
 import sys
