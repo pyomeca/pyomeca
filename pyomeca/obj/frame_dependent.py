@@ -187,7 +187,6 @@ class FrameDependentNpArray(np.ndarray):
         """
         raise NotImplementedError('_parse_c3d_info is an abstract function')
 
-
     @classmethod
     def from_c3d(cls, filename, idx=None, names=None, prefix=None):
         """
@@ -584,7 +583,7 @@ class FrameDependentNpArray(np.ndarray):
             raise ValueError(f'dim should be 1, 2 or 3. You provided an array with {self.ndim} dimensions.')
         return self.dynamic_child_cast(medfilt(self, window_size))
 
-    def _base_filter(self, freq, order, cutoff, interp_nans, btype):
+    def _base_filter(self, freq, order, cutoff, btype, interp_nans):
         """
         Butterworth filter
 
@@ -622,7 +621,7 @@ class FrameDependentNpArray(np.ndarray):
         b, a = butter(N=order, Wn=corrected_freq, btype=btype)
         return filtfilt(b, a, x)
 
-    def low_pass(self, freq, order, cutoff, interp_nans=True):
+    def low_pass(self, freq, order, cutoff, interp_nans=False):
         """
         Low-pass Butterworth filter
 
@@ -642,10 +641,10 @@ class FrameDependentNpArray(np.ndarray):
         FrameDependentNpArray
         """
         return self.dynamic_child_cast(
-            self._base_filter(freq, order, cutoff, interp_nans, btype='low')
+            self._base_filter(freq, order, cutoff, 'low', interp_nans)
         )
 
-    def band_pass(self, freq, order, cutoff, interp_nans):
+    def band_pass(self, freq, order, cutoff, interp_nans=False):
         """
         Band-pass Butterworth filter
 
@@ -665,10 +664,10 @@ class FrameDependentNpArray(np.ndarray):
         FrameDependentNpArray
         """
         return self.dynamic_child_cast(
-            self._base_filter(freq, order, cutoff, interp_nans, btype='bandpass')
+            self._base_filter(freq, order, cutoff, 'bandpass', interp_nans)
         )
 
-    def band_stop(self, freq, order, cutoff, interp_nans):
+    def band_stop(self, freq, order, cutoff, interp_nans=False):
         """
         Band-stop Butterworth filter
 
@@ -688,10 +687,10 @@ class FrameDependentNpArray(np.ndarray):
         FrameDependentNpArray
         """
         return self.dynamic_child_cast(
-            self._base_filter(freq, order, cutoff, interp_nans, btype='bandstop')
+            self._base_filter(freq, order, cutoff, 'bandstop', interp_nans)
         )
 
-    def high_pass(self, freq, order, cutoff, interp_nans):
+    def high_pass(self, freq, order, cutoff, interp_nans=False):
         """
         Band-stop Butterworth filter
 
@@ -711,7 +710,7 @@ class FrameDependentNpArray(np.ndarray):
         FrameDependentNpArray
         """
         return self.dynamic_child_cast(
-            self._base_filter(freq, order, cutoff, interp_nans, btype='high')
+            self._base_filter(freq, order, cutoff, 'high', interp_nans)
         )
 
     def fft(self, freq, only_positive=True, axis=-1):
