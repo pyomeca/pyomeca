@@ -372,9 +372,9 @@ class FrameDependentNpArray(np.ndarray):
         """
         return self.dynamic_child_cast(np.matmul(self, other))
 
-    def rectify(self):
+    def abs(self):
         """
-        Rectify a signal (i.e., get absolute values)
+        Get absolute values
 
         Returns
         -------
