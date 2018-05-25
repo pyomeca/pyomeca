@@ -3,7 +3,6 @@ Example script for file IO
 """
 
 from pathlib import Path
-import numpy as np
 from pyomeca.obj.markers import Markers3d
 from pyomeca.obj.analogs import Analogs3d
 

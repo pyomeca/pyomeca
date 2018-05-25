@@ -110,6 +110,16 @@ class Analogs3d(FrameDependentNpArray):
         data = c3d.get_analogs()
         return data, channel_names, metadata
 
+    def rectify(self):
+        """
+        Rectify a signal (i.e., get absolute values)
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        return self.abs()
+
 
 class MVC:
     """
