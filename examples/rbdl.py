@@ -2,7 +2,7 @@ import numpy as np
 
 from pyomeca import GeneralizedCoordinate
 from pyomeca import VtkModel, VtkWindow
-from pyomeca.thirdparty import biorbd
+import biorbd
 
 # Load
 m = biorbd.new("../tests/data/pyomecaman.s2mMod")
