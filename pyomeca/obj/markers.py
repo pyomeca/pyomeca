@@ -103,8 +103,8 @@ class Markers3d(FrameDependentNpArray):
         -------
         metadata, channel_names, data
         """
-        channel_names = [i.c_str().split(prefix)[-1] for i in c3d.parameters().group('POINT')
-                                                                 .parameter('LABELS').valuesAsString()]
+        channel_names = [i.c_str().split(prefix)[-1] for i in
+                         c3d.parameters().group('POINT').parameter('LABELS').valuesAsString()]
         metadata = {
             'get_num_markers': c3d.header().nb3dPoints(),
             'get_num_frames': c3d.header().nbFrames(),
