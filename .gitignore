@@ -113,5 +113,3 @@ Misc/
 # pytest
 .pytest_cache
 
-# temporary untrack btl
-pyomeca/thirdparty/btk/*
