@@ -5,4 +5,4 @@ from .obj.markers import *
 from .obj.mesh import *
 from .obj.rototrans import *
 # Show classes
-from .show.vtk import *
+# from .show.vtk import *
