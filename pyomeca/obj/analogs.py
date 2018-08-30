@@ -105,10 +105,12 @@ class Analogs3d(FrameDependentNpArray):
             'get_num_frames': c3d.header().nbAnalogsMeasurement(),
             'get_first_frame': c3d.header().firstFrame() * c3d.header().nbAnalogByFrame(),
             'get_last_frame': c3d.header().lastFrame() * c3d.header().nbAnalogByFrame(),
+            'get_time_frames': None,
             'get_rate': c3d.header().frameRate() * c3d.header().nbAnalogByFrame(),
             'get_unit': []
         }
         data = c3d.get_analogs()
+
         return data, channel_names, metadata
 
     def rectify(self):

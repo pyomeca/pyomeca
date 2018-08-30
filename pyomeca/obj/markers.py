@@ -110,10 +110,12 @@ class Markers3d(FrameDependentNpArray):
             'get_num_frames': c3d.header().nbFrames(),
             'get_first_frame': c3d.header().firstFrame(),
             'get_last_frame': c3d.header().lastFrame(),
+            'get_time_frames': None,
             'get_rate': c3d.header().frameRate(),
             'get_unit': c3d.parameters().group('POINT').parameter('UNITS').valuesAsString()[0].c_str()
         }
         data = c3d.get_points()
+
         return data, channel_names, metadata
 
     # --- Linear algebra methods

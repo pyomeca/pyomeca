@@ -35,6 +35,7 @@ class FrameDependentNpArray(np.ndarray):
             self._current_frame = 0
             self.get_first_frame = []
             self.get_last_frame = []
+            self.get_time_frames = None
             self.get_rate = []
             self.get_labels = []
             self.get_unit = []
@@ -43,6 +44,7 @@ class FrameDependentNpArray(np.ndarray):
             self._current_frame = getattr(obj, '_current_frame')
             self.get_first_frame = getattr(obj, 'get_first_frame')
             self.get_last_frame = getattr(obj, 'get_last_frame')
+            self.get_time_frames = getattr(obj, 'get_time_frames')
             self.get_rate = getattr(obj, 'get_rate')
             self.get_labels = getattr(obj, 'get_labels')
             self.get_unit = getattr(obj, 'get_unit')
@@ -115,8 +117,8 @@ class FrameDependentNpArray(np.ndarray):
     # --- Fileio methods (from_*)
 
     @classmethod
-    def from_csv(cls, filename, first_row=None, first_column=0, idx=None,
-                 header=None, names=None, delimiter=',', prefix=None):
+    def from_csv(cls, filename, first_row=0, time_column=None, first_column=0, last_column_to_remove=0, idx=None,
+                 header=None, names=None, delimiter=',', prefix=None, skiprows=None):
         """
         Read csv data and convert to Vectors3d format
         Parameters
@@ -127,6 +129,10 @@ class FrameDependentNpArray(np.ndarray):
             Index of first rows of data (0th indexed)
         first_column : int
             Index of first column of data (0th indexed)
+        last_column_to_remove : int
+            If for some reason the csv reads extra columns, how many should be ignored
+        time_column : int
+            Index of the time column, if None time column is the index
         idx : list(int)
             Order of columns given by index
         header : int
@@ -145,18 +151,25 @@ class FrameDependentNpArray(np.ndarray):
 
         if names and idx:
             raise ValueError("names and idx can't be set simultaneously, please select only one")
-        if not header:
-            skiprows = np.arange(1, first_row)
-        else:
-            skiprows = np.arange(header + 1, first_row)
+        if skiprows is None:
+            if not header:
+                skiprows = np.arange(1, first_row)
+            else:
+                skiprows = np.arange(1, first_row - header)
 
         data = pd.read_csv(str(filename), delimiter=delimiter, header=header, skiprows=skiprows)
+        if time_column is None:
+            time_frames = np.arange(0, data.shape[0])
+        else:
+            time_frames = np.array(data.iloc[:, time_column])
         data.drop(data.columns[:first_column], axis=1, inplace=True)
+        data.drop(data.columns[-last_column_to_remove], axis=1, inplace=True)
         column_names = data.columns.tolist()
         if header and cls._get_class_name() == 'Markers3d':
             column_names = [icol.split(prefix)[-1] for icol in column_names if
-                            (len(icol) >= 7 and icol[:7] != 'Unnamed')]
-        metadata = {'get_first_frame': [], 'get_last_frame': [], 'get_rate': [], 'get_labels': [], 'get_unit': []}
+                            not (len(icol) >= 7 and icol[:7] == 'Unnamed')]
+        metadata = {'get_first_frame': [], 'get_last_frame': [], 'get_rate': [], 'get_labels': [], 'get_unit': [],
+                    'get_time_frames': time_frames}
         if names:
             metadata.update({'get_labels': names})
         else:
@@ -217,6 +230,11 @@ class FrameDependentNpArray(np.ndarray):
             metadata.update({'get_labels': []})
             names = channel_names
 
+        # Add time frames
+        metadata['get_time_frames'] = np.arange(metadata['get_first_frame'] / metadata['get_rate'],
+                                                metadata['get_last_frame'] / metadata['get_rate'],
+                                                1 / metadata['get_rate'])
+
         return cls._to_vectors(data=data,
                                idx=idx,
                                all_names=channel_names,
@@ -238,6 +256,7 @@ class FrameDependentNpArray(np.ndarray):
         data.get_last_frame = metadata['get_last_frame']
         data.get_rate = metadata['get_rate']
         data.get_unit = metadata['get_unit']
+        data.get_time_frames = metadata['get_time_frames']
         if np.array(idx).ndim == 1 and not metadata['get_labels']:
             data.get_labels = [name for i, name in enumerate(all_names) if i in idx]
         elif metadata['get_labels']:
@@ -313,6 +332,7 @@ class FrameDependentNpArray(np.ndarray):
             mat_dict.update({
                 'get_first_frame': self.get_first_frame,
                 'get_last_frame': self.get_last_frame,
+                'get_time_frames': self.get_time_frames,
                 'get_rate': self.get_rate,
                 'get_labels': self.get_labels,
                 'get_unit': self.get_unit,
@@ -345,14 +365,14 @@ class FrameDependentNpArray(np.ndarray):
         if not ax:
             _, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 4))
 
-        if self.shape[0] == 1 and self.shape[1] == 1:
-            current = self.squeeze()
-        else:
-            current = self
-        if np.any(x):
-            ax.plot(x, current, fmt, lw=lw, label=label, alpha=alpha)
-        else:
-            ax.plot(current, fmt, lw=lw, label=label, alpha=alpha)
+        for i in range(self.shape[0]):
+            data_to_plot = np.squeeze(self[i, :, :]).transpose()
+            if np.any(x):
+                ax.plot(x, data_to_plot, fmt, lw=lw, label=label, alpha=alpha)
+            elif self.get_time_frames is None or self.get_time_frames.shape[0] != self.shape[2]:
+                ax.plot(data_to_plot, fmt, lw=lw, label=label, alpha=alpha)
+            else:
+                ax.plot(self.get_time_frames,  data_to_plot, fmt, lw=lw, label=label, alpha=alpha)
         return ax
 
     # --- Signal processing methods
@@ -381,6 +401,16 @@ class FrameDependentNpArray(np.ndarray):
         FrameDependentNpArray
         """
         return np.abs(self)
+
+    def rms(self):
+        """
+        Get root-mean-square values
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        return np.sqrt(np.nanmean(np.square(self), axis=2))
 
     def center(self, mu=None, axis=-1):
         """
@@ -831,6 +861,26 @@ class FrameDependentNpArray(np.ndarray):
         y = np.ma.masked_where(np.abs(self) > mu + (threshold * sigma), self)
         return y
 
+    def derivative(self, window=1):
+        """
+        Performs a derivative of the data, assuming the get_time_frames variable has the same length as the data,
+        otherwise it returns an error
+
+        Parameters
+        ----------
+        window : int
+            Number of frame before and after to use. This amount of frames is therefore lost at begining and end of
+            the data
+
+        Returns
+        -------
+        numpy array
+        """
+        deriv = self.dynamic_child_cast(np.ndarray(self.shape))
+        deriv[:, :, 0:window] = np.nan
+        deriv[:, :, -window:] = np.nan
+        deriv[:, :, window:-window] = (self[:, :, 2*window:] - self[:, :, 0:-2*window]) / (self.get_time_frames[2*window:] - self.get_time_frames[0:-2*window])
+        return deriv
 
 class FrameDependentNpArrayCollection(list):
     """
