@@ -15,12 +15,13 @@ MARKERS_ANALOGS_C3D = DATA_FOLDER / 'markers_analogs.c3d'
 
 # read an emg from a c3d file
 a = Analogs3d.from_c3d(MARKERS_ANALOGS_C3D, names=['EMG1'])
-a[0, 0, :].plot()
+a.plot()
 plt.show()
 
 # --- Pyomeca types method implementation
 
 # every function described below are implemented as method in pyomeca types and can be chained:
+a.moving_rms(window_size=100)
 
 amp_, freqs_ = a \
     .rectify() \
