@@ -21,10 +21,6 @@ install:
 script:
   - python -m pytest --cov=pyomeca tests/
 
-after_success:
-  - git clone https://github.com/pyomeca/conda_recipes.git
-  - test $TRAVIS_BRANCH = "travis" && conda install conda-build anaconda-client && bash conda_recipes/pyomeca/conda_upload.sh
-
 notifications:
   email:
     on_success: never
