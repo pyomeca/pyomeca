@@ -22,7 +22,6 @@ install:
 
 script:
   - python -m pytest --cov=pyomeca tests/
-  # Your test script goes here
 
 notifications:
   email:
