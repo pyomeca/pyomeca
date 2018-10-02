@@ -9,7 +9,9 @@ before_install:
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
-  - conda config --set always_yes yes --set changeps1 no --add channels mrtnz
+  - conda config --set always_yes yes --set changeps1 no
+  - conda config --add channels mtrnz
+
   - conda update -q conda
   - conda info -a
 
