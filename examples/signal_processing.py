@@ -21,8 +21,6 @@ plt.show()
 # --- Pyomeca types method implementation
 
 # every function described below are implemented as method in pyomeca types and can be chained:
-a.moving_rms(window_size=100)
-
 amp_, freqs_ = a \
     .rectify() \
     .center() \
