@@ -17,8 +17,6 @@ install:
   - conda env create -f env.yml
   - source activate pyomeca
   - python setup.py install
-#  - conda build conda_recipes/pyomeca
-#  - conda install pyomeca --use-local
 
 script:
   - python -m pytest --cov=pyomeca tests/
