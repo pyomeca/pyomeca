@@ -45,8 +45,7 @@ class Markers3d(FrameDependentNpArray):
         -------
         The number of markers
         """
-        s = self.shape
-        return s[1]  # TODO: clean this
+        return self.shape[1]
 
     def get_2d_labels(self):
         """
