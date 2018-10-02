@@ -117,7 +117,7 @@ class FrameDependentNpArray(np.ndarray):
     # --- Fileio methods (from_*)
 
     @classmethod
-    def from_csv(cls, filename, first_row=0, time_column=None, first_column=0, last_column_to_remove=0, idx=None,
+    def from_csv(cls, filename, first_row=0, time_column=None, first_column=0, last_column_to_remove=None, idx=None,
                  header=None, names=None, delimiter=',', prefix=None, skiprows=None):
         """
         Read csv data and convert to Vectors3d format
@@ -163,7 +163,8 @@ class FrameDependentNpArray(np.ndarray):
         else:
             time_frames = np.array(data.iloc[:, time_column])
         data.drop(data.columns[:first_column], axis=1, inplace=True)
-        data.drop(data.columns[-last_column_to_remove], axis=1, inplace=True)
+        if last_column_to_remove is not None:
+            data.drop(data.columns[-last_column_to_remove], axis=1, inplace=True)
         column_names = data.columns.tolist()
         if header and cls._get_class_name() == 'Markers3d':
             column_names = [icol.split(prefix)[-1] for icol in column_names if
