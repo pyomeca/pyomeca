@@ -21,5 +21,10 @@ install:
   - python setup.py install
 
 script:
-  
+  - python -m pytest --cov=pyomeca tests/
   # Your test script goes here
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
