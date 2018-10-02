@@ -2,17 +2,7 @@ from setuptools import setup
 
 # to install dependencies in a clean conda env, run: `conda env create -f env.yml`
 
-requirements = [
-    "numpy",
-    "pandas",
-    "matplotlib",
-    "scipy",
-    "boost",
-    "rbdl",
-    "dlib",
-    "biorbd",
-    "ezc3d",
-]
+requirements = []
 
 setup(
     name='pyomeca',
