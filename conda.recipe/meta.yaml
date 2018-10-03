@@ -1,0 +1,38 @@
+
+{% set data = load_setup_py_data() %}
+
+package:
+  name: pyomeca
+
+  version: {{ data['version'] }}
+
+source:
+  path: ..
+
+build:
+  script: python setup.py install --single-version-externally-managed --record=record.txt
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
+    # dependencies are defined in setup.py
+    {% for dep in data['install_requires'] %}
+    - {{ dep.lower() }}
+    {% endfor %}
+    {# raw is for ignoring templating with cookiecutter, leaving it for use with conda-build #}
+
+test:
+  source_files:
+    - tests
+  requires:
+    - pytest
+    - pytest-cov
+  commands:
+    - pytest tests
+
+about:
+  home: https://github.com/pyomeca/pyomeca
+  summary: Pyomeca is a python library allowing to carry out a complete biomechanical analysis; in a simple, logical and concise way

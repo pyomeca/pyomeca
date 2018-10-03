@@ -1,16 +1,20 @@
+# Config file for automatic testing at travis-ci.org
 language: python
 python:
-  # We don't actually use the Travis Python, but this keeps it organized.
   - "3.6"
 
 before_install:
-  - sudo apt-get update
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
+  - conda install conda-build anaconda-client pytest pytest-cov
+  - conda config --set auto_update_conda no
+  - mkdir conda.recipe && cd conda.recipe && wget --no-check-certificate --content-disposition https://github.com/pyomeca/conda_recipes/raw/master/pyomeca/meta.yaml
+  - conda build conda.recipe --no-test
+  - conda install --use-local pyomeca
   - conda info -a
 
 install:
@@ -19,7 +23,11 @@ install:
   - python setup.py install
 
 script:
-  - python -m pytest --cov=pyomeca tests/
+  - pytest -v --color=yes --cov=pyomeca tests
+
+after_success:
+  - conda install -c conda-forge codecov
+  - codecov
 
 notifications:
   email:
