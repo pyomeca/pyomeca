@@ -3,7 +3,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from pyomeca.obj.frame_dependent import FrameDependentNpArray
+from pyomeca import FrameDependentNpArray
 
 
 class Analogs3d(FrameDependentNpArray):
@@ -43,8 +43,7 @@ class Analogs3d(FrameDependentNpArray):
         -------
         The number of analogs
         """
-        s = self.shape
-        return s[1]
+        return self.shape[1]
 
     def get_2d_labels(self):
         """

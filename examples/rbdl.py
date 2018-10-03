@@ -1,10 +1,10 @@
 import numpy as np
 
 from pyomeca import GeneralizedCoordinate
-from pyomeca import VtkModel, VtkWindow
+from pyoviz import VtkModel, VtkWindow
 import biorbd
 
-# Load
+# Load # TODO: new to s2mRead_readModelFile ? add swig nomenclature
 m = biorbd.new("../tests/data/pyomecaman.s2mMod")
 
 # Dynamically get the number of markers
