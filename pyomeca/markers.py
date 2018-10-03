@@ -1,7 +1,7 @@
 import ezc3d
 import numpy as np
 
-from pyomeca.obj.frame_dependent import FrameDependentNpArray
+from pyomeca import FrameDependentNpArray
 
 
 class Markers3d(FrameDependentNpArray):
@@ -46,7 +46,7 @@ class Markers3d(FrameDependentNpArray):
         The number of markers
         """
         s = self.shape
-        return s[1]
+        return s[1]  # TODO: clean this
 
     def get_2d_labels(self):
         """
@@ -155,4 +155,4 @@ class Markers3d(FrameDependentNpArray):
         square = self[0:3, :, :] ** 2
         sum_square = np.sum(square, axis=0)
         norm = np.sqrt(sum_square)
-        return norm
+        return norm  # TODO: clean this

@@ -1,7 +1,6 @@
 import numpy as np
 
-from pyomeca import Markers3d
-from pyomeca.obj.frame_dependent import FrameDependentNpArray, FrameDependentNpArrayCollection
+from pyomeca import FrameDependentNpArray, FrameDependentNpArrayCollection, Markers3d
 
 
 class RotoTrans(FrameDependentNpArray):
@@ -355,7 +354,7 @@ class RotoTransCollection(FrameDependentNpArrayCollection):
         coll = RotoTransCollection()
         for element in self:
             coll.append(element.get_frame(f))
-        return coll
+        return coll  # TODO: list comprehension here
 
     def get_rt(self, i):
         """
