@@ -41,7 +41,7 @@ install:
   - conda install -q pytest pytest-cov conda-build anaconda-client
   - conda info
   # this is to ensure dependencies
-  - curl https://github.com/pyomeca/conda_recipes/raw/master/pyomeca/meta.yaml --create-dirs -o ./conda.recipe/meta.yaml
+  - curl -L https://github.com/pyomeca/conda_recipes/raw/master/pyomeca/meta.yaml --create-dirs -o ./conda.recipe/meta.yaml
   - conda build conda.recipe --no-test
   - conda install --use-local pyomeca
 
