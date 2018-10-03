@@ -9,14 +9,17 @@ install:
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
-  - conda install conda-build anaconda-client pytest pytest-cov
   - conda config --set auto_update_conda no
-  - conda env create -f env.yml
-  - source activate pyomeca
-  - conda info -a
+  - conda update -q conda
+#  - conda env create -f env.yml
+#  - source activate pyomeca
+  - conda install python numpy pandas matplotlib scipy ezc3d -c mrtnz
+  - conda install conda-build anaconda-client pytest pytest-cov
+
+
   - conda build conda.recipe --no-test -c mrtnz
   - conda install --use-local pyomeca
+  - conda info -a
 #  - conda env create -f env.yml
 #  - source activate pyomeca
 #  - python setup.py install
