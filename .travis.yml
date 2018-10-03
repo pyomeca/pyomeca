@@ -12,14 +12,12 @@ before_install:
   - conda update -q conda
   - conda install conda-build anaconda-client pytest pytest-cov
   - conda config --set auto_update_conda no
-  - curl -L https://github.com/pyomeca/conda_recipes/raw/master/pyomeca/meta.yaml --create-dirs -o ./conda.recipe/meta.yaml
-  - conda build conda.recipe --no-test -c mrtnz
-  - conda install --use-local pyomeca
+#  - curl -L https://github.com/pyomeca/conda_recipes/raw/master/pyomeca/meta.yaml --create-dirs -o ./conda.recipe/meta.yaml
+#  - conda build conda.recipe --no-test -c mrtnz
+#  - conda install --use-local pyomeca
   - conda info -a
 
 install:
-  - conda env create -f env.yml
-  - source activate pyomeca
   - python setup.py install
 
 script:
