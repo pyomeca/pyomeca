@@ -3,7 +3,7 @@ language: python
 python:
   - "3.6"
 
-install:
+before_install:
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
@@ -11,18 +11,13 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda config --set auto_update_conda no
   - conda update -q conda
-#  - conda env create -f env.yml
-#  - source activate pyomeca
+
+install:
   - conda install python numpy pandas matplotlib scipy ezc3d -c mrtnz
   - conda install conda-build anaconda-client pytest pytest-cov
-
-
   - conda build conda.recipe --no-test -c mrtnz
   - conda install --use-local pyomeca
   - conda info -a
-#  - conda env create -f env.yml
-#  - source activate pyomeca
-#  - python setup.py install
 
 script:
   - pytest -v --color=yes --cov=pyomeca tests
