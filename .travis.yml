@@ -15,10 +15,16 @@ before_install:
 #  - curl -L https://github.com/pyomeca/conda_recipes/raw/master/pyomeca/meta.yaml --create-dirs -o ./conda.recipe/meta.yaml
 #  - conda build conda.recipe --no-test -c mrtnz
 #  - conda install --use-local pyomeca
+  - conda env create -f env.yml
+  - source activate pyomeca
   - conda info -a
 
 install:
-  - python setup.py install
+  - conda build conda.recipe --no-test -c mrtnz
+  - conda install --use-local pyomeca
+#  - conda env create -f env.yml
+#  - source activate pyomeca
+#  - python setup.py install
 
 script:
   - pytest -v --color=yes --cov=pyomeca tests
