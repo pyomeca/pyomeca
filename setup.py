@@ -1,10 +1,11 @@
+import yaml
 from setuptools import setup
 
 import versioneer
 
-requirements = [
-    'versioneer'
-]
+with open("env.yml", 'r') as stream:
+    out = yaml.load(stream)
+    requirements = out['dependencies'][1:]  # we do not return python
 
 setup(
     name='pyomeca',

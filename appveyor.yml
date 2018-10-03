@@ -42,7 +42,7 @@ install:
   - conda info
   # this is to ensure dependencies
   - curl -L https://github.com/pyomeca/conda_recipes/raw/master/pyomeca/meta.yaml --create-dirs -o ./conda.recipe/meta.yaml
-  - conda build conda.recipe --no-test
+  - conda build conda.recipe --no-test -c mrtnz
   - conda install --use-local pyomeca
 
 
