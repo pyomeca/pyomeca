@@ -864,8 +864,7 @@ class FrameDependentNpArray(np.ndarray):
         else:
             sigma = np.nanstd(self)
             mu = np.nanmean(self)
-        y = np.ma.masked_where(np.abs(self) > mu + (threshold * sigma), self)
-        return y  # TODO: clean this
+        return np.ma.masked_where(np.abs(self) > mu + (threshold * sigma), self)
 
     def derivative(self, window=1):
         """

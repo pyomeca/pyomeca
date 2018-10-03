@@ -1,16 +1,18 @@
 from setuptools import setup
 
-# to install dependencies in a clean conda env, run: `conda env create -f env.yml`
+import versioneer
 
 requirements = [
+    'versioneer'
 ]
 
 setup(
     name='pyomeca',
-    version='0.1.1',
-    description="Toolbox for biomechanics analysis",
-    author="Romain Martinez & Pariterre",
-    author_email='',
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
+    description="Pyomeca is a python library allowing to carry out a complete biomechanical analysis; in a simple, logical and concise way",
+    author="Romain Martinez & Benjamin Michaud",
+    author_email='martinez.staps@gmail.com',
     url='https://github.com/pyomeca/pyomeca',
     license='Apache 2.0',
     packages=['pyomeca'],
@@ -20,5 +22,3 @@ setup(
         'Programming Language :: Python :: 3.6',
     ]
 )
-
-# TODO: remember to add/update your deps in setup.py
