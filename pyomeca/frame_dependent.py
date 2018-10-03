@@ -117,7 +117,7 @@ class FrameDependentNpArray(np.ndarray):
     # --- Fileio methods (from_*)
 
     @classmethod
-    def from_csv(cls, filename, first_row=0, time_column=None, first_column=0, last_column_to_remove=None, idx=None,
+    def from_csv(cls, filename, first_row=0, time_column=None, first_column=None, last_column_to_remove=None, idx=None,
                  header=None, names=None, delimiter=',', prefix=None, skiprows=None):
         """
         Read csv data and convert to Vectors3d format
@@ -151,20 +151,25 @@ class FrameDependentNpArray(np.ndarray):
 
         if names and idx:
             raise ValueError("names and idx can't be set simultaneously, please select only one")
-        if skiprows is None:
+
+        if not skiprows:
             if not header:
                 skiprows = np.arange(1, first_row)
             else:
-                skiprows = np.arange(1, first_row - header)
+                skiprows = np.arange(header + 1, first_row)
 
         data = pd.read_csv(str(filename), delimiter=delimiter, header=header, skiprows=skiprows)
-        if time_column is None:
+        if not time_column:
             time_frames = np.arange(0, data.shape[0])
         else:
             time_frames = np.array(data.iloc[:, time_column])
-        data.drop(data.columns[:first_column], axis=1, inplace=True)
-        if last_column_to_remove is not None:
+
+        if first_column:
+            data.drop(data.columns[:first_column], axis=1, inplace=True)
+
+        if last_column_to_remove:
             data.drop(data.columns[-last_column_to_remove], axis=1, inplace=True)
+
         column_names = data.columns.tolist()
         if header and cls._get_class_name() == 'Markers3d':
             column_names = [icol.split(prefix)[-1] for icol in column_names if
@@ -373,7 +378,7 @@ class FrameDependentNpArray(np.ndarray):
             elif self.get_time_frames is None or self.get_time_frames.shape[0] != self.shape[2]:
                 ax.plot(data_to_plot, fmt, lw=lw, label=label, alpha=alpha)
             else:
-                ax.plot(self.get_time_frames,  data_to_plot, fmt, lw=lw, label=label, alpha=alpha)
+                ax.plot(self.get_time_frames, data_to_plot, fmt, lw=lw, label=label, alpha=alpha)
         return ax
 
     # --- Signal processing methods
@@ -860,7 +865,7 @@ class FrameDependentNpArray(np.ndarray):
             sigma = np.nanstd(self)
             mu = np.nanmean(self)
         y = np.ma.masked_where(np.abs(self) > mu + (threshold * sigma), self)
-        return y
+        return y  # TODO: clean this
 
     def derivative(self, window=1):
         """
@@ -880,8 +885,10 @@ class FrameDependentNpArray(np.ndarray):
         deriv = self.dynamic_child_cast(np.ndarray(self.shape))
         deriv[:, :, 0:window] = np.nan
         deriv[:, :, -window:] = np.nan
-        deriv[:, :, window:-window] = (self[:, :, 2*window:] - self[:, :, 0:-2*window]) / (self.get_time_frames[2*window:] - self.get_time_frames[0:-2*window])
+        deriv[:, :, window:-window] = (self[:, :, 2 * window:] - self[:, :, 0:-2 * window]) / (
+                self.get_time_frames[2 * window:] - self.get_time_frames[0:-2 * window])
         return deriv
+
 
 class FrameDependentNpArrayCollection(list):
     """

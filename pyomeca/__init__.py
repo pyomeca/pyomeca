@@ -1,8 +1,5 @@
-# Obj classes
-from .obj.analogs import *
-from .obj.generalized_coordinates import *
-from .obj.markers import *
-from .obj.mesh import *
-from .obj.rototrans import *
-# Show classes
-# from .show.vtk import *
+from .frame_dependent import *
+from .markers import *
+from .analogs import *
+from .generalized_coordinates import *
+from .rototrans import *
