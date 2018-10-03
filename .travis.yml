@@ -12,7 +12,7 @@ before_install:
   - conda update -q conda
   - conda install conda-build anaconda-client pytest pytest-cov
   - conda config --set auto_update_conda no
-  - mkdir conda.recipe && cd conda.recipe && wget --no-check-certificate --content-disposition https://github.com/pyomeca/conda_recipes/raw/master/pyomeca/meta.yaml
+  - curl https://github.com/pyomeca/conda_recipes/raw/master/pyomeca/meta.yaml --create-dirs -o ./conda.recipe/meta.yaml
   - conda build conda.recipe --no-test
   - conda install --use-local pyomeca
   - conda info -a
