@@ -22,7 +22,6 @@ requirements:
     - pyyaml
   run:
     - python
-    - numpy
     # dependencies are defined in setup.py
     {% for dep in data['install_requires'] %}
     - {{ dep.lower() }}
