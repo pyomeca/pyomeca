@@ -41,9 +41,11 @@ install:
   - conda install -q pytest pytest-cov conda-build anaconda-client
   - conda info
   # this is to ensure dependencies
-  - curl -L https://github.com/pyomeca/conda_recipes/raw/master/pyomeca/meta.yaml --create-dirs -o ./conda.recipe/meta.yaml
+  - conda install python numpy pandas matplotlib scipy ezc3d -c mrtnz
+  - conda install conda-build anaconda-client pytest pytest-cov
   - conda build conda.recipe --no-test -c mrtnz
   - conda install --use-local pyomeca
+  - conda info -a
 
 
 # Not a .NET project, we build package in the install step instead
