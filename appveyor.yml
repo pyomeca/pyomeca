@@ -43,6 +43,7 @@ install:
   # this is to ensure dependencies
   - conda install python numpy pandas matplotlib scipy ezc3d -c mrtnz
   - conda install conda-build anaconda-client pytest pytest-cov
+  - curl -L https://github.com/pyomeca/conda_recipes/raw/master/pyomeca/meta.yaml --create-dirs -o ./conda.recipe/meta.yaml
   - conda build conda.recipe --no-test -c mrtnz
   - conda install --use-local pyomeca
   - conda info -a

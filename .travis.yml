@@ -12,6 +12,7 @@ before_install:
 
 install:
   - conda install python numpy pandas matplotlib scipy ezc3d -c mrtnz
+  - curl -L https://github.com/pyomeca/conda_recipes/raw/master/pyomeca/meta.yaml --create-dirs -o ./conda.recipe/meta.yaml
   - conda install conda-build anaconda-client pytest pytest-cov
   - conda build conda.recipe --no-test -c mrtnz
   - conda install --use-local pyomeca
