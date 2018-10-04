@@ -282,9 +282,9 @@ class FrameDependentNpArray(np.ndarray):
         numpy.array
             extracted data
         """
-        idx = np.matrix(idx)
+        idx = np.array(idx, ndmin=2)
         try:
-            data = self[:, np.array(idx)[0, :], :]
+            data = self[:, idx[0, :], :]
             for i in range(1, idx.shape[0]):
                 data += self[:, np.array(idx)[i, :], :]
             data /= idx.shape[0]
