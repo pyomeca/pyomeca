@@ -7,6 +7,6 @@
 | Last release                     | [![Anaconda-Server Badge](https://anaconda.org/mrtnz/pyomeca/badges/latest_release_date.svg)](https://anaconda.org/mrtnz/pyomeca)                                                                                                                            |
 | OS support                       | [![Anaconda-Server Badge](https://anaconda.org/mrtnz/pyomeca/badges/platforms.svg)](https://anaconda.org/mrtnz/pyomeca)                                                                                                                                      |
 
-![Pyomeca](./docs/design/logo_plain.svg)
+![Pyomeca](https://github.com/pyomeca/design/blob/master/logo/logo_plain.svg)
 
 Pyomeca is a python library allowing to carry out a complete biomechanical analysis; in a simple, logical and concise way.
