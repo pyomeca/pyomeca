@@ -97,7 +97,7 @@ class Analogs3d(FrameDependentNpArray):
         -------
         metadata, channel_names, data
         """
-        channel_names = [i.c_str().split(prefix)[-1] for i in
+        channel_names = [i.split(prefix)[-1] for i in
                          c3d.parameters().group('ANALOG').parameter('LABELS').valuesAsString()]
         metadata = {
             'get_num_analogs': c3d.header().nbAnalogs(),

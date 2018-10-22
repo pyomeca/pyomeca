@@ -227,7 +227,7 @@ class FrameDependentNpArray(np.ndarray):
         """
         if names and idx:
             raise ValueError("names and idx can't be set simultaneously, please select only one")
-        reader = ezc3d.c3d(str(filename))
+        reader = ezc3d.c3d(str(filename)).c3d_swig
         data, channel_names, metadata = cls._parse_c3d(reader, prefix)
 
         if names:
