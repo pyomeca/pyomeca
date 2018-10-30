@@ -158,7 +158,7 @@ class FrameDependentNpArray(np.ndarray):
             else:
                 skiprows = np.arange(header + 1, first_row)
 
-        data = pd.read_csv(str(filename), delimiter=delimiter, header=header, skiprows=skiprows)
+        data = pd.read_csv(str(filename), sep=delimiter, header=header, skiprows=skiprows)
         if not time_column:
             time_frames = np.arange(0, data.shape[0])
         else:
@@ -171,7 +171,7 @@ class FrameDependentNpArray(np.ndarray):
             data.drop(data.columns[-last_column_to_remove], axis=1, inplace=True)
 
         column_names = data.columns.tolist()
-        if header and cls._get_class_name() == 'Markers3d':
+        if header and cls._get_class_name()[:9] == 'Markers3d':
             column_names = [icol.split(prefix)[-1] for icol in column_names if
                             not (len(icol) >= 7 and icol[:7] == 'Unnamed')]
         metadata = {'get_first_frame': [], 'get_last_frame': [], 'get_rate': [], 'get_labels': [], 'get_unit': [],
