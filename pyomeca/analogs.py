@@ -71,6 +71,10 @@ class Analogs3d(FrameDependentNpArray):
         s = m.shape
         return Analogs3d(np.reshape(m.T, (1, s[1], s[0]), 'F'))
 
+    @classmethod
+    def from_mot(cls, filename):
+        return cls.from_csv(filename, header=8, first_column=1, delimiter='\t')
+
     # --- Fileio methods (to_*)
 
     def to_2d(self):

@@ -75,6 +75,11 @@ class Markers3d(FrameDependentNpArray):
             raise IndexError("Number of columns must be divisible by 3")
         return Markers3d(np.reshape(m.T, (3, int(s[1] / 3), s[0]), 'F'))
 
+    @classmethod
+    def from_trc(cls, filename):
+        return cls.from_csv(filename, header=3, first_row=6, first_column=2, time_column=1, delimiter='\t',
+                            last_column_to_remove=1)
+
     # --- Fileio methods (to_*)
 
     def to_2d(self):
