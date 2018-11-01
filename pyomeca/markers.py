@@ -45,8 +45,7 @@ class Markers3d(FrameDependentNpArray):
         -------
         The number of markers
         """
-        s = self.shape
-        return s[1]  # TODO: clean this
+        return self.shape[1]
 
     def get_2d_labels(self):
         """
@@ -75,6 +74,11 @@ class Markers3d(FrameDependentNpArray):
         if s[1] % 3 != 0:
             raise IndexError("Number of columns must be divisible by 3")
         return Markers3d(np.reshape(m.T, (3, int(s[1] / 3), s[0]), 'F'))
+
+    @classmethod
+    def from_trc(cls, filename):
+        return cls.from_csv(filename, header=3, first_row=6, first_column=2, time_column=1, delimiter='\t',
+                            last_column_to_remove=1)
 
     # --- Fileio methods (to_*)
 

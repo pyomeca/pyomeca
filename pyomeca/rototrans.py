@@ -354,7 +354,7 @@ class RotoTransCollection(FrameDependentNpArrayCollection):
         coll = RotoTransCollection()
         for element in self:
             coll.append(element.get_frame(f))
-        return coll  # TODO: list comprehension here
+        return coll
 
     def get_rt(self, i):
         """

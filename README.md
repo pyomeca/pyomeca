@@ -1,2 +1,12 @@
-# pyomeca
-Python toolbox for biomechanics analysis
+|                                  |                                                                                                                                                                                                                                                              |
+|----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Continuous integration (Linux)   | [![Build Status](https://travis-ci.org/pyomeca/pyomeca.svg?branch=travis)](https://travis-ci.org/pyomeca/pyomeca)                                                                                                                                            |
+| Continuous integration (Windows) | [![Build status](https://ci.appveyor.com/api/projects/status/c988kaow6dbac3lk?svg=true)](https://ci.appveyor.com/project/romainmartinez/pyomeca)                                                                                                             |
+| Code coverage                    | [![codecov](https://codecov.io/gh/pyomeca/pyomeca/branch/travis/graph/badge.svg)](https://codecov.io/gh/pyomeca/pyomeca)                                                                                                                                     |
+| Code quality                     | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/89e663b2541b4575bcccc37b63dfb462)](https://www.codacy.com/app/romainmartinez/pyomeca?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pyomeca/pyomeca&amp;utm_campaign=Badge_Grade) |
+| Last release                     | [![Anaconda-Server Badge](https://anaconda.org/pyomeca/pyomeca/badges/latest_release_date.svg)](https://anaconda.org/pyomeca/pyomeca)                                                                                                                        |
+| OS support                       | [![Anaconda-Server Badge](https://anaconda.org/pyomeca/pyomeca/badges/platforms.svg)](https://anaconda.org/pyomeca/pyomeca)                                                                                                                                  |
+
+![Pyomeca](https://github.com/pyomeca/design/blob/master/logo/logo_plain.svg)
+
+Pyomeca is a python library allowing to carry out a complete biomechanical analysis; in a simple, logical and concise way.

@@ -43,8 +43,7 @@ class Analogs3d(FrameDependentNpArray):
         -------
         The number of analogs
         """
-        s = self.shape
-        return s[1]  # TODO: clean this
+        return self.shape[1]
 
     def get_2d_labels(self):
         """
@@ -71,6 +70,10 @@ class Analogs3d(FrameDependentNpArray):
         """
         s = m.shape
         return Analogs3d(np.reshape(m.T, (1, s[1], s[0]), 'F'))
+
+    @classmethod
+    def from_mot(cls, filename):
+        return cls.from_csv(filename, header=8, first_column=1, delimiter='\t')
 
     # --- Fileio methods (to_*)
 
