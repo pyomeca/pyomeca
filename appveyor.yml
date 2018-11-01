@@ -42,7 +42,7 @@ install:
   - cd conda.recipe
   - conda build . --no-test -c pyomeca
   - cd ..
-  - conda install --use-local pyomeca
+  - conda install --use-local pyomeca -c pyomeca
   - conda info -a
 
 
