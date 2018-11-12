@@ -40,10 +40,10 @@ emg = (
 ## Features
 
 - Object-oriented architecture where each class is associated with common and specialized functionalities:
-    - **Markers3d**: 3d markers positions
-    - **Analogs3d**: analogs (emg, force or any analog signal)
-    - **GeneralizedCoordinate**: generalized coordinate (joint angle)
-    - **RotoTrans**: roto-translation matrix
+  - **Markers3d**: 3d markers positions
+  - **Analogs3d**: analogs (emg, force or any analog signal)
+  - **GeneralizedCoordinate**: generalized coordinate (joint angle)
+  - **RotoTrans**: roto-translation matrix
 
 
 - Specialized functionalities include signal processing routine commonly used in biomechanics: filters, normalization, onset detection, outliers detection, derivative, etc.
@@ -56,11 +56,11 @@ emg = (
 
 
 - Easy reading and writing interface to common files in biomechanics:
-    - **c3d**: `from_c3d` and `to_c3d`
-    - **csv**: `from_csv` and `to_csv`
-    - **mat**: `from_mat` and `to_mat`
-    - **sto**: `to_sto` (must install pyosim)
-    - **trc**: `to_trc` (must install pyosim)
+  - **c3d**: `from_c3d` and `to_c3d`
+  - **csv**: `from_csv` and `to_csv`
+  - **mat**: `from_mat` and `to_mat`
+  - **sto**: `to_sto` (must install pyosim)
+  - **trc**: `to_trc` (must install pyosim)
 
 
 - Common linear algebra routine implemented: get Euler angles to/from roto-translation matrix, create a system of axes, set a rotation or translation, transpose or inverse, etc.
