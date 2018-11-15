@@ -40,6 +40,7 @@ class FrameDependentNpArray(np.ndarray):
             self.get_labels = []
             self.get_unit = []
             self.get_nan_idx = []
+            self.misc = {}
         else:
             self._current_frame = getattr(obj, '_current_frame')
             self.get_first_frame = getattr(obj, 'get_first_frame')
@@ -49,6 +50,7 @@ class FrameDependentNpArray(np.ndarray):
             self.get_labels = getattr(obj, 'get_labels')
             self.get_unit = getattr(obj, 'get_unit')
             self.get_nan_idx = getattr(obj, 'get_nan_idx')
+            self.misc = getattr(obj, 'misc')
 
     def dynamic_child_cast(self, x):
         """
@@ -84,6 +86,17 @@ class FrameDependentNpArray(np.ndarray):
         if not file_name.parents[0].is_dir():
             file_name.parents[0].mkdir()
         return file_name
+
+    def update_misc(self, d):
+        """
+        Append the misc field with a given dictionary
+
+        Parameters
+        ----------
+        d : dict
+            Dictionary to be added to the misc field
+        """
+        self.misc.update(d)
 
     # --- Get metadata methods
 
