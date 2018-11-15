@@ -40,6 +40,7 @@ class FrameDependentNpArray(np.ndarray):
             self.get_labels = []
             self.get_unit = []
             self.get_nan_idx = []
+            self.custom_metadata = {}
         else:
             self._current_frame = getattr(obj, '_current_frame')
             self.get_first_frame = getattr(obj, 'get_first_frame')
@@ -49,6 +50,7 @@ class FrameDependentNpArray(np.ndarray):
             self.get_labels = getattr(obj, 'get_labels')
             self.get_unit = getattr(obj, 'get_unit')
             self.get_nan_idx = getattr(obj, 'get_nan_idx')
+            self.custom_metadata = getattr(obj, 'custom_metadata')
 
     def dynamic_child_cast(self, x):
         """
@@ -84,6 +86,17 @@ class FrameDependentNpArray(np.ndarray):
         if not file_name.parents[0].is_dir():
             file_name.parents[0].mkdir()
         return file_name
+
+    def update_custom_metadata(self, d):
+        """
+        Append the custom_metadata field with a given dictionary
+
+        Parameters
+        ----------
+        d : dict
+            Dictionary to be added to the custom_metadata field
+        """
+        self.custom_metadata.update(d)
 
     # --- Get metadata methods
 
@@ -936,3 +949,13 @@ class FrameDependentNpArrayCollection(list):
                 return self[0].shape[2]  # Assume all meshes has the same number of frame, return the first one
         else:
             return -1
+
+
+if __name__ == '__main__':
+    from pyomeca import Analogs3d
+
+    filename = '/home/romain/Documents/codes/tutorials/data/trials/6kg_H2_1.c3d'
+
+    c = Analogs3d.from_c3d(filename)
+
+    c.u
