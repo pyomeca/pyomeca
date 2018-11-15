@@ -56,11 +56,11 @@ emg = (
 
 
 - Easy reading and writing interface to common files in biomechanics:
-  - **c3d**: `from_c3d` and `to_c3d`
+  - **c3d** (binary file used in biomechanics): `from_c3d` and `to_c3d`
   - **csv**: `from_csv` and `to_csv`
-  - **mat**: `from_mat` and `to_mat`
-  - **sto**: `to_sto` (must install pyosim)
-  - **trc**: `to_trc` (must install pyosim)
+  - **mat** (_MATLAB_ file): `from_mat` and `to_mat`
+  - **sto** (OpenSim storage file): `to_sto` (must install pyosim)
+  - **trc** (OpenSim markers position file): `to_trc` (must install pyosim)
 
 
 - Common linear algebra routine implemented: get Euler angles to/from roto-translation matrix, create a system of axes, set a rotation or translation, transpose or inverse, etc.
