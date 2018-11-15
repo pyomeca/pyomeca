@@ -949,13 +949,3 @@ class FrameDependentNpArrayCollection(list):
                 return self[0].shape[2]  # Assume all meshes has the same number of frame, return the first one
         else:
             return -1
-
-
-if __name__ == '__main__':
-    from pyomeca import Analogs3d
-
-    filename = '/home/romain/Documents/codes/tutorials/data/trials/6kg_H2_1.c3d'
-
-    c = Analogs3d.from_c3d(filename)
-
-    c.u
