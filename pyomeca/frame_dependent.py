@@ -89,7 +89,8 @@ class FrameDependentNpArray(np.ndarray):
 
     def update_misc(self, d):
         """
-        Append the misc field with a given dictionary
+        Append the misc field with a given dictionary.
+        An Optional reference to the internal state is also return in order to chain the operation if needed.
 
         Parameters
         ----------
