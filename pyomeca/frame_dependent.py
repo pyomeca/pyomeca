@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import ezc3d
 import matplotlib.pyplot as plt
 import numpy as np
