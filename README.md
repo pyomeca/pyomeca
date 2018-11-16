@@ -67,12 +67,20 @@ emg = (
 
 ## Installation
 
+### Using Conda
+
 First, install [miniconda](https://conda.io/miniconda.html) or [anaconda](https://www.anaconda.com/download/).
 Then type:
 
 ```bash
 conda install pyomeca -c pyomeca
 ```
+
+### Using pip
+
+First, you need to install python, swig, numpy & pyyaml. 
+Then, follow the instructions to compile [ezc3d](https://github.com/pyomeca/ezc3d).
+Finally, install pyomeca with `pip install git+https://github.com/pyomeca/pyomeca/`.
 
 ## Integration with other modules
 
