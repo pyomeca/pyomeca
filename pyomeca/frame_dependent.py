@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import ezc3d
 import matplotlib.pyplot as plt
 import numpy as np
@@ -97,6 +95,7 @@ class FrameDependentNpArray(np.ndarray):
             Dictionary to be added to the misc field
         """
         self.misc.update(d)
+        return self.dynamic_child_cast(self)
 
     # --- Get metadata methods
 
@@ -307,6 +306,24 @@ class FrameDependentNpArray(np.ndarray):
 
     # --- Fileio methods (to_*)
 
+    def to_dataframe(self, add_misc=False):
+        """
+        Convert a Vectors3d class to a pandas dataframe
+
+        Parameters
+        ----------
+        add_misc : bool
+            add columns for each of the `misc` fields added with `self.update_misc` if True
+
+        Returns
+        -------
+        pd.DataFrame
+        """
+        if add_misc:
+            return pd.DataFrame(self.to_2d(), columns=self.get_2d_labels()).assign(**self.misc)
+        else:
+            return pd.DataFrame(self.to_2d(), columns=self.get_2d_labels())
+
     def to_csv(self, file_name, header=False):
         """
         Write a csv file from a FrameDependentNpArray
@@ -320,15 +337,12 @@ class FrameDependentNpArray(np.ndarray):
         """
         file_name = self.check_parent_dir(file_name)
 
-        # Convert markers into 2d matrix
-        data = pd.DataFrame(self.to_2d())
-
         # Get the 2d style labels
         if header:
             header = self.get_2d_labels()
 
         # Write into the csv file
-        data.to_csv(file_name, index=False, header=header)
+        pd.DataFrame(self.to_2d()).to_csv(file_name, index=False, header=header)
 
     def to_mat(self, file_name, metadata=False):
         """
