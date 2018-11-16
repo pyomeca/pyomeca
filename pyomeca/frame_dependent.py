@@ -308,23 +308,27 @@ class FrameDependentNpArray(np.ndarray):
 
     # --- Fileio methods (to_*)
 
-    def to_dataframe(self, add_misc=False):
+    def to_dataframe(self, add_metadata=[]):
         """
         Convert a Vectors3d class to a pandas dataframe
 
         Parameters
         ----------
-        add_misc : bool
-            add columns for each of the `misc` fields added with `self.update_misc` if True
+        add_metadata : list
+            add each metadata specified in this list to the dataframe
 
         Returns
         -------
         pd.DataFrame
         """
-        if add_misc:
-            return pd.DataFrame(self.to_2d(), columns=self.get_2d_labels()).assign(**self.misc)
-        else:
-            return pd.DataFrame(self.to_2d(), columns=self.get_2d_labels())
+        cols = {}
+        for imeta in add_metadata:
+            ivalue = getattr(self, imeta)
+            if isinstance(ivalue, dict):
+                cols.update({key: value for key, value in ivalue.items()})
+            else:
+                cols.update({imeta: ivalue})
+        return pd.DataFrame(self.to_2d(), columns=self.get_2d_labels()).assign(**cols)
 
     def to_csv(self, file_name, header=False):
         """
