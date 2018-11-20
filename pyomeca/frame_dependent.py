@@ -89,7 +89,8 @@ class FrameDependentNpArray(np.ndarray):
 
     def update_misc(self, d):
         """
-        Append the misc field with a given dictionary
+        Append the misc field with a given dictionary.
+        An Optional reference to the internal state is also return in order to chain the operation if needed.
 
         Parameters
         ----------
@@ -97,6 +98,7 @@ class FrameDependentNpArray(np.ndarray):
             Dictionary to be added to the misc field
         """
         self.misc.update(d)
+        return self.dynamic_child_cast(self)
 
     # --- Get metadata methods
 
@@ -307,6 +309,28 @@ class FrameDependentNpArray(np.ndarray):
 
     # --- Fileio methods (to_*)
 
+    def to_dataframe(self, add_metadata=[]):
+        """
+        Convert a Vectors3d class to a pandas dataframe
+
+        Parameters
+        ----------
+        add_metadata : list
+            add each metadata specified in this list to the dataframe
+
+        Returns
+        -------
+        pd.DataFrame
+        """
+        cols = {}
+        for imeta in add_metadata:
+            ivalue = getattr(self, imeta)
+            if isinstance(ivalue, dict):
+                cols.update({key: value for key, value in ivalue.items()})
+            else:
+                cols.update({imeta: ivalue})
+        return pd.DataFrame(self.to_2d(), columns=self.get_2d_labels()).assign(**cols)
+
     def to_csv(self, file_name, header=False):
         """
         Write a csv file from a FrameDependentNpArray
@@ -320,15 +344,12 @@ class FrameDependentNpArray(np.ndarray):
         """
         file_name = self.check_parent_dir(file_name)
 
-        # Convert markers into 2d matrix
-        data = pd.DataFrame(self.to_2d())
-
         # Get the 2d style labels
         if header:
             header = self.get_2d_labels()
 
         # Write into the csv file
-        data.to_csv(file_name, index=False, header=header)
+        pd.DataFrame(self.to_2d()).to_csv(file_name, index=False, header=header)
 
     def to_mat(self, file_name, metadata=False):
         """
