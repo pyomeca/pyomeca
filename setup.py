@@ -3,7 +3,7 @@ from setuptools import setup
 
 import versioneer
 
-with open("env.yml", 'r') as stream:
+with open("environment.yml", 'r') as stream:
     out = yaml.load(stream)
     requirements = out['dependencies'][1:]  # we do not return python
 
@@ -21,5 +21,6 @@ setup(
     keywords='pyomeca',
     classifiers=[
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ]
 )
