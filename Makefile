@@ -31,11 +31,11 @@ endef
 
 ## Run pytest on the project
 test:
-	$(call execute_in_env, pytest $(EXCLUDES_PYTEST))
+	$(call execute_in_env, python -m pytest --color=yes tests $(EXCLUDES_PYTEST))
 
 ## Run coverage test on the project
 cover:
-	$(call execute_in_env, pytest -v --color=yes --cov=pyomeca tests $(EXCLUDES_PYTEST))
+	$(call execute_in_env, python -m pytest --color=yes --cov=pyomeca tests $(EXCLUDES_PYTEST))
 
 ## Delete all compiled Python files
 clean:
