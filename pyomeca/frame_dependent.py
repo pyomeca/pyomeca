@@ -562,7 +562,12 @@ class FrameDependentNpArray(np.ndarray):
             Threshold of tolerated consecutive nans on each channel
         """
         # check if there is nans
-        nans = np.isnan(self)
+        if self.get_nan_idx is not None:
+            nans = np.isnan(
+                self[:, np.setdiff1d(np.arange(self.shape[1]), self.get_nan_idx), :]
+            )
+        else:
+            nans = np.isnan(self)
         if nans.any():
             # check if there is less than `threshold_channel`% of nans on each channel
             percentage = (nans.sum(axis=-1) / self.shape[-1] * 100).ravel()
@@ -571,8 +576,8 @@ class FrameDependentNpArray(np.ndarray):
                 for iabove in above:
                     if iabove not in self.get_nan_idx:
                         raise ValueError(
-                            f'There is more than {threshold_channel}% ({percentage[iabove]}) '
-                            f'NaNs on the channel ({iabove})'
+                            f"There is more than {threshold_channel}% ({percentage[iabove]}) "
+                            f"NaNs on the channel ({iabove})"
                         )
 
             # check if there is not more than `threshold_consecutive`% of the rate of consecutive nans
@@ -584,15 +589,17 @@ class FrameDependentNpArray(np.ndarray):
                     idx = np.nonzero(mask[1:] != mask[:-1])[0]
                     return (idx[1::2] - idx[::2]).max()
 
-            consecutive_nans = np.apply_along_axis(max_consecutive_nans, axis=-1, arr=self).ravel()
+            consecutive_nans = np.apply_along_axis(
+                max_consecutive_nans, axis=-1, arr=self
+            ).ravel()
             above = np.argwhere(consecutive_nans > self.get_rate / threshold_consecutive)
             percentage = (consecutive_nans / self.shape[-1] * 100).ravel()
             if above.any():
                 for iabove in above:
                     if iabove not in self.get_nan_idx:
                         raise ValueError(
-                            f'There is more than {threshold_consecutive}% ({percentage[iabove]}) '
-                            f'consecutive NaNs on the channel ({iabove})'
+                            f"There is more than {threshold_consecutive}% ({percentage[iabove]}) "
+                            f"consecutive NaNs on the channel ({iabove})"
                         )
             return True
         else:
