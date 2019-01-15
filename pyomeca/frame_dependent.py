@@ -17,7 +17,7 @@ class FrameDependentNpArray(np.ndarray):
         Parameters
         ----------
         array : np.ndarray
-            A 3 dimensions matrix where 3rd dimension is the frame
+            A 3-dimensions matrix where 3rd dimension is the frame
         -------
 
         """
