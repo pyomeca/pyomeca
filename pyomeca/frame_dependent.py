@@ -39,7 +39,7 @@ class FrameDependentNpArray(np.ndarray):
             self.get_rate = []
             self.get_labels = []
             self.get_unit = []
-            self.get_nan_idx = []
+            self.get_nan_idx = None
             self.misc = {}
         else:
             self._current_frame = getattr(obj, '_current_frame')
