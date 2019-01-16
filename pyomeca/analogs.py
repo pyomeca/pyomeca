@@ -2,6 +2,7 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 from pyomeca import FrameDependentNpArray
 
@@ -73,7 +74,30 @@ class Analogs3d(FrameDependentNpArray):
 
     @classmethod
     def from_mot(cls, filename):
-        return cls.from_csv(filename, header=8, first_column=1, delimiter='\t')
+        mot = cls.from_csv(
+            filename, header=8, first_column=1, time_column=0, delimiter="\t"
+        )
+        mot.get_rate = (1 / (mot.get_time_frames[1] - mot.get_time_frames[0])).round()
+        return mot
+
+    @classmethod
+    def from_sto(cls, filename, endheader_range=20):
+        # detect where 'endheader' is
+        meta = pd.read_csv(
+            filename, usecols=[0], nrows=endheader_range, delimiter="\t"
+        ).values.ravel()
+        end_header = np.argwhere((meta == "endheader"))[0][0] + 2
+        if end_header:
+            sto = cls.from_csv(
+                filename, header=end_header, first_column=1, time_column=0, delimiter="\t"
+            )
+            sto.get_rate = (1 / (sto.get_time_frames[1] - sto.get_time_frames[0])).round()
+        else:
+            raise ValueError(
+                f"""endheader" not detected in the first {endheader_range} rows.
+            Try increasing the `endheader_range` parameter'"""
+            )
+        return sto
 
     # --- Fileio methods (to_*)
 

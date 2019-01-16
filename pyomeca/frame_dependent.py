@@ -174,7 +174,7 @@ class FrameDependentNpArray(np.ndarray):
                 skiprows = np.arange(header + 1, first_row)
 
         data = pd.read_csv(str(filename), sep=delimiter, header=header, skiprows=skiprows)
-        if not time_column:
+        if time_column is None:
             time_frames = np.arange(0, data.shape[0])
         else:
             time_frames = np.array(data.iloc[:, time_column])
