@@ -16,7 +16,7 @@ install:
   - conda install conda-build anaconda-client pytest pytest-cov
   - conda build . --no-test -c pyomeca
   - cd ..
-  - conda install --use-local pyomeca -c pyomeca
+  - conda install --use-local pyomeca -c pyomeca -c conda-forge
   - conda info -a
 
 script:
