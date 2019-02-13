@@ -73,7 +73,7 @@ First, install [miniconda](https://conda.io/miniconda.html) or [anaconda](https:
 Then type:
 
 ```bash
-conda install pyomeca -c pyomeca
+conda install pyomeca -c pyomeca -c conda-forge
 ```
 
 ### Using pip
