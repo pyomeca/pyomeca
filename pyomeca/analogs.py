@@ -81,7 +81,7 @@ class Analogs3d(FrameDependentNpArray):
         return mot
 
     @classmethod
-    def from_sto(cls, filename, endheader_range=20):
+    def from_sto(cls, filename, endheader_range=20, na_values=None):
         # detect where 'endheader' is
         meta = pd.read_csv(
             filename, usecols=[0], nrows=endheader_range, delimiter="\t"
@@ -89,7 +89,7 @@ class Analogs3d(FrameDependentNpArray):
         end_header = np.argwhere((meta == "endheader"))[0][0] + 2
         if end_header:
             sto = cls.from_csv(
-                filename, header=end_header, first_column=1, time_column=0, delimiter="\t", na_values=['            -nan']
+                filename, header=end_header, first_column=1, time_column=0, delimiter="\t", na_values=na_values
             )
             sto.get_rate = (1 / (sto.get_time_frames[1] - sto.get_time_frames[0])).round()
         else:
