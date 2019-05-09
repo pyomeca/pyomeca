@@ -133,7 +133,7 @@ class FrameDependentNpArray(np.ndarray):
 
     @classmethod
     def from_csv(cls, filename, first_row=0, time_column=None, first_column=None, last_column_to_remove=None, idx=None,
-                 header=None, names=None, delimiter=',', prefix=None, skiprows=None):
+                 header=None, names=None, delimiter=',', prefix=None, skiprows=None, na_values=None):
         """
         Read csv data and convert to Vectors3d format
         Parameters
@@ -173,7 +173,7 @@ class FrameDependentNpArray(np.ndarray):
             else:
                 skiprows = np.arange(header + 1, first_row)
 
-        data = pd.read_csv(str(filename), sep=delimiter, header=header, skiprows=skiprows)
+        data = pd.read_csv(str(filename), sep=delimiter, header=header, skiprows=skiprows, na_values=na_values)
         if time_column is None:
             time_frames = np.arange(0, data.shape[0])
         else:
@@ -977,3 +977,4 @@ class FrameDependentNpArrayCollection(list):
                 return self[0].shape[2]  # Assume all meshes has the same number of frame, return the first one
         else:
             return -1
+

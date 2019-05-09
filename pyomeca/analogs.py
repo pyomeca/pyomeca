@@ -89,7 +89,7 @@ class Analogs3d(FrameDependentNpArray):
         end_header = np.argwhere((meta == "endheader"))[0][0] + 2
         if end_header:
             sto = cls.from_csv(
-                filename, header=end_header, first_column=1, time_column=0, delimiter="\t"
+                filename, header=end_header, first_column=1, time_column=0, delimiter="\t", na_values=['            -nan']
             )
             sto.get_rate = (1 / (sto.get_time_frames[1] - sto.get_time_frames[0])).round()
         else:
@@ -326,3 +326,4 @@ class MVC:
             else:
                 mva.append(None)
         return mva
+
