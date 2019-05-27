@@ -11,8 +11,7 @@ before_install:
   - conda update -q conda
 
 install:
-  - conda env create
-  - source activate pyomeca
+  - conda env update -n root -f environment.yml
 
 script:
   - pytest -v --color=yes --cov=pyomeca tests
