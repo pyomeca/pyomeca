@@ -40,7 +40,7 @@ emg = (
 ## Features
 
 - Object-oriented architecture where each class is associated with common and specialized functionalities:
-  - **Markers3d**: 3d markers positions
+  - **Markers3d**: 3D markers positions
   - **Analogs3d**: analogs (emg, force or any analog signal)
   - **GeneralizedCoordinate**: generalized coordinate (joint angle)
   - **RotoTrans**: roto-translation matrix
