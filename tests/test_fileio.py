@@ -9,11 +9,7 @@ import pytest
 from pyomeca import Analogs3d, Markers3d
 
 # Path
-if Path.cwd().parts[-1] == 'pyomeca':
-    PROJECT_FOLDER = Path('.')
-else:
-    # if launched from the terminal
-    PROJECT_FOLDER = Path('..')
+PROJECT_FOLDER = Path(__file__).parent / ".."
 DATA_FOLDER = PROJECT_FOLDER / 'tests' / 'data'
 
 MARKERS_CSV = DATA_FOLDER / 'markers.csv'
