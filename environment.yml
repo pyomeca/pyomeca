@@ -13,3 +13,5 @@ dependencies:
 - ezc3d
 - pytest
 - pytest-cov
+- pip:
+  - -e .
