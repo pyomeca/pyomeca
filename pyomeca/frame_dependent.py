@@ -253,7 +253,7 @@ class FrameDependentNpArray(np.ndarray):
 
         # Add time frames
         metadata['get_time_frames'] = np.arange(metadata['get_first_frame'] / metadata['get_rate'],
-                                                (metadata['get_last_frame']+1) / metadata['get_rate'],
+                                                (metadata['get_last_frame'] + 1) / metadata['get_rate'],
                                                 1 / metadata['get_rate'])
 
         return cls._to_vectors(data=data,
@@ -977,4 +977,3 @@ class FrameDependentNpArrayCollection(list):
                 return self[0].shape[2]  # Assume all meshes has the same number of frame, return the first one
         else:
             return -1
-
