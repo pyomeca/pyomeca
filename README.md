@@ -78,7 +78,7 @@ conda install pyomeca -c conda-forge
 
 ### Using pip
 
-First, you need to install python, swig, numpy & pyyaml. 
+First, you need to install python, swig and numpy. 
 Then, follow the instructions to compile [ezc3d](https://github.com/pyomeca/ezc3d).
 Finally, install pyomeca with `pip install git+https://github.com/pyomeca/pyomeca/`.
 
