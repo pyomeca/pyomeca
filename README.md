@@ -12,8 +12,8 @@
 | Continuous integration (Windows) | [![Build status](https://ci.appveyor.com/api/projects/status/c988kaow6dbac3lk?svg=true)](https://ci.appveyor.com/project/romainmartinez/pyomeca)                                                                                                             |
 | Code coverage                    | [![codecov](https://codecov.io/gh/pyomeca/pyomeca/branch/travis/graph/badge.svg)](https://codecov.io/gh/pyomeca/pyomeca)                                                                                                                                     |
 | Code quality                     | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/89e663b2541b4575bcccc37b63dfb462)](https://www.codacy.com/app/romainmartinez/pyomeca?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pyomeca/pyomeca&amp;utm_campaign=Badge_Grade) |
-| Last release                     | [![Anaconda-Server Badge](https://anaconda.org/pyomeca/pyomeca/badges/latest_release_date.svg)](https://anaconda.org/pyomeca/pyomeca)                                                                                                                        |
-| OS support                       | [![Anaconda-Server Badge](https://anaconda.org/pyomeca/pyomeca/badges/platforms.svg)](https://anaconda.org/pyomeca/pyomeca)                                                                                                                                  |
+| Last release                     | [![Anaconda-Server Badge](https://anaconda.org/conda-forge/pyomeca/badges/latest_release_relative_date.svg)](https://anaconda.org/conda-forge/pyomeca)                                                                                                                        |
+| OS support                       | [![Anaconda-Server Badge](https://anaconda.org/conda-forge/pyomeca/badges/installer/conda.svg)](https://anaconda.org/conda-forge/pyomeca)                                                                                                                                 |
 
 ## Pyomeca documentation
 
@@ -73,7 +73,7 @@ First, install [miniconda](https://conda.io/miniconda.html) or [anaconda](https:
 Then type:
 
 ```bash
-conda install pyomeca -c pyomeca -c conda-forge
+conda install pyomeca -c conda-forge
 ```
 
 ### Using pip
