@@ -34,15 +34,9 @@ install:
   - conda update -q conda
   - conda config --set auto_update_conda no
   - conda update -q --all
-  - conda install -q pytest pytest-cov conda-build anaconda-client
   - conda info
   # this is to ensure dependencies
-  - conda install conda-build anaconda-client pytest pytest-cov
-  - curl -L https://github.com/pyomeca/conda_recipes/raw/master/pyomeca/meta.yaml --create-dirs -o ./conda.recipe/meta.yaml
-  - cd conda.recipe
-  - conda build . --no-test -c pyomeca
-  - cd ..
-  - conda install --use-local pyomeca -c pyomeca -c conda-forge
+  - conda env update -n root -f environment.yml
   - conda info -a
 
 
