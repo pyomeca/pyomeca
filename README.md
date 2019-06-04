@@ -72,7 +72,7 @@ emg = (
 First, install [miniconda](https://conda.io/miniconda.html) or [anaconda](https://www.anaconda.com/download/).
 Then type:
 
-```bash
+```
 conda install pyomeca -c conda-forge
 ```
 
