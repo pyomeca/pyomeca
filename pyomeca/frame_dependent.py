@@ -474,6 +474,16 @@ class FrameDependentNpArray(np.ndarray):
             mu = np.expand_dims(mu, axis=-1)
         return self - mu
 
+    def max(self):
+        """
+        Get maximal value over time
+
+        Returns
+        -------
+        float
+        """
+        return super().max(axis=2)
+
     def normalization(self, ref=None, scale=100):
         """
         Normalize a signal against `ref` (x's max if empty) on a scale of `scale`
