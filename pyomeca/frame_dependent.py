@@ -442,7 +442,47 @@ class FrameDependentNpArray(np.ndarray):
         """
         return np.abs(self)
 
-    def rms(self):
+    def square(self):
+        """
+        Get square of values
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        return np.square(self)
+
+    def sqrt(self):
+        """
+        Get square root of values
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        return np.sqrt(self)
+
+    def mean(self, *args, axis=2, **kwargs):
+        """
+        Get mean values (default over time)
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        return super().mean(*args, axis=axis, **kwargs)
+
+    def nanmean(self, *args, axis=2, **kwargs):
+        """
+        Get mean values ignoring NaNs (default over time)
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        return np.nanmean(self, *args, axis=axis, **kwargs)
+
+    def rms(self, axis=2):
         """
         Get root-mean-square values
 
@@ -450,7 +490,7 @@ class FrameDependentNpArray(np.ndarray):
         -------
         FrameDependentNpArray
         """
-        return np.sqrt(np.nanmean(np.square(self), axis=2))
+        return self.square().nanmean().sqrt()
 
     def center(self, mu=None, axis=-1):
         """
@@ -474,15 +514,15 @@ class FrameDependentNpArray(np.ndarray):
             mu = np.expand_dims(mu, axis=-1)
         return self - mu
 
-    def max(self):
+    def max(self, *args, axis=2, **kwargs):
         """
-        Get maximal value over time
+        Get maximal value (default over time)
 
         Returns
         -------
         float
         """
-        return super().max(axis=2)
+        return super().max(*args, axis=axis, **kwargs)
 
     def normalization(self, ref=None, scale=100):
         """
