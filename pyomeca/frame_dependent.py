@@ -38,8 +38,7 @@ class FrameDependentNpArray(np.ndarray):
                 for i1, i2 in enumerate(idx_str):
                     item[1][i2] = idx[i1]
         elif isinstance(item[1], str):  # If single value
-            item = list(item)
-            item[1] = self.get_index(item[1])
+            item = (item[0], self.get_index(item[1]), item[2])
         return item
 
     def __getitem__(self, item):
