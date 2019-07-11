@@ -37,6 +37,13 @@ class FrameDependentNpArray(np.ndarray):
                 raise RuntimeError("Name slicing is only valid on normal sized FrameDependentNpArray")
             item = (slice(None, None, None), self.get_index(item), slice(None, None, None))
         elif len(item) == 3:
+            if isinstance(item[1], int):
+                if isinstance(item[0], int) and isinstance(item[2], int):
+                    pass
+                else:
+                    item = (item[0], [item[1]], item[2])
+            if isinstance(item[1], tuple):
+                item = (item[0], list(item[1]), item[2])
             if isinstance(item[1], list):  # If multiple value
                 idx = self.get_index(item[1])
                 if idx:
@@ -166,7 +173,7 @@ class FrameDependentNpArray(np.ndarray):
         -------
         indexes
         """
-        if isinstance(names, list):
+        if isinstance(names, list) or isinstance(names, tuple):
             # Remove the integer
             names = [n for n in names if isinstance(n, str)]
         else:
