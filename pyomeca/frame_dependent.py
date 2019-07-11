@@ -30,15 +30,22 @@ class FrameDependentNpArray(np.ndarray):
         return obj
 
     def __parse_item__(self, item):
-        if isinstance(item[1], list):  # If multiple value
-            idx = self.get_index(item[1])
-            if idx:
-                # Replace the text by number so it can be sliced
-                idx_str = [i for i, it in enumerate(item[1]) if isinstance(it, str)]
-                for i1, i2 in enumerate(idx_str):
-                    item[1][i2] = idx[i1]
-        elif isinstance(item[1], str):  # If single value
-            item = (item[0], self.get_index(item[1]), item[2])
+        if isinstance(item, int):
+            pass
+        elif isinstance(item[0], str):
+            if len(self.shape) != 3:
+                raise RuntimeError("Name slicing is only valid on normal sized FrameDependentNpArray")
+            item = (slice(None, None, None), self.get_index(item), slice(None, None, None))
+        elif len(item) == 3:
+            if isinstance(item[1], list):  # If multiple value
+                idx = self.get_index(item[1])
+                if idx:
+                    # Replace the text by number so it can be sliced
+                    idx_str = [i for i, it in enumerate(item[1]) if isinstance(it, str)]
+                    for i1, i2 in enumerate(idx_str):
+                        item[1][i2] = idx[i1]
+            elif isinstance(item[1], str):  # If single value
+                item = (item[0], self.get_index(item[1]), item[2])
         return item
 
     def __getitem__(self, item):
