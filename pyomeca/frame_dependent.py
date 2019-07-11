@@ -29,6 +29,38 @@ class FrameDependentNpArray(np.ndarray):
         obj.__array_finalize__(array)
         return obj
 
+    def __parse_item__(self, item):
+        if isinstance(item, int):
+            pass
+        elif isinstance(item[0], str):
+            if len(self.shape) != 3:
+                raise RuntimeError("Name slicing is only valid on 3D FrameDependentNpArray")
+            item = (slice(None, None, None), self.get_index(item), slice(None, None, None))
+        elif len(item) == 3:
+            if isinstance(item[1], int):
+                if isinstance(item[0], int) and isinstance(item[2], int):
+                    pass
+                else:
+                    item = (item[0], [item[1]], item[2])
+            if isinstance(item[1], tuple):
+                item = (item[0], list(item[1]), item[2])
+            if isinstance(item[1], list):  # If multiple value
+                idx = self.get_index(item[1])
+                if idx:
+                    # Replace the text by number so it can be sliced
+                    idx_str = [i for i, it in enumerate(item[1]) if isinstance(it, str)]
+                    for i1, i2 in enumerate(idx_str):
+                        item[1][i2] = idx[i1]
+            elif isinstance(item[1], str):  # If single value
+                item = (item[0], self.get_index(item[1]), item[2])
+        return item
+
+    def __getitem__(self, item):
+        return super(FrameDependentNpArray, self).__getitem__(self.__parse_item__(item))
+
+    def __setitem__(self, key, value):
+        return super(FrameDependentNpArray, self).__setitem__(self.__parse_item__(key), value)
+
     def __array_finalize__(self, obj):
         # Allow slicing
         if obj is None or not isinstance(obj, FrameDependentNpArray):
@@ -128,6 +160,29 @@ class FrameDependentNpArray(np.ndarray):
         frame
         """
         return self[..., f]
+
+    def get_index(self, names):
+        """
+        Return the index associated to label names
+        Parameters
+        ----------
+        names : list(str)
+            names of the label to find the indexes of
+
+        Returns
+        -------
+        indexes
+        """
+        if isinstance(names, list) or isinstance(names, tuple):
+            # Remove the integer
+            names = [n for n in names if isinstance(n, str)]
+        else:
+            names = [names]
+
+        if not names:  # If all integer, return null
+            return []
+        else:
+            return [self.get_labels.index(name) for name in names]
 
     # --- Fileio methods (from_*)
 
