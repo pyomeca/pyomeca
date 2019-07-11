@@ -34,7 +34,7 @@ class FrameDependentNpArray(np.ndarray):
             pass
         elif isinstance(item[0], str):
             if len(self.shape) != 3:
-                raise RuntimeError("Name slicing is only valid on normal sized FrameDependentNpArray")
+                raise RuntimeError("Name slicing is only valid on 3D FrameDependentNpArray")
             item = (slice(None, None, None), self.get_index(item), slice(None, None, None))
         elif len(item) == 3:
             if isinstance(item[1], int):

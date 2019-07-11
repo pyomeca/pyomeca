@@ -1,7 +1,6 @@
 """
 Test for file IO
 """
-import copy
 from pathlib import Path
 
 import numpy as np
@@ -50,10 +49,10 @@ idx = ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [[0, 1, 2], [0, 4, 2]], [[0], [1], [2
 names = (None, None, None, ['CLAV_post', 'PSISl', 'STERr', 'CLAV_post'])
 expected_shape = ((4, 11, 580), (4, 3, 580), (4, 1, 580), (4, 4, 580))
 expected_values = (
-    np.array([[3.18461e+02, -1.69003e+02, 1.05422e+03, 1.00000e+00]]).transpose(),
-    np.array([[3.18461e+02, -1.69003e+02, 1.05422e+03, 1.00000e+00]]).transpose(),
-    np.array([[2.62055670e+02, -2.65073300e+01, 1.04641333e+03, 1.00000000e+00]]).transpose(),
-    np.array([[791.96, 295.588, 682.808, 1.]]).transpose()
+    np.array([3.18461e+02, -1.69003e+02, 1.05422e+03, 1.00000e+00]).reshape(-1, 1),
+    np.array([3.18461e+02, -1.69003e+02, 1.05422e+03, 1.00000e+00]).reshape(-1, 1),
+    np.array([2.62055670e+02, -2.65073300e+01, 1.04641333e+03, 1.00000000e+00]).reshape(-1, 1),
+    np.array([791.96, 295.588, 682.808, 1.]).reshape(-1, 1)
 )
 markers_param = [(idx[i], names[i], expected_shape[i], expected_values[i]) for i in range(len(idx))]
 
@@ -120,7 +119,7 @@ def test_slicing_data():
     analog2_idx = c.get_index(analog2)[0]
 
     # Accessing all values
-    a = copy.copy(c)
+    a = c.copy()
 
     # Normal slicing one value
     c[:, 0, :] = 1.0
