@@ -525,7 +525,7 @@ class FrameDependentNpArray(np.ndarray):
         -------
         FrameDependentNpArray
         """
-        return super().mean(*args, axis=axis, **kwargs)
+        return super().mean(*args, axis=axis, keepdims=True, **kwargs)
 
     def nanmean(self, *args, axis=2, **kwargs):
         """
@@ -535,7 +535,7 @@ class FrameDependentNpArray(np.ndarray):
         -------
         FrameDependentNpArray
         """
-        return np.nanmean(self, *args, axis=axis, **kwargs)
+        return np.nanmean(self, *args, axis=axis, keepdims=True, **kwargs)
 
     def rms(self, axis=2):
         """
