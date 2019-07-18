@@ -438,7 +438,7 @@ class FrameDependentNpArray(np.ndarray):
 
     # --- Plot method
 
-    def plot(self, x=None, ax=None, fmt='k', lw=1, label=None, alpha=1):
+    def plot(self, x=None, ax=None, fmt='', lw=1, label=None, alpha=1):
         """
         Plot a pyomeca vector3d (Markers3d, Analogs3d, etc.)
 
