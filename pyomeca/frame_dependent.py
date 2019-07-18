@@ -438,7 +438,7 @@ class FrameDependentNpArray(np.ndarray):
 
     # --- Plot method
 
-    def plot(self, x=None, ax=None, fmt='k', lw=1, label=None, alpha=1):
+    def plot(self, x=None, ax=None, fmt='', lw=1, label=None, alpha=1):
         """
         Plot a pyomeca vector3d (Markers3d, Analogs3d, etc.)
 
@@ -525,7 +525,7 @@ class FrameDependentNpArray(np.ndarray):
         -------
         FrameDependentNpArray
         """
-        return super().mean(*args, axis=axis, **kwargs)
+        return super().mean(*args, axis=axis, keepdims=True, **kwargs)
 
     def nanmean(self, *args, axis=2, **kwargs):
         """
@@ -535,7 +535,7 @@ class FrameDependentNpArray(np.ndarray):
         -------
         FrameDependentNpArray
         """
-        return np.nanmean(self, *args, axis=axis, **kwargs)
+        return np.nanmean(self, *args, axis=axis, keepdims=True, **kwargs)
 
     def rms(self, axis=2):
         """
