@@ -4,7 +4,8 @@ from pyomeca import FrameDependentNpArray, FrameDependentNpArrayCollection, Mark
 
 
 class RotoTrans(FrameDependentNpArray):
-    def __new__(cls, rt=np.eye(4), angles=(0, 0, 0), angle_sequence="", translations=(0, 0, 0), *args, **kwargs):
+    def __new__(cls, rt=np.eye(4), angles=FrameDependentNpArray(), angle_sequence="",
+                translations=FrameDependentNpArray(), *args, **kwargs):
         """
 
         Parameters
@@ -12,12 +13,12 @@ class RotoTrans(FrameDependentNpArray):
         rt : FrameDependentNpArray (4x4xF)
             Rototranslation matrix sorted in 4x4xF, default is the matrix that don't rotate nor translate the system, is
             ineffective if angles is provided
-        angles : tuple of angle (floats)
+        angles : FrameDependentNpArray
             Euler angles of the rototranslation, angles parameter is ineffective if angles_sequence if not defined, but
             will override rt
         angle_sequence : str
             Euler sequence of angles; valid values are all permutation of 3 axes (e.g. "xyz", "yzx", ...)
-        translations : tuple of translation (floats)
+        translations : FrameDependentNpArray
             First 3 rows of 4th row, translation is ineffective if angles is not provided
         """
 
