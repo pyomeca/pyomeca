@@ -99,7 +99,7 @@ def test_analogs(idx, names, expected_shape, expected_values, extension):
         arr = Analogs3d.from_csv(ANALOGS_CSV, first_row=5, first_column=2, header=3, prefix=':',
                                  idx=idx, names=names)
     elif extension == 'c3d':
-        arr = Analogs3d.from_c3d(MARKERS_ANALOGS_C3D, prefix=':', idx=idx, names=names)
+        arr = Analogs3d.from_c3d(MARKERS_ANALOGS_C3D, prefix='.', idx=idx, names=names)
     else:
         raise ValueError(f'extension should be "csv", "c3d". You provided {extension}')
     # test shape
