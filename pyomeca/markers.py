@@ -157,6 +157,6 @@ class Markers3d(FrameDependentNpArray):
         Norm
         """
         square = self[0:3, :, :] ** 2
-        sum_square = np.sum(square, axis=0)
+        sum_square = np.sum(square, axis=0, keepdims=True)
         norm = np.sqrt(sum_square)
         return norm  # TODO: clean this

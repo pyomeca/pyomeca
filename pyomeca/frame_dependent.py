@@ -24,10 +24,48 @@ class FrameDependentNpArray(np.ndarray):
         if not isinstance(array, np.ndarray):
             raise TypeError('FrameDependentNpArray must be a numpy array')
 
+        # Sanity check on size
+        if len(array.shape) == 1:
+            array = array[:, np.newaxis, np.newaxis]
+        if len(array.shape) == 2:
+            array = array[:, :, np.newaxis]
+
         # metadata
         obj = np.asarray(array).view(cls, *args, **kwargs)
         obj.__array_finalize__(array)
         return obj
+
+    def __parse_item__(self, item):
+        if isinstance(item, int):
+            pass
+        elif isinstance(item[0], str):
+            if len(self.shape) != 3:
+                raise RuntimeError("Name slicing is only valid on 3D FrameDependentNpArray")
+            item = (slice(None, None, None), self.get_index(item), slice(None, None, None))
+        elif len(item) == 3:
+            if isinstance(item[1], int):
+                if isinstance(item[0], int) and isinstance(item[2], int):
+                    pass
+                else:
+                    item = (item[0], [item[1]], item[2])
+            if isinstance(item[1], tuple):
+                item = (item[0], list(item[1]), item[2])
+            if isinstance(item[1], list):  # If multiple value
+                idx = self.get_index(item[1])
+                if idx:
+                    # Replace the text by number so it can be sliced
+                    idx_str = [i for i, it in enumerate(item[1]) if isinstance(it, str)]
+                    for i1, i2 in enumerate(idx_str):
+                        item[1][i2] = idx[i1]
+            elif isinstance(item[1], str):  # If single value
+                item = (item[0], self.get_index(item[1]), item[2])
+        return item
+
+    def __getitem__(self, item):
+        return super(FrameDependentNpArray, self).__getitem__(self.__parse_item__(item))
+
+    def __setitem__(self, key, value):
+        return super(FrameDependentNpArray, self).__setitem__(self.__parse_item__(key), value)
 
     def __array_finalize__(self, obj):
         # Allow slicing
@@ -129,11 +167,34 @@ class FrameDependentNpArray(np.ndarray):
         """
         return self[..., f]
 
+    def get_index(self, names):
+        """
+        Return the index associated to label names
+        Parameters
+        ----------
+        names : list(str)
+            names of the label to find the indexes of
+
+        Returns
+        -------
+        indexes
+        """
+        if isinstance(names, list) or isinstance(names, tuple):
+            # Remove the integer
+            names = [n for n in names if isinstance(n, str)]
+        else:
+            names = [names]
+
+        if not names:  # If all integer, return null
+            return []
+        else:
+            return [self.get_labels.index(name) for name in names]
+
     # --- Fileio methods (from_*)
 
     @classmethod
     def from_csv(cls, filename, first_row=0, time_column=None, first_column=None, last_column_to_remove=None, idx=None,
-                 header=None, names=None, delimiter=',', prefix=None, skiprows=None):
+                 header=None, names=None, delimiter=',', prefix=None, skiprows=None, na_values=None):
         """
         Read csv data and convert to Vectors3d format
         Parameters
@@ -173,7 +234,7 @@ class FrameDependentNpArray(np.ndarray):
             else:
                 skiprows = np.arange(header + 1, first_row)
 
-        data = pd.read_csv(str(filename), sep=delimiter, header=header, skiprows=skiprows)
+        data = pd.read_csv(str(filename), sep=delimiter, header=header, skiprows=skiprows, na_values=na_values)
         if time_column is None:
             time_frames = np.arange(0, data.shape[0])
         else:
@@ -253,7 +314,7 @@ class FrameDependentNpArray(np.ndarray):
 
         # Add time frames
         metadata['get_time_frames'] = np.arange(metadata['get_first_frame'] / metadata['get_rate'],
-                                                metadata['get_last_frame'] / metadata['get_rate'],
+                                                (metadata['get_last_frame'] + 1) / metadata['get_rate'],
                                                 1 / metadata['get_rate'])
 
         return cls._to_vectors(data=data,
@@ -380,7 +441,7 @@ class FrameDependentNpArray(np.ndarray):
 
     # --- Plot method
 
-    def plot(self, x=None, ax=None, fmt='k', lw=1, label=None, alpha=1):
+    def plot(self, x=None, ax=None, fmt='', lw=1, label=None, alpha=1):
         """
         Plot a pyomeca vector3d (Markers3d, Analogs3d, etc.)
 
@@ -439,7 +500,47 @@ class FrameDependentNpArray(np.ndarray):
         """
         return np.abs(self)
 
-    def rms(self):
+    def square(self):
+        """
+        Get square of values
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        return np.square(self)
+
+    def sqrt(self):
+        """
+        Get square root of values
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        return np.sqrt(self)
+
+    def mean(self, *args, axis=2, **kwargs):
+        """
+        Get mean values (default over time)
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        return super().mean(*args, axis=axis, keepdims=True, **kwargs)
+
+    def nanmean(self, *args, axis=2, **kwargs):
+        """
+        Get mean values ignoring NaNs (default over time)
+
+        Returns
+        -------
+        FrameDependentNpArray
+        """
+        return np.nanmean(self, *args, axis=axis, keepdims=True, **kwargs)
+
+    def rms(self, axis=2):
         """
         Get root-mean-square values
 
@@ -447,7 +548,7 @@ class FrameDependentNpArray(np.ndarray):
         -------
         FrameDependentNpArray
         """
-        return np.sqrt(np.nanmean(np.square(self), axis=2))
+        return self.square().nanmean().sqrt()
 
     def center(self, mu=None, axis=-1):
         """
@@ -470,6 +571,16 @@ class FrameDependentNpArray(np.ndarray):
             # add one dimension if the input is a 3d matrix
             mu = np.expand_dims(mu, axis=-1)
         return self - mu
+
+    def max(self, *args, axis=2, **kwargs):
+        """
+        Get maximal value (default over time)
+
+        Returns
+        -------
+        float
+        """
+        return super().max(*args, axis=axis, **kwargs)
 
     def normalization(self, ref=None, scale=100):
         """
@@ -922,8 +1033,8 @@ class FrameDependentNpArray(np.ndarray):
         deriv = self.dynamic_child_cast(np.ndarray(self.shape))
         deriv[:, :, 0:window] = np.nan
         deriv[:, :, -window:] = np.nan
-        deriv[:, :, window:-window] = (self[:, :, 2 * window:] - self[:, :, 0:-2 * window]) / (
-                self.get_time_frames[2 * window:] - self.get_time_frames[0:-2 * window])
+        deriv[:, :, window:-window] = (self[:, :, 2 * window:] - self[:, :, 0:-2 * window]) / \
+                                      (self.get_time_frames[2 * window:] - self.get_time_frames[0:-2 * window])
         return deriv
 
 
