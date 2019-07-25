@@ -124,61 +124,83 @@ class RotoTrans(FrameDependentNpArray):
         return angles
 
     @staticmethod
-    def rt_from_euler_angles(angles=(0, 0, 0), angle_sequence="", translations=(0, 0, 0)):
+    def rt_from_euler_angles(angles=FrameDependentNpArray(), angle_sequence="", translations=FrameDependentNpArray()):
         """
 
         Parameters
         ----------
-        angles : tuple of angle (floats)
+        angles : FrameDependentNpArray
             Euler angles of the rototranslation
         angle_sequence : str
             Euler sequence of angles; valid values are all permutation of axes (e.g. "xyz", "yzx", ...)
-        translations
+        translations : FrameDependentNpArray
+            Translation part of the Rototrans matrix
 
         Returns
         -------
         rt : RotoTrans
             The rototranslation associated to the input parameters
         """
+        # Convert special zyzz angle sequence to zyz
         if angle_sequence == "zyzz":
-            angles = (angles[0], angles[1], angles[2] - angles[0])
+            angles[2, :, :] -= angles[0, :, :]
             angle_sequence = "zyz"
 
-        if len(angles) is not len(angle_sequence):
-            raise IndexError("angles and angles_sequence must be the same size")
+        # If the user asked for a pure rotation
+        if angles.get_num_frames() != 0 and translations.get_num_frames() == 0:
+            translations = FrameDependentNpArray(np.zeros((3, 1, angles.get_num_frames())))
 
-        matrix_to_prod = list()
+        # If the user asked for a pure translation
+        if angles.get_num_frames() == 0 and translations.get_num_frames() != 0:
+            angles = FrameDependentNpArray(np.zeros((0, 1, translations.get_num_frames())))
+
+        # Sanity checks
+        if angles.get_num_frames() != translations.get_num_frames():
+            raise IndexError("angles and translations must have the same number of frames")
+        if angles.shape[0] is not len(angle_sequence):
+            raise IndexError("angles and angles_sequence must be the same size")
+        if angles.get_num_frames() == 0:
+            return RotoTrans()
+
+        rt_out = np.repeat(np.eye(4)[:, :, np.newaxis], angles.get_num_frames(), axis=2)
         try:
             for i in range(len(angles)):
+                a = angles[i, :, :]
+                matrix_to_prod = np.repeat(np.eye(4)[:, :, np.newaxis], angles.get_num_frames(), axis=2)
                 if angle_sequence[i] == "x":
-                    a = angles[i]
-                    matrix_to_prod.append(np.array([[1, 0, 0],
-                                                    [0, np.cos(a), np.sin(a)],
-                                                    [0, -np.sin(a), np.cos(a)]]).T)
+                    # [[1, 0     ,  0     ],
+                    #  [0, cos(a), -sin(a)],
+                    #  [0, sin(a),  cos(a)]]
+                    matrix_to_prod[1, 1, :] = np.cos(a)
+                    matrix_to_prod[1, 2, :] = -np.sin(a)
+                    matrix_to_prod[2, 1, :] = np.sin(a)
+                    matrix_to_prod[2, 2, :] = np.cos(a)
                 elif angle_sequence[i] == "y":
-                    a = angles[i]
-                    matrix_to_prod.append(np.array([[np.cos(a), 0, -np.sin(a)],
-                                                    [0, 1, 0],
-                                                    [np.sin(a), 0, np.cos(a)]]).T)
+                    # [[ cos(a), 0, sin(a)],
+                    #  [ 0     , 1, 0     ],
+                    #  [-sin(a), 0, cos(a)]]
+                    matrix_to_prod[0, 0, :] = np.cos(a)
+                    matrix_to_prod[0, 2, :] = np.sin(a)
+                    matrix_to_prod[2, 0, :] = -np.sin(a)
+                    matrix_to_prod[2, 2, :] = np.cos(a)
                 elif angle_sequence[i] == "z":
-                    a = angles[i]
-                    matrix_to_prod.append(np.array([[np.cos(a), np.sin(a), 0],
-                                                    [-np.sin(a), np.cos(a), 0],
-                                                    [0, 0, 1]]).T)
+                    # [[cos(a), -sin(a), 0],
+                    #  [sin(a),  cos(a), 0],
+                    #  [0     ,  0     , 1]]
+                    matrix_to_prod[0, 0, :] = np.cos(a)
+                    matrix_to_prod[0, 1, :] = -np.sin(a)
+                    matrix_to_prod[1, 0, :] = np.sin(a)
+                    matrix_to_prod[1, 1, :] = np.cos(a)
                 else:
                     raise ValueError("angle_sequence must be a permutation of axes (e.g. ""xyz"", ""yzx"", ...)")
+                rt_out = np.einsum('ijk,jlk->ilk', rt_out, matrix_to_prod)
         except IndexError:
             raise ValueError("angle_sequence must be a permutation of axes (e.g. ""xyz"", ""yzx"", ...)")
 
-        r = np.eye(3)
-        for i in range(len(angles)):
-            r = r.dot(matrix_to_prod[i])
+        # Put the translations
+        rt_out[0:3, 3:4, :] = translations[0:3, :, :]
 
-        rt = np.eye(4)
-        rt[0:3, 0:3] = r
-        rt[0:3, 3] = translations[0:3]
-
-        return RotoTrans(rt)
+        return RotoTrans(rt_out)
 
     @staticmethod
     def define_axes(data_set, idx_axis1, idx_axis2, axes_name, axis_to_recalculate, idx_origin):
@@ -271,7 +293,7 @@ class RotoTrans(FrameDependentNpArray):
         -------
         Rotation part of the RotoTrans
         """
-        return self[0:3, 0:3]
+        return self[0:3, 0:3, :]
 
     def set_rotation(self, r):
         """
@@ -279,9 +301,9 @@ class RotoTrans(FrameDependentNpArray):
         Parameters
         ----------
         r : np.array
-            A 3x3 rotation matrix
+            A 3x3xN rotation matrix
         """
-        self[0:3, 0:3] = r
+        self[0:3, 0:3,:] = r
 
     def translation(self):
         """
@@ -289,7 +311,7 @@ class RotoTrans(FrameDependentNpArray):
         -------
         Translation part of the RotoTrans
         """
-        return self[0:3, 3]
+        return self[0:3, 3, :]
 
     def set_translation(self, t):
         """
@@ -297,7 +319,7 @@ class RotoTrans(FrameDependentNpArray):
         Parameters
         ----------
         t : np.array
-            A 3x1 vector
+            A 3x1xN vector
         """
         self[0:3, 3, :] = t[0:3, :, :].reshape(3, t.shape[2])
 
