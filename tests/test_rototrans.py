@@ -14,6 +14,31 @@ EPSILON = 1e-12
 ANGLES = FrameDependentNpArray(np.random.rand(40, 1, 100))
 
 
+def test_construct_rt():
+    # Test the ways to create an eye matrix
+    eye = RotoTrans()
+    np.testing.assert_equal(eye.get_num_frames(), 1)
+    np.testing.assert_equal(eye[:, :, 0], np.eye(4))
+
+    eye = RotoTrans(RotoTrans.rt_from_euler_angles())
+    np.testing.assert_equal(eye.get_num_frames(), 1)
+    np.testing.assert_equal(eye[:, :, 0], np.eye(4))
+
+    # Test the way to create a rt, but not when providing bot angles and sequence
+    # this is done in test_euler2rot_rot2euler
+    nb_frames = 10
+    random_vector = FrameDependentNpArray(np.random.rand(3, 1, nb_frames))
+
+    random_from_angles = RotoTrans(RotoTrans.rt_from_euler_angles(angles=random_vector, angle_sequence="xyz"))
+    np.testing.assert_equal(random_from_angles.get_num_frames(), nb_frames)
+    np.testing.assert_equal(random_from_angles[0:3, 3, :], np.zeros((3, 1, nb_frames)))  # Translation is 0
+
+    random_from_translations = RotoTrans(RotoTrans.rt_from_euler_angles(translations=random_vector))
+    np.testing.assert_equal(random_from_translations.get_num_frames(), nb_frames)
+    np.testing.assert_equal(random_from_translations[0:3, 0:3, :],
+                            np.repeat(np.eye(3)[:, :, np.newaxis], nb_frames, axis=2))  # rotation is eye3
+
+
 @pytest.mark.parametrize('seq', SEQ)
 @pytest.mark.parametrize('angles', [ANGLES])
 @pytest.mark.parametrize('epsilon', [EPSILON])
