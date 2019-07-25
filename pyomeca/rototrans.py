@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.optimize import least_squares
 
 from pyomeca import FrameDependentNpArray, FrameDependentNpArrayCollection, Markers3d
 
@@ -356,6 +357,35 @@ class RotoTrans(FrameDependentNpArray):
         Inverse of the RotoTrans matrix (which is by definition the transposed matrix)
         """
         return self.transpose()
+
+    def mean(self):
+        """
+
+        Returns
+        -------
+        Performs an optimization to compute the mean over the frames
+        """
+
+        # Chose an arbitrary angle sequence to convert into angle during the optimization
+        seq = "xyz"
+
+        # Compute the element-wise mean for the optimization to target
+        rt_mean = super(RotoTrans, self).mean()
+
+        # Define the objective function
+        x_tp = FrameDependentNpArray(np.ndarray((3, 1, 1)))
+
+        def obj(x):
+            x_tp[0:3, 0, 0] = x.reshape(-1, 1)
+            rt = RotoTrans(angles=x_tp, angle_sequence=seq)
+            return (rt[0:3, 0:3] - rt_mean[0:3, 0:3]).reshape(9,)
+
+        # Initial guess of the optimization
+        x0 = np.squeeze(rt_mean.get_euler_angles(seq))
+
+        # Call the optimizer
+        x_tp[0:3, 0, 0] = least_squares(obj, x0).x.reshape(-1, 1)
+        return RotoTrans(angles=x_tp, angle_sequence=seq, translations=rt_mean[0:3, 3, :])
 
 
 class RotoTransCollection(FrameDependentNpArrayCollection):
