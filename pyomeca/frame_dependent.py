@@ -24,6 +24,12 @@ class FrameDependentNpArray(np.ndarray):
         if not isinstance(array, np.ndarray):
             raise TypeError('FrameDependentNpArray must be a numpy array')
 
+        # Sanity check on size
+        if len(array.shape) == 1:
+            array = array[:, np.newaxis, np.newaxis]
+        if len(array.shape) == 2:
+            array = array[:, :, np.newaxis]
+
         # metadata
         obj = np.asarray(array).view(cls, *args, **kwargs)
         obj.__array_finalize__(array)
