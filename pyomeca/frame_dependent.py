@@ -105,12 +105,16 @@ class FrameDependentNpArray(np.ndarray):
         casted_x.__array_finalize__(self)
         return casted_x
 
+    def __iter__(self):
+        self._current_frame = 0  # Reset the counter
+        return self
+
     def __next__(self):
-        if self._current_frame > self.shape[2]:
-            raise StopIteration
-        else:
+        if self._current_frame < self.shape[2]:
             self._current_frame += 1
-            return self.get_frame(self._current_frame)
+            return self.get_frame(self._current_frame-1)  # -1 since it is incremented before hand
+        else:
+            raise StopIteration
 
     # --- Utils methods
 
