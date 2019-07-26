@@ -330,10 +330,7 @@ class FrameDependentNpArray(np.ndarray):
     @classmethod
     def _to_vectors(cls, data, idx, all_names, target_names, metadata=None):
         if not idx:
-            # find names in column_names
-            idx = []
-            for i, m in enumerate(target_names):
-                idx.append([i for i, s in enumerate(all_names) if m in s][0])
+            idx = [all_names.index(itarget) for itarget in target_names]
 
         data = cls.__new__(cls, data)  # Dynamically cast the data to fit the child
         data = data.get_specific_data(idx)
