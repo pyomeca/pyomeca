@@ -70,7 +70,7 @@ class FrameDependentNpArray(np.ndarray):
     def __array_finalize__(self, obj):
         # Allow slicing
         if obj is None or not isinstance(obj, FrameDependentNpArray):
-            self._current_frame = 0
+            self._current_iter_idx = 0
             self.get_first_frame = []
             self.get_last_frame = []
             self.get_time_frames = None
@@ -80,7 +80,7 @@ class FrameDependentNpArray(np.ndarray):
             self.get_nan_idx = None
             self.misc = {}
         else:
-            self._current_frame = getattr(obj, '_current_frame')
+            self._current_iter_idx = getattr(obj, '_current_iter_idx')
             self.get_first_frame = getattr(obj, 'get_first_frame')
             self.get_last_frame = getattr(obj, 'get_last_frame')
             self.get_time_frames = getattr(obj, 'get_time_frames')
@@ -106,15 +106,26 @@ class FrameDependentNpArray(np.ndarray):
         return casted_x
 
     def __iter__(self):
-        self._current_frame = 0  # Reset the counter
+        self._current_iter_idx = 0  # Reset the counter
         return self
 
     def __next__(self):
-        if self._current_frame < self.shape[2]:
-            self._current_frame += 1
-            return self.get_frame(self._current_frame-1)  # -1 since it is incremented before hand
-        else:
-            raise StopIteration
+        self._current_iter_idx += 1
+        if len(self.shape) == 1:
+            if self._current_iter_idx < self.shape[0]:
+                return self[self._current_iter_idx]
+            else:
+                raise StopIteration
+        elif len(self.shape) == 2:
+            if self._current_iter_idx < self.shape[1]:
+                return self[self._current_iter_idx, :]
+            else:
+                raise StopIteration
+        elif len(self.shape) == 3:
+            if self._current_iter_idx < self.shape[2]:
+                return self.get_frame(self._current_iter_idx-1)  # -1 since it is incremented before hand
+            else:
+                raise StopIteration
 
     # --- Utils methods
 
