@@ -2,8 +2,9 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
-from pyomeca.obj.frame_dependent import FrameDependentNpArray
+from pyomeca import FrameDependentNpArray
 
 
 class Analogs3d(FrameDependentNpArray):
@@ -43,8 +44,7 @@ class Analogs3d(FrameDependentNpArray):
         -------
         The number of analogs
         """
-        s = self.shape
-        return s[1]
+        return self.shape[1]
 
     def get_2d_labels(self):
         """
@@ -72,6 +72,33 @@ class Analogs3d(FrameDependentNpArray):
         s = m.shape
         return Analogs3d(np.reshape(m.T, (1, s[1], s[0]), 'F'))
 
+    @classmethod
+    def from_mot(cls, filename):
+        mot = cls.from_csv(
+            filename, header=8, first_column=1, time_column=0, delimiter="\t"
+        )
+        mot.get_rate = (1 / (mot.get_time_frames[1] - mot.get_time_frames[0])).round()
+        return mot
+
+    @classmethod
+    def from_sto(cls, filename, endheader_range=20, na_values=None):
+        # detect where 'endheader' is
+        meta = pd.read_csv(
+            filename, usecols=[0], nrows=endheader_range, delimiter="\t"
+        ).values.ravel()
+        end_header = np.argwhere((meta == "endheader"))[0][0] + 2
+        if end_header:
+            sto = cls.from_csv(
+                filename, header=end_header, first_column=1, time_column=0, delimiter="\t", na_values=na_values
+            )
+            sto.get_rate = (1 / (sto.get_time_frames[1] - sto.get_time_frames[0])).round()
+        else:
+            raise ValueError(
+                f"""endheader" not detected in the first {endheader_range} rows.
+            Try increasing the `endheader_range` parameter'"""
+            )
+        return sto
+
     # --- Fileio methods (to_*)
 
     def to_2d(self):
@@ -98,17 +125,19 @@ class Analogs3d(FrameDependentNpArray):
         -------
         metadata, channel_names, data
         """
-        channel_names = [i.c_str().split(prefix)[-1] for i in c3d.parameters().group('ANALOG')
-            .parameter('LABELS').valuesAsString()]
+        channel_names = [i.split(prefix)[-1] for i in
+                         c3d.parameters().group('ANALOG').parameter('LABELS').valuesAsString()]
         metadata = {
             'get_num_analogs': c3d.header().nbAnalogs(),
             'get_num_frames': c3d.header().nbAnalogsMeasurement(),
             'get_first_frame': c3d.header().firstFrame() * c3d.header().nbAnalogByFrame(),
             'get_last_frame': c3d.header().lastFrame() * c3d.header().nbAnalogByFrame(),
+            'get_time_frames': None,
             'get_rate': c3d.header().frameRate() * c3d.header().nbAnalogByFrame(),
             'get_unit': []
         }
         data = c3d.get_analogs()
+
         return data, channel_names, metadata
 
     def rectify(self):
@@ -297,3 +326,4 @@ class MVC:
             else:
                 mva.append(None)
         return mva
+

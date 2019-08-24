@@ -1,7 +1,7 @@
 import ezc3d
 import numpy as np
 
-from pyomeca.obj.frame_dependent import FrameDependentNpArray
+from pyomeca import FrameDependentNpArray
 
 
 class Markers3d(FrameDependentNpArray):
@@ -45,8 +45,7 @@ class Markers3d(FrameDependentNpArray):
         -------
         The number of markers
         """
-        s = self.shape
-        return s[1]
+        return self.shape[1]
 
     def get_2d_labels(self):
         """
@@ -76,6 +75,11 @@ class Markers3d(FrameDependentNpArray):
             raise IndexError("Number of columns must be divisible by 3")
         return Markers3d(np.reshape(m.T, (3, int(s[1] / 3), s[0]), 'F'))
 
+    @classmethod
+    def from_trc(cls, filename):
+        return cls.from_csv(filename, header=3, first_row=6, first_column=2, time_column=1, delimiter='\t',
+                            last_column_to_remove=1)
+
     # --- Fileio methods (to_*)
 
     def to_2d(self):
@@ -103,17 +107,19 @@ class Markers3d(FrameDependentNpArray):
         -------
         metadata, channel_names, data
         """
-        channel_names = [i.c_str().split(prefix)[-1] for i in c3d.parameters().group('POINT')
-                                                                 .parameter('LABELS').valuesAsString()]
+        channel_names = [i.split(prefix)[-1] for i in
+                         c3d.parameters().group('POINT').parameter('LABELS').valuesAsString()]
         metadata = {
             'get_num_markers': c3d.header().nb3dPoints(),
             'get_num_frames': c3d.header().nbFrames(),
             'get_first_frame': c3d.header().firstFrame(),
             'get_last_frame': c3d.header().lastFrame(),
+            'get_time_frames': None,
             'get_rate': c3d.header().frameRate(),
-            'get_unit': c3d.parameters().group('POINT').parameter('UNITS').valuesAsString()[0].c_str()
+            'get_unit': c3d.parameters().group('POINT').parameter('UNITS').valuesAsString()[0]
         }
         data = c3d.get_points()
+
         return data, channel_names, metadata
 
     # --- Linear algebra methods
@@ -151,6 +157,6 @@ class Markers3d(FrameDependentNpArray):
         Norm
         """
         square = self[0:3, :, :] ** 2
-        sum_square = np.sum(square, axis=0)
+        sum_square = np.sum(square, axis=0, keepdims=True)
         norm = np.sqrt(sum_square)
-        return norm
+        return norm  # TODO: clean this
