@@ -299,13 +299,7 @@ class RotoTrans(FrameDependentNpArray):
                 y = np.cross(z, x)
             else:
                 raise ValueError(
-                    "Axes names should be 2 values of "
-                    "x"
-                    ", "
-                    "y"
-                    " and "
-                    "z"
-                    " permutations)"
+                    "Axes names should be 2 values of `x`, `y` and `z` permutations"
                 )
 
         elif axes_name[0] == "y":
