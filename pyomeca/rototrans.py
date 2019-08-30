@@ -300,9 +300,7 @@ class RotoTrans(FrameDependentNpArray):
                 z = axis2
                 y = np.cross(z, x)
             else:
-                raise ValueError(
-                    error_msg
-                )
+                raise ValueError(error_msg)
 
         elif axes_name[0] == "y":
             y = axis1
@@ -310,13 +308,9 @@ class RotoTrans(FrameDependentNpArray):
                 z = axis2
                 x = np.cross(y, z)
             else:
-                raise ValueError(
-                    error_msg
-                )
+                raise ValueError(error_msg)
         else:
-            raise ValueError(
-                error_msg
-            )
+            raise ValueError(error_msg)
 
         # Normalize each vector
         x = x / np.matrix(np.linalg.norm(x, axis=1)).T
