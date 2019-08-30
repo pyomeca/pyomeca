@@ -17,7 +17,7 @@ class GeneralizedCoordinate(FrameDependentNpArray):
             q = np.reshape(q, (q.shape[0], 1, q.shape[1]))
 
         if q.shape[1] != 1:
-            raise IndexError('Generalized coordinates can''t have multiple columns')
+            raise IndexError("Generalized coordinates can" "t have multiple columns")
 
         return super(GeneralizedCoordinate, cls).__new__(cls, array=q, *args, **kwargs)
 

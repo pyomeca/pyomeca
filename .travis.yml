@@ -14,6 +14,7 @@ install:
   - conda env update -n root -f environment.yml
 
 script:
+  - black --check pyomeca/
   - pytest -v --color=yes --cov=pyomeca tests
 
 after_success:

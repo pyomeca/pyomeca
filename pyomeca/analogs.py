@@ -23,10 +23,12 @@ class Analogs3d(FrameDependentNpArray):
         if data.ndim == 3:
             s = data.shape
             if s[0] != 1:
-                raise IndexError('Analogs3d must have a length of 1 on the first dimension')
+                raise IndexError(
+                    "Analogs3d must have a length of 1 on the first dimension"
+                )
             analog = data
         else:
-            raise TypeError('Data must be 2d or 3d matrix')
+            raise TypeError("Data must be 2d or 3d matrix")
 
         return super(Analogs3d, cls).__new__(cls, array=analog, *args, **kwargs)
 
@@ -70,7 +72,7 @@ class Analogs3d(FrameDependentNpArray):
         Vectors3d of data set
         """
         s = m.shape
-        return Analogs3d(np.reshape(m.T, (1, s[1], s[0]), 'F'))
+        return Analogs3d(np.reshape(m.T, (1, s[1], s[0]), "F"))
 
     @classmethod
     def from_mot(cls, filename):
@@ -89,9 +91,16 @@ class Analogs3d(FrameDependentNpArray):
         end_header = np.argwhere((meta == "endheader"))[0][0] + 2
         if end_header:
             sto = cls.from_csv(
-                filename, header=end_header, first_column=1, time_column=0, delimiter="\t", na_values=na_values
+                filename,
+                header=end_header,
+                first_column=1,
+                time_column=0,
+                delimiter="\t",
+                na_values=na_values,
             )
-            sto.get_rate = (1 / (sto.get_time_frames[1] - sto.get_time_frames[0])).round()
+            sto.get_rate = (
+                1 / (sto.get_time_frames[1] - sto.get_time_frames[0])
+            ).round()
         else:
             raise ValueError(
                 f"""endheader" not detected in the first {endheader_range} rows.
@@ -125,16 +134,22 @@ class Analogs3d(FrameDependentNpArray):
         -------
         metadata, channel_names, data
         """
-        channel_names = [i.split(prefix)[-1] for i in
-                         c3d.parameters().group('ANALOG').parameter('LABELS').valuesAsString()]
+        channel_names = [
+            i.split(prefix)[-1]
+            for i in c3d.parameters()
+            .group("ANALOG")
+            .parameter("LABELS")
+            .valuesAsString()
+        ]
         metadata = {
-            'get_num_analogs': c3d.header().nbAnalogs(),
-            'get_num_frames': c3d.header().nbAnalogsMeasurement(),
-            'get_first_frame': c3d.header().firstFrame() * c3d.header().nbAnalogByFrame(),
-            'get_last_frame': c3d.header().lastFrame() * c3d.header().nbAnalogByFrame(),
-            'get_time_frames': None,
-            'get_rate': c3d.header().frameRate() * c3d.header().nbAnalogByFrame(),
-            'get_unit': []
+            "get_num_analogs": c3d.header().nbAnalogs(),
+            "get_num_frames": c3d.header().nbAnalogsMeasurement(),
+            "get_first_frame": c3d.header().firstFrame()
+            * c3d.header().nbAnalogByFrame(),
+            "get_last_frame": c3d.header().lastFrame() * c3d.header().nbAnalogByFrame(),
+            "get_time_frames": None,
+            "get_rate": c3d.header().frameRate() * c3d.header().nbAnalogByFrame(),
+            "get_unit": [],
         }
         data = c3d.get_analogs()
 
@@ -183,14 +198,23 @@ class MVC:
         Order of the filter
     """
 
-    def __init__(self, directories, channels, plot_trials=False, plot_mva=False, outlier=3,
-                 band_pass_cutoff=None, low_pass_cutoff=None, order=4):
+    def __init__(
+        self,
+        directories,
+        channels,
+        plot_trials=False,
+        plot_mva=False,
+        outlier=3,
+        band_pass_cutoff=None,
+        low_pass_cutoff=None,
+        order=4,
+    ):
         self.trials_path = []
         for idir in directories:
             idir = Path(idir)
             if not idir.is_dir():
-                raise ValueError(f'{str(idir)} does not exist.')
-            for ifile in idir.glob('*.c3d'):
+                raise ValueError(f"{str(idir)} does not exist.")
+            for ifile in idir.glob("*.c3d"):
                 self.trials_path.append(ifile)
         # make a nested list if not already nested
         if not any(isinstance(i, list) for i in channels):
@@ -220,7 +244,9 @@ class MVC:
                     iassign_without_nans = iassign
 
                 try:
-                    emg = Analogs3d.from_c3d(f'{itrial}', prefix=':', names=iassign_without_nans)
+                    emg = Analogs3d.from_c3d(
+                        f"{itrial}", prefix=":", names=iassign_without_nans
+                    )
                     if nan_idx:
                         # if there is any empty assignment, fill the dimension with nan
                         emg.get_nan_idx = np.array(nan_idx)
@@ -228,15 +254,15 @@ class MVC:
                             emg = np.insert(emg, i, np.nan, axis=1)
                         # check if nan dimension are correctly inserted
                         n = np.isnan(emg).sum(axis=2).ravel()
-                        if not np.array_equal(n.argsort()[-len(nan_idx):], nan_idx):
-                            raise ValueError('NaN dimensions misplaced')
-                        print(f'\t{itrial.stem} (NaNs: {nan_idx})')
+                        if not np.array_equal(n.argsort()[-len(nan_idx) :], nan_idx):
+                            raise ValueError("NaN dimensions misplaced")
+                        print(f"\t{itrial.stem} (NaNs: {nan_idx})")
                     else:
-                        print(f'\t{itrial.stem}')
+                        print(f"\t{itrial.stem}")
 
                     # check if dimensions are ok
                     if not emg.shape[1] == len(iassign):
-                        raise ValueError('Wrong dimensions')
+                        raise ValueError("Wrong dimensions")
                     break
                 except IndexError:
                     emg = []
@@ -244,51 +270,68 @@ class MVC:
             if np.any(emg):
                 trials.append(emg)
             else:
-                raise ValueError(f'no assignments were found for the trial {itrial.stem}')
+                raise ValueError(
+                    f"no assignments were found for the trial {itrial.stem}"
+                )
 
         return trials
 
     def process_trials(self):
         """Process trials from a list and concatenate them in a single dict"""
-        print('Processing trials...')
-        concatenated = {imuscle: np.array([]) for imuscle in range(self.trials[0].shape[1])}
+        print("Processing trials...")
+        concatenated = {
+            imuscle: np.array([]) for imuscle in range(self.trials[0].shape[1])
+        }
 
         for i, itrial in enumerate(self.trials):
             # emg processing
-            itrial = itrial \
-                .band_pass(freq=itrial.get_rate, order=self.order,
-                           cutoff=self.band_pass_cutoff) \
-                .center() \
-                .rectify() \
-                .low_pass(freq=itrial.get_rate, order=self.order,
-                          cutoff=self.low_pass_cutoff)
+            itrial = (
+                itrial.band_pass(
+                    freq=itrial.get_rate, order=self.order, cutoff=self.band_pass_cutoff
+                )
+                .center()
+                .rectify()
+                .low_pass(
+                    freq=itrial.get_rate, order=self.order, cutoff=self.low_pass_cutoff
+                )
+            )
 
             for imuscle in range(itrial.shape[1]):
-                if self.channels[0][imuscle] == '':
+                if self.channels[0][imuscle] == "":
                     concatenated[imuscle] = np.append(concatenated[imuscle], np.nan)
                 else:
                     x = itrial[0, imuscle, :]
                     # onset detection
                     idx = x.detect_onset(
-                        threshold=np.nanmean(x[..., :int(itrial.get_rate)]),
+                        threshold=np.nanmean(x[..., : int(itrial.get_rate)]),
                         above=int(itrial.get_rate) / 2,
                         below=3,
-                        threshold2=np.nanmean(x[..., :int(itrial.get_rate)]) * 2,
-                        above2=5
+                        threshold2=np.nanmean(x[..., : int(itrial.get_rate)]) * 2,
+                        above2=5,
                     )
 
                     # outliers detection
-                    x_without_outliers = x.detect_outliers(onset_idx=idx, threshold=self.outlier)
+                    x_without_outliers = x.detect_outliers(
+                        onset_idx=idx, threshold=self.outlier
+                    )
 
                     # append the current trial to a dictionary concatenating all trials for each of the muscles
-                    concatenated[imuscle] = np.append(concatenated[imuscle], np.ma.compressed(x_without_outliers))
+                    concatenated[imuscle] = np.append(
+                        concatenated[imuscle], np.ma.compressed(x_without_outliers)
+                    )
 
                     if self.plot_trials:
-                        plt.plot(x_without_outliers, 'k-')
+                        plt.plot(x_without_outliers, "k-")
                         if x_without_outliers.mask.any():
-                            plt.plot(np.ma.masked_array(x, ~x_without_outliers.mask), 'r-', label='outlier')
+                            plt.plot(
+                                np.ma.masked_array(x, ~x_without_outliers.mask),
+                                "r-",
+                                label="outlier",
+                            )
                             plt.legend()
-                        plt.title(f'{self.channels[0][imuscle]} | {self.trials_path[i].stem}')
+                        plt.title(
+                            f"{self.channels[0][imuscle]} | {self.trials_path[i].stem}"
+                        )
                         plt.show()
         return concatenated
 
@@ -318,12 +361,11 @@ class MVC:
                 mva.append(mu)
 
                 if self.plot_mva:
-                    plt.plot(sorted_values[-seconds:], 'b-', label='sorted activation')
-                    plt.axhline(y=mu, c='k', ls='--', label='MVA')
-                    plt.title(f'Last {time} seconds | {self.channels[0][imuscle]}')
+                    plt.plot(sorted_values[-seconds:], "b-", label="sorted activation")
+                    plt.axhline(y=mu, c="k", ls="--", label="MVA")
+                    plt.title(f"Last {time} seconds | {self.channels[0][imuscle]}")
                     plt.legend()
                     plt.show()
             else:
                 mva.append(None)
         return mva
-

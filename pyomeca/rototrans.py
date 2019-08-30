@@ -5,8 +5,15 @@ from pyomeca import FrameDependentNpArray, FrameDependentNpArrayCollection, Mark
 
 
 class RotoTrans(FrameDependentNpArray):
-    def __new__(cls, rt=np.eye(4), angles=FrameDependentNpArray(), angle_sequence="",
-                translations=FrameDependentNpArray(), *args, **kwargs):
+    def __new__(
+        cls,
+        rt=np.eye(4),
+        angles=FrameDependentNpArray(),
+        angle_sequence="",
+        translations=FrameDependentNpArray(),
+        *args,
+        **kwargs
+    ):
         """
 
         Parameters
@@ -25,12 +32,14 @@ class RotoTrans(FrameDependentNpArray):
 
         # Determine if we construct RotoTrans from rt or angles/translations
         if angle_sequence:
-            rt = cls.rt_from_euler_angles(angles=angles, angle_sequence=angle_sequence, translations=translations)
+            rt = cls.rt_from_euler_angles(
+                angles=angles, angle_sequence=angle_sequence, translations=translations
+            )
 
         else:
             s = rt.shape
             if s[0] != 4 or s[1] != 4:
-                raise IndexError('RotoTrans must by a 4x4xF matrix')
+                raise IndexError("RotoTrans must by a 4x4xF matrix")
             # Make sure last line reads [0, 0, 0, 1]
             if len(s) == 2:
                 rt[3, :] = np.array([0, 0, 0, 1])
@@ -62,7 +71,9 @@ class RotoTrans(FrameDependentNpArray):
             Euler angles associated with RotoTrans
         """
         if angle_sequence != "zyzz":
-            angles = FrameDependentNpArray(np.ndarray((len(angle_sequence), 1, self.get_num_frames())))
+            angles = FrameDependentNpArray(
+                np.ndarray((len(angle_sequence), 1, self.get_num_frames()))
+            )
         else:
             angles = FrameDependentNpArray(np.ndarray((3, 1, self.get_num_frames())))
 
@@ -126,7 +137,11 @@ class RotoTrans(FrameDependentNpArray):
         return angles
 
     @staticmethod
-    def rt_from_euler_angles(angles=FrameDependentNpArray(), angle_sequence="", translations=FrameDependentNpArray()):
+    def rt_from_euler_angles(
+        angles=FrameDependentNpArray(),
+        angle_sequence="",
+        translations=FrameDependentNpArray(),
+    ):
         """
 
         Parameters
@@ -150,15 +165,21 @@ class RotoTrans(FrameDependentNpArray):
 
         # If the user asked for a pure rotation
         if angles.get_num_frames() != 0 and translations.get_num_frames() == 0:
-            translations = FrameDependentNpArray(np.zeros((3, 1, angles.get_num_frames())))
+            translations = FrameDependentNpArray(
+                np.zeros((3, 1, angles.get_num_frames()))
+            )
 
         # If the user asked for a pure translation
         if angles.get_num_frames() == 0 and translations.get_num_frames() != 0:
-            angles = FrameDependentNpArray(np.zeros((0, 1, translations.get_num_frames())))
+            angles = FrameDependentNpArray(
+                np.zeros((0, 1, translations.get_num_frames()))
+            )
 
         # Sanity checks
         if angles.get_num_frames() != translations.get_num_frames():
-            raise IndexError("angles and translations must have the same number of frames")
+            raise IndexError(
+                "angles and translations must have the same number of frames"
+            )
         if angles.shape[0] is not len(angle_sequence):
             raise IndexError("angles and angles_sequence must be the same size")
         if angles.get_num_frames() == 0:
@@ -168,7 +189,9 @@ class RotoTrans(FrameDependentNpArray):
         try:
             for i in range(len(angles)):
                 a = angles[i, :, :]
-                matrix_to_prod = np.repeat(np.eye(4)[:, :, np.newaxis], angles.get_num_frames(), axis=2)
+                matrix_to_prod = np.repeat(
+                    np.eye(4)[:, :, np.newaxis], angles.get_num_frames(), axis=2
+                )
                 if angle_sequence[i] == "x":
                     # [[1, 0     ,  0     ],
                     #  [0, cos(a), -sin(a)],
@@ -194,10 +217,22 @@ class RotoTrans(FrameDependentNpArray):
                     matrix_to_prod[1, 0, :] = np.sin(a)
                     matrix_to_prod[1, 1, :] = np.cos(a)
                 else:
-                    raise ValueError("angle_sequence must be a permutation of axes (e.g. ""xyz"", ""yzx"", ...)")
-                rt_out = np.einsum('ijk,jlk->ilk', rt_out, matrix_to_prod)
+                    raise ValueError(
+                        "angle_sequence must be a permutation of axes (e.g. "
+                        "xyz"
+                        ", "
+                        "yzx"
+                        ", ...)"
+                    )
+                rt_out = np.einsum("ijk,jlk->ilk", rt_out, matrix_to_prod)
         except IndexError:
-            raise ValueError("angle_sequence must be a permutation of axes (e.g. ""xyz"", ""yzx"", ...)")
+            raise ValueError(
+                "angle_sequence must be a permutation of axes (e.g. "
+                "xyz"
+                ", "
+                "yzx"
+                ", ...)"
+            )
 
         # Put the translations
         rt_out[0:3, 3:4, :] = translations[0:3, :, :]
@@ -205,7 +240,9 @@ class RotoTrans(FrameDependentNpArray):
         return RotoTrans(rt_out)
 
     @staticmethod
-    def define_axes(data_set, idx_axis1, idx_axis2, axes_name, axis_to_recalculate, idx_origin):
+    def define_axes(
+        data_set, idx_axis1, idx_axis2, axes_name, axis_to_recalculate, idx_origin
+    ):
         """
         This function creates system of axes from axis1 and axis2
         Parameters
@@ -231,15 +268,21 @@ class RotoTrans(FrameDependentNpArray):
         idx_axis1 = np.matrix(idx_axis1)
         idx_axis2 = np.matrix(idx_axis2)
 
-        axis1 = data_set.get_specific_data(idx_axis1[:, 1]) - data_set.get_specific_data(idx_axis1[:, 0])
-        axis2 = data_set.get_specific_data(idx_axis2[:, 1]) - data_set.get_specific_data(idx_axis2[:, 0])
-        origin = data_set.get_specific_data(np.matrix(idx_origin).reshape((len(idx_origin), 1)))
+        axis1 = data_set.get_specific_data(
+            idx_axis1[:, 1]
+        ) - data_set.get_specific_data(idx_axis1[:, 0])
+        axis2 = data_set.get_specific_data(
+            idx_axis2[:, 1]
+        ) - data_set.get_specific_data(idx_axis2[:, 0])
+        origin = data_set.get_specific_data(
+            np.matrix(idx_origin).reshape((len(idx_origin), 1))
+        )
 
         axis1 = axis1[0:3, :, :].reshape(3, axis1.shape[2]).T
         axis2 = axis2[0:3, :, :].reshape(3, axis2.shape[2]).T
 
         # If we inverse axes_names, inverse axes as well
-        axes_name_tp = ''.join(sorted(axes_name))
+        axes_name_tp = "".join(sorted(axes_name))
         if axes_name != axes_name_tp:
             axis1_copy = axis1
             axis1 = axis2
@@ -255,7 +298,15 @@ class RotoTrans(FrameDependentNpArray):
                 z = axis2
                 y = np.cross(z, x)
             else:
-                raise ValueError("Axes names should be 2 values of ""x"", ""y"" and ""z"" permutations)")
+                raise ValueError(
+                    "Axes names should be 2 values of "
+                    "x"
+                    ", "
+                    "y"
+                    " and "
+                    "z"
+                    " permutations)"
+                )
 
         elif axes_name[0] == "y":
             y = axis1
@@ -263,9 +314,25 @@ class RotoTrans(FrameDependentNpArray):
                 z = axis2
                 x = np.cross(y, z)
             else:
-                raise ValueError("Axes names should be 2 values of ""x"", ""y"" and ""z"" permutations)")
+                raise ValueError(
+                    "Axes names should be 2 values of "
+                    "x"
+                    ", "
+                    "y"
+                    " and "
+                    "z"
+                    " permutations)"
+                )
         else:
-            raise ValueError("Axes names should be 2 values of ""x"", ""y"" and ""z"" permutations)")
+            raise ValueError(
+                "Axes names should be 2 values of "
+                "x"
+                ", "
+                "y"
+                " and "
+                "z"
+                " permutations)"
+            )
 
         # Normalize each vector
         x = x / np.matrix(np.linalg.norm(x, axis=1)).T
@@ -280,7 +347,7 @@ class RotoTrans(FrameDependentNpArray):
         elif axis_to_recalculate == "z":
             z = np.cross(x, y)
         else:
-            raise ValueError("Axis to recalculate must be ""x"", ""y"" or ""z""")
+            raise ValueError("Axis to recalculate must be " "x" ", " "y" " or " "z" "")
 
         rt = RotoTrans(rt=np.zeros((4, 4, data_set.shape[2])))
         rt[0:3, 0, :] = x.T
@@ -305,7 +372,7 @@ class RotoTrans(FrameDependentNpArray):
         r : np.array
             A 3x3xN rotation matrix
         """
-        self[0:3, 0:3,:] = r
+        self[0:3, 0:3, :] = r
 
     def translation(self):
         """
@@ -378,14 +445,16 @@ class RotoTrans(FrameDependentNpArray):
         def obj(x):
             x_tp[0:3, 0, 0] = x.reshape(-1, 1)
             rt = RotoTrans(angles=x_tp, angle_sequence=seq)
-            return (rt[0:3, 0:3] - rt_mean[0:3, 0:3]).reshape(9,)
+            return (rt[0:3, 0:3] - rt_mean[0:3, 0:3]).reshape(9)
 
         # Initial guess of the optimization
         x0 = np.squeeze(rt_mean.get_euler_angles(seq))
 
         # Call the optimizer
         x_tp[0:3, 0, 0] = least_squares(obj, x0).x.reshape(-1, 1)
-        return RotoTrans(angles=x_tp, angle_sequence=seq, translations=rt_mean[0:3, 3, :])
+        return RotoTrans(
+            angles=x_tp, angle_sequence=seq, translations=rt_mean[0:3, 3, :]
+        )
 
 
 class RotoTransCollection(FrameDependentNpArrayCollection):
