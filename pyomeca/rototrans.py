@@ -289,6 +289,8 @@ class RotoTrans(FrameDependentNpArray):
             axis2 = axis1_copy
             axes_name = axes_name_tp
 
+        error_msg = "Axes names should be 2 values of `x`, `y` and `z` permutations"
+
         if axes_name[0] == "x":
             x = axis1
             if axes_name[1] == "y":
@@ -299,7 +301,7 @@ class RotoTrans(FrameDependentNpArray):
                 y = np.cross(z, x)
             else:
                 raise ValueError(
-                    "Axes names should be 2 values of `x`, `y` and `z` permutations"
+                    error_msg
                 )
 
         elif axes_name[0] == "y":
@@ -309,23 +311,11 @@ class RotoTrans(FrameDependentNpArray):
                 x = np.cross(y, z)
             else:
                 raise ValueError(
-                    "Axes names should be 2 values of "
-                    "x"
-                    ", "
-                    "y"
-                    " and "
-                    "z"
-                    " permutations)"
+                    error_msg
                 )
         else:
             raise ValueError(
-                "Axes names should be 2 values of "
-                "x"
-                ", "
-                "y"
-                " and "
-                "z"
-                " permutations)"
+                error_msg
             )
 
         # Normalize each vector
@@ -341,7 +331,7 @@ class RotoTrans(FrameDependentNpArray):
         elif axis_to_recalculate == "z":
             z = np.cross(x, y)
         else:
-            raise ValueError("Axis to recalculate must be " "x" ", " "y" " or " "z" "")
+            raise ValueError("Axis to recalculate must be `x`, `y` or `z`")
 
         rt = RotoTrans(rt=np.zeros((4, 4, data_set.shape[2])))
         rt[0:3, 0, :] = x.T
