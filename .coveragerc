@@ -1,6 +1,4 @@
 [report]
 omit =
     setup.py
-    pyomeca/_version.py
-    versioneer.py
     tests/*
