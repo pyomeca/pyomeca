@@ -14,7 +14,7 @@ DATA_FOLDER = Path('..') / 'tests' / 'data'
 MARKERS_ANALOGS_C3D = DATA_FOLDER / 'markers_analogs.c3d'
 
 # read an emg from a c3d file
-a = Analogs3d.from_c3d(MARKERS_ANALOGS_C3D, names=['EMG1'])
+a = Analogs3d.from_c3d(MARKERS_ANALOGS_C3D, names=['Delt_ant.EMG1'])
 a.plot()
 plt.show()
 
