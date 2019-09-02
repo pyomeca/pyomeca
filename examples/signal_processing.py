@@ -238,7 +238,7 @@ two_norm = np.hstack((norm, norm / 4))
 two_norm = Analogs3d(two_norm.reshape(1, 1, -1))
 
 # threshold = mean during the first second
-idx = two_norm[0, 0, :].detect_onset(
+idx = two_norm.detect_onset(
     threshold=np.nanmean(two_norm[..., :int(b.get_rate)]),
     above=int(b.get_rate) / 2,
     below=3,

@@ -978,10 +978,12 @@ class FrameDependentNpArray(np.ndarray):
         idx : np.ndarray
             onset events
         """
-        if self.ndim > 1:
-            raise ValueError(f'detect_onset works only for vector (ndim < 2). Your data have {self.ndim} dimensions.')
-        self[np.isnan(self)] = -np.inf
-        idx = np.argwhere(self >= threshold).ravel()
+        if self.ndim != 3:
+            raise ValueError(f'detect_onset works only for vector (ndim == 3). Your data have {self.ndim} dimensions.')
+        if self.shape[0] != 1 or self.shape[1] != 1:
+            raise ValueError(f'detect_onset works on a single time-dependent value for instance: self[i, j, :].')
+        self[0, 0, np.squeeze(np.isnan(self))] = -np.inf
+        idx = np.argwhere(np.squeeze(self >= threshold)).ravel()
 
         if np.any(idx):
             # initial & final indexes of almost continuous data
@@ -996,7 +998,7 @@ class FrameDependentNpArray(np.ndarray):
                 # minimum amplitude of above2 values in x
                 ic = np.ones(idx.shape[0], dtype=bool)
                 for irow in range(idx.shape[0]):
-                    if np.count_nonzero(self[idx[irow, 0]: idx[irow, 1] + 1] >= threshold2) < above2:
+                    if np.count_nonzero(self[0, 0, idx[irow, 0]: idx[irow, 1] + 1] >= threshold2) < above2:
                         ic[irow] = False
                 idx = idx[ic, :]
 
