@@ -14,7 +14,7 @@ DATA_FOLDER = Path('..') / 'tests' / 'data'
 MARKERS_ANALOGS_C3D = DATA_FOLDER / 'markers_analogs.c3d'
 
 # read an emg from a c3d file
-a = Analogs3d.from_c3d(MARKERS_ANALOGS_C3D, names=['EMG1'])
+a = Analogs3d.from_c3d(MARKERS_ANALOGS_C3D, names=['Delt_ant.EMG1'])
 a.plot()
 plt.show()
 
@@ -238,7 +238,7 @@ two_norm = np.hstack((norm, norm / 4))
 two_norm = Analogs3d(two_norm.reshape(1, 1, -1))
 
 # threshold = mean during the first second
-idx = two_norm[0, 0, :].detect_onset(
+idx = two_norm.detect_onset(
     threshold=np.nanmean(two_norm[..., :int(b.get_rate)]),
     above=int(b.get_rate) / 2,
     below=3,
