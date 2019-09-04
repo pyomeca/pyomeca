@@ -1,4 +1,3 @@
-import ezc3d
 import numpy as np
 
 from pyomeca import FrameDependentNpArray
