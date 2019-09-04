@@ -7,7 +7,24 @@ import pytest
 from pyomeca import RotoTrans, FrameDependentNpArray
 
 # Define all the possible angle_sequence to tests
-SEQ = ["x", "y", "z", "xy", "xz", "yx", "yz", "zx", "zy", "xyz", "xzy", "yxz", "yzx", "zxy", "zyx", "zyzz"]
+SEQ = [
+    "x",
+    "y",
+    "z",
+    "xy",
+    "xz",
+    "yx",
+    "yz",
+    "zx",
+    "zy",
+    "xyz",
+    "xzy",
+    "yxz",
+    "yzx",
+    "zxy",
+    "zyx",
+    "zyzz",
+]
 # If the difference between the initial and the final angles are less than epsilon, tests is success
 EPSILON = 1e-12
 # Define some random data to tests
@@ -29,24 +46,32 @@ def test_construct_rt():
     nb_frames = 10
     random_vector = FrameDependentNpArray(np.random.rand(3, 1, nb_frames))
 
-    random_from_angles = RotoTrans(RotoTrans.rt_from_euler_angles(angles=random_vector, angle_sequence="xyz"))
+    random_from_angles = RotoTrans(
+        RotoTrans.rt_from_euler_angles(angles=random_vector, angle_sequence="xyz")
+    )
     np.testing.assert_equal(random_from_angles.get_num_frames(), nb_frames)
-    np.testing.assert_equal(random_from_angles[0:3, 3, :], np.zeros((3, 1, nb_frames)))  # Translation is 0
+    np.testing.assert_equal(
+        random_from_angles[0:3, 3, :], np.zeros((3, 1, nb_frames))
+    )  # Translation is 0
 
-    random_from_translations = RotoTrans(RotoTrans.rt_from_euler_angles(translations=random_vector))
+    random_from_translations = RotoTrans(
+        RotoTrans.rt_from_euler_angles(translations=random_vector)
+    )
     np.testing.assert_equal(random_from_translations.get_num_frames(), nb_frames)
-    np.testing.assert_equal(random_from_translations[0:3, 0:3, :],
-                            np.repeat(np.eye(3)[:, :, np.newaxis], nb_frames, axis=2))  # rotation is eye3
+    np.testing.assert_equal(
+        random_from_translations[0:3, 0:3, :],
+        np.repeat(np.eye(3)[:, :, np.newaxis], nb_frames, axis=2),
+    )  # rotation is eye3
 
 
-@pytest.mark.parametrize('seq', SEQ)
-@pytest.mark.parametrize('angles', [ANGLES])
-@pytest.mark.parametrize('epsilon', [EPSILON])
+@pytest.mark.parametrize("seq", SEQ)
+@pytest.mark.parametrize("angles", [ANGLES])
+@pytest.mark.parametrize("epsilon", [EPSILON])
 def test_euler2rot_rot2euler(seq, angles, epsilon):
     """Test euler to RotoTrans and RotoTrans to euler."""
     # Extract the right amount of angle relative to sequence length
     if seq != "zyzz":
-        angles_to_test = angles[0:len(seq), :, :]
+        angles_to_test = angles[0 : len(seq), :, :]
     else:
         angles_to_test = angles[0:3, :, :]
     # Get a RotoTrans from euler angles
@@ -57,7 +82,7 @@ def test_euler2rot_rot2euler(seq, angles, epsilon):
     np.testing.assert_array_less((a - angles_to_test).sum(), epsilon)
 
 
-@pytest.mark.parametrize('angles', [ANGLES])
+@pytest.mark.parametrize("angles", [ANGLES])
 def test_rt_mean(angles):
     seq = "xyz"
     angles_to_test = angles[0:3, :, :]
