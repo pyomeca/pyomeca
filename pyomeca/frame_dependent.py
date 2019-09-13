@@ -218,6 +218,72 @@ class FrameDependentNpArray(np.ndarray):
     # --- Fileio methods (from_*)
 
     @classmethod
+    def from_excel(
+        cls,
+        filename,
+        sheet_name=None,
+        first_row=0,
+        time_column=None,
+        first_column=None,
+        last_column_to_remove=None,
+        idx=None,
+        header=None,
+        names=None,
+        prefix=None,
+        skiprows=None,
+        na_values=None,
+    ):
+        """
+        Read Excel data and transform it in vector3d format
+
+        Parameters
+        ----------
+        caller : str
+            if the caller is the from_csv (`csv`) or from_excel (`excel`) method
+        filename : Union[str, Path]
+            Path of file
+        sheet_name: Union[str, int, list]
+            Strings are used for sheet names. Integers are used in zero-indexed sheet positions. Lists of strings/integers are used to request multiple sheets. Specify None to get all sheets.
+        first_row : int
+            Index of first rows of data (0th indexed)
+        first_column : int
+            Index of first column of data (0th indexed)
+        last_column_to_remove : int
+            If for some reason the csv reads extra columns, how many should be ignored
+        time_column : int
+            Index of the time column, if None time column is the index
+        idx : list(int)
+            Order of columns given by index
+        header : int
+            row of the header (0th indexed)
+        names : list(str)
+            Order of columns given by names, if both names and idx are provided, an error occurs
+        delimiter : str
+            Delimiter of the CSV file
+        prefix : str
+            Prefix to remove in the header
+
+        Returns
+        -------
+        Data set in Vectors3d format
+        """
+        return cls._from_csv_or_excel(
+            caller="excel",
+            filename=filename,
+            sheet_name=sheet_name,
+            first_row=first_row,
+            time_column=time_column,
+            first_column=first_column,
+            last_column_to_remove=last_column_to_remove,
+            idx=idx,
+            header=header,
+            names=names,
+            prefix=prefix,
+            skiprows=skiprows,
+            na_values=na_values,
+        )
+
+    @classmethod
     def from_csv(
         cls,
         filename,
@@ -235,6 +301,7 @@ class FrameDependentNpArray(np.ndarray):
     ):
         """
         Read csv data and convert to Vectors3d format
+
         Parameters
         ----------
         filename : Union[str, Path]
@@ -262,6 +329,74 @@ class FrameDependentNpArray(np.ndarray):
         -------
         Data set in Vectors3d format
         """
+        return cls._from_csv_or_excel(
+            caller="csv",
+            filename=filename,
+            first_row=first_row,
+            time_column=time_column,
+            first_column=first_column,
+            last_column_to_remove=last_column_to_remove,
+            idx=idx,
+            header=header,
+            names=names,
+            delimiter=delimiter,
+            prefix=prefix,
+            skiprows=skiprows,
+            na_values=na_values,
+        )
+
+    @classmethod
+    def _from_csv_or_excel(
+        cls,
+        caller,
+        filename,
+        sheet_name=0,
+        first_row=0,
+        time_column=None,
+        first_column=None,
+        last_column_to_remove=None,
+        idx=None,
+        header=None,
+        names=None,
+        delimiter=",",
+        prefix=None,
+        skiprows=None,
+        na_values=None,
+    ):
+        """
+        Private function to parse pandas based data to vector3d format
+
+        Parameters
+        ----------
+        caller : str
+            if the caller is the from_csv (`csv`) or from_excel (`excel`) method
+        filename : Union[str, Path]
+            Path of file
+        sheet_name: Union[str, int, list]
+            Strings are used for sheet names. Integers are used in zero-indexed sheet positions. Lists of strings/integers are used to request multiple sheets. Specify None to get all sheets.
+        first_row : int
+            Index of first rows of data (0th indexed)
+        first_column : int
+            Index of first column of data (0th indexed)
+        last_column_to_remove : int
+            If for some reason the csv reads extra columns, how many should be ignored
+        time_column : int, str
+            Index or string of the time column, if None time column is the index
+        idx : list(int)
+            Order of columns given by index
+        header : int
+            row of the header (0th indexed)
+        names : list(str)
+            Order of columns given by names, if both names and idx are provided, an error occurs
+        delimiter : str
+            Delimiter of the CSV file
+        prefix : str
+            Prefix to remove in the header
+
+        Returns
+        -------
+        Data set in Vectors3d format
+        """
 
         if names and idx:
             raise ValueError(
@@ -274,17 +409,32 @@ class FrameDependentNpArray(np.ndarray):
             else:
                 skiprows = np.arange(header + 1, first_row)
 
-        data = pd.read_csv(
-            str(filename),
-            sep=delimiter,
-            header=header,
-            skiprows=skiprows,
-            na_values=na_values,
-        )
+        if caller == "csv":
+            data = pd.read_csv(
+                filename,
+                sep=delimiter,
+                header=header,
+                skiprows=skiprows,
+                na_values=na_values,
+            )
+        else:
+            data = pd.read_excel(
+                filename,
+                sheet_name=sheet_name,
+                header=header,
+                skiprows=skiprows,
+                na_values=na_values,
+            )
+
         if time_column is None:
             time_frames = np.arange(0, data.shape[0])
         else:
-            time_frames = np.array(data.iloc[:, time_column])
+            if isinstance(time_column, int):
+                time_frames = data.iloc[:, time_column].values
+                data = data.drop(data.columns[time_column], axis=1)
+            else:
+                time_frames = data.loc[:, time_column].values
+                data = data.drop(time_column, axis=1)
 
         if first_column:
             data.drop(data.columns[:first_column], axis=1, inplace=True)
@@ -509,6 +659,18 @@ class FrameDependentNpArray(np.ndarray):
             )
         mat_dict.update({"data": self})
         savemat(file_name, mat_dict)
+
+    def to_numpy(self):
+        """
+        Return a numpy array
+
+
+        Returns
+        -------
+
+        np.array
+        """
+        return np.array(self)
 
     # --- Plot method
 
