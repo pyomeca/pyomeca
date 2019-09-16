@@ -13,6 +13,7 @@ PROJECT_FOLDER = Path(__file__).parent / ".."
 DATA_FOLDER = PROJECT_FOLDER / "tests" / "data"
 
 MARKERS_CSV = DATA_FOLDER / "markers.csv"
+MARKERS_XLSX = DATA_FOLDER / "markers.xlsx"
 MARKERS_ANALOGS_C3D = DATA_FOLDER / "markers_analogs.c3d"
 ANALOGS_CSV = DATA_FOLDER / "analogs.csv"
 
@@ -69,7 +70,7 @@ markers_param = [
 
 
 @pytest.mark.parametrize("idx, names, expected_shape, expected_values", markers_param)
-@pytest.mark.parametrize("extension", ["c3d", "csv"])
+@pytest.mark.parametrize("extension", ["c3d", "csv", "xlsx"])
 def test_markers(idx, names, expected_shape, expected_values, extension):
     """Assert markers shape."""
     if extension == "csv":
@@ -82,10 +83,24 @@ def test_markers(idx, names, expected_shape, expected_values, extension):
             idx=idx,
             names=names,
         )
+    elif extension == "xlsx":
+        arr = Markers3d.from_excel(
+            MARKERS_XLSX,
+            sheet_name=0,
+            first_row=5,
+            first_column=2,
+            header=2,
+            prefix=":",
+            idx=idx,
+            names=names,
+        )
     elif extension == "c3d":
         arr = Markers3d.from_c3d(MARKERS_ANALOGS_C3D, prefix=":", idx=idx, names=names)
+
     else:
-        raise ValueError(f'extension should be "csv", "c3d". You provided {extension}')
+        raise ValueError(
+            f'extension should be "csv", "c3d" or "xlsx". You provided {extension}'
+        )
     # test shape
     np.testing.assert_equal(arr.shape, expected_shape)
     # test values
