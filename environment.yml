@@ -12,5 +12,8 @@ dependencies:
 - ezc3d
 - pytest
 - pytest-cov
+- black
+- xlrd
+- pip
 - pip:
   - -e .

@@ -1,4 +1,3 @@
-import ezc3d
 import numpy as np
 
 from pyomeca import FrameDependentNpArray
@@ -25,9 +24,11 @@ class Markers3d(FrameDependentNpArray):
             elif s[0] == 4:
                 pos = data
             else:
-                raise IndexError('Vectors3d must have a length of 3 on the first dimension')
+                raise IndexError(
+                    "Vectors3d must have a length of 3 on the first dimension"
+                )
         else:
-            raise TypeError('Data must be 2d or 3d matrix')
+            raise TypeError("Data must be 2d or 3d matrix")
 
         return super(Markers3d, cls).__new__(cls, array=pos, *args, **kwargs)
 
@@ -54,7 +55,7 @@ class Markers3d(FrameDependentNpArray):
         -------
         2d style labels
         """
-        return [i + axe for i in self.get_labels for axe in ['_X', '_Y', '_Z']]
+        return [i + axe for i in self.get_labels for axe in ["_X", "_Y", "_Z"]]
 
     # --- Fileio methods (from_*)
 
@@ -73,12 +74,19 @@ class Markers3d(FrameDependentNpArray):
         s = m.shape
         if s[1] % 3 != 0:
             raise IndexError("Number of columns must be divisible by 3")
-        return Markers3d(np.reshape(m.T, (3, int(s[1] / 3), s[0]), 'F'))
+        return Markers3d(np.reshape(m.T, (3, int(s[1] / 3), s[0]), "F"))
 
     @classmethod
     def from_trc(cls, filename):
-        return cls.from_csv(filename, header=3, first_row=6, first_column=2, time_column=1, delimiter='\t',
-                            last_column_to_remove=1)
+        return cls.from_csv(
+            filename,
+            header=3,
+            first_row=6,
+            first_column=2,
+            time_column=1,
+            delimiter="\t",
+            last_column_to_remove=1,
+        )
 
     # --- Fileio methods (to_*)
 
@@ -89,7 +97,9 @@ class Markers3d(FrameDependentNpArray):
         -------
         Tabular matrix
         """
-        return np.reshape(self[0:3, :, :], (3 * self.get_num_markers(), self.get_num_frames()), 'F').T
+        return np.reshape(
+            self[0:3, :, :], (3 * self.get_num_markers(), self.get_num_frames()), "F"
+        ).T
 
     @staticmethod
     def _parse_c3d(c3d, prefix):
@@ -107,16 +117,24 @@ class Markers3d(FrameDependentNpArray):
         -------
         metadata, channel_names, data
         """
-        channel_names = [i.split(prefix)[-1] for i in
-                         c3d.parameters().group('POINT').parameter('LABELS').valuesAsString()]
+        channel_names = [
+            i.split(prefix)[-1]
+            for i in c3d.parameters()
+            .group("POINT")
+            .parameter("LABELS")
+            .valuesAsString()
+        ]
         metadata = {
-            'get_num_markers': c3d.header().nb3dPoints(),
-            'get_num_frames': c3d.header().nbFrames(),
-            'get_first_frame': c3d.header().firstFrame(),
-            'get_last_frame': c3d.header().lastFrame(),
-            'get_time_frames': None,
-            'get_rate': c3d.header().frameRate(),
-            'get_unit': c3d.parameters().group('POINT').parameter('UNITS').valuesAsString()[0]
+            "get_num_markers": c3d.header().nb3dPoints(),
+            "get_num_frames": c3d.header().nbFrames(),
+            "get_first_frame": c3d.header().firstFrame(),
+            "get_last_frame": c3d.header().lastFrame(),
+            "get_time_frames": None,
+            "get_rate": c3d.header().frameRate(),
+            "get_unit": c3d.parameters()
+            .group("POINT")
+            .parameter("UNITS")
+            .valuesAsString()[0],
         }
         data = c3d.get_points()
 
@@ -141,11 +159,11 @@ class Markers3d(FrameDependentNpArray):
         if len(s_rt) == 2 and len(s_m) == 2:
             m2 = rt.dot(self)
         elif len(s_rt) == 2 and len(s_m) == 3:
-            m2 = np.einsum('ij,jkl->ikl', rt, self)
+            m2 = np.einsum("ij,jkl->ikl", rt, self)
         elif len(s_rt) == 3 and len(s_m) == 3:
-            m2 = np.einsum('ijk,jlk->ilk', rt, self)
+            m2 = np.einsum("ijk,jlk->ilk", rt, self)
         else:
-            raise ValueError('Size of RT and M must match')
+            raise ValueError("Size of RT and M must match")
 
         return Markers3d(data=m2)
 
