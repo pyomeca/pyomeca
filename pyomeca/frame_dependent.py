@@ -190,7 +190,7 @@ class FrameDependentNpArray(np.ndarray):
         -------
         frame
         """
-        return self[..., f]
+        return self[..., f:f+1]
 
     def get_index(self, names):
         """
