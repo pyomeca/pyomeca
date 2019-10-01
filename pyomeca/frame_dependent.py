@@ -22,17 +22,63 @@ class FrameDependentNpArray(np.ndarray):
 
         """
         if not isinstance(array, np.ndarray):
-            raise TypeError('FrameDependentNpArray must be a numpy array')
+            raise TypeError("FrameDependentNpArray must be a numpy array")
+
+        # Sanity check on size
+        if len(array.shape) == 1:
+            array = array[:, np.newaxis, np.newaxis]
+        if len(array.shape) == 2:
+            array = array[:, :, np.newaxis]
 
         # metadata
         obj = np.asarray(array).view(cls, *args, **kwargs)
         obj.__array_finalize__(array)
         return obj
 
+    def __parse_item__(self, item):
+        if isinstance(item, int):
+            pass
+        elif isinstance(item[0], str):
+            if len(self.shape) != 3:
+                raise RuntimeError(
+                    "Name slicing is only valid on 3D FrameDependentNpArray"
+                )
+            item = (
+                slice(None, None, None),
+                self.get_index(item),
+                slice(None, None, None),
+            )
+        elif len(item) == 3:
+            if isinstance(item[1], int):
+                if isinstance(item[0], int) and isinstance(item[2], int):
+                    pass
+                else:
+                    item = (item[0], [item[1]], item[2])
+            if isinstance(item[1], tuple):
+                item = (item[0], list(item[1]), item[2])
+            if isinstance(item[1], list):  # If multiple value
+                idx = self.get_index(item[1])
+                if idx:
+                    # Replace the text by number so it can be sliced
+                    idx_str = [i for i, it in enumerate(item[1]) if isinstance(it, str)]
+                    for i1, i2 in enumerate(idx_str):
+                        item[1][i2] = idx[i1]
+            elif isinstance(item[1], str):  # If single value
+                item = (item[0], self.get_index(item[1]), item[2])
+        return item
+
+    def __getitem__(self, item):
+        return super(FrameDependentNpArray, self).__getitem__(self.__parse_item__(item))
+
+    def __setitem__(self, key, value):
+        return super(FrameDependentNpArray, self).__setitem__(
+            self.__parse_item__(key), value
+        )
+
     def __array_finalize__(self, obj):
         # Allow slicing
         if obj is None or not isinstance(obj, FrameDependentNpArray):
-            self._current_frame = 0
+            self._current_iter_idx = 0
             self.get_first_frame = []
             self.get_last_frame = []
             self.get_time_frames = None
@@ -42,15 +88,15 @@ class FrameDependentNpArray(np.ndarray):
             self.get_nan_idx = None
             self.misc = {}
         else:
-            self._current_frame = getattr(obj, '_current_frame')
-            self.get_first_frame = getattr(obj, 'get_first_frame')
-            self.get_last_frame = getattr(obj, 'get_last_frame')
-            self.get_time_frames = getattr(obj, 'get_time_frames')
-            self.get_rate = getattr(obj, 'get_rate')
-            self.get_labels = getattr(obj, 'get_labels')
-            self.get_unit = getattr(obj, 'get_unit')
-            self.get_nan_idx = getattr(obj, 'get_nan_idx')
-            self.misc = getattr(obj, 'misc')
+            self._current_iter_idx = getattr(obj, "_current_iter_idx")
+            self.get_first_frame = getattr(obj, "get_first_frame")
+            self.get_last_frame = getattr(obj, "get_last_frame")
+            self.get_time_frames = getattr(obj, "get_time_frames")
+            self.get_rate = getattr(obj, "get_rate")
+            self.get_labels = getattr(obj, "get_labels")
+            self.get_unit = getattr(obj, "get_unit")
+            self.get_nan_idx = getattr(obj, "get_nan_idx")
+            self.misc = getattr(obj, "misc")
 
     def dynamic_child_cast(self, x):
         """
@@ -67,12 +113,29 @@ class FrameDependentNpArray(np.ndarray):
         casted_x.__array_finalize__(self)
         return casted_x
 
+    def __iter__(self):
+        self._current_iter_idx = 0  # Reset the counter
+        return self
+
     def __next__(self):
-        if self._current_frame > self.shape[2]:
-            raise StopIteration
-        else:
-            self._current_frame += 1
-            return self.get_frame(self._current_frame)
+        self._current_iter_idx += 1
+        if len(self.shape) == 1:
+            if self._current_iter_idx < self.shape[0]:
+                return self[self._current_iter_idx]
+            else:
+                raise StopIteration
+        elif len(self.shape) == 2:
+            if self._current_iter_idx < self.shape[1]:
+                return self[self._current_iter_idx, :]
+            else:
+                raise StopIteration
+        elif len(self.shape) == 3:
+            if self._current_iter_idx < self.shape[2]:
+                return self.get_frame(
+                    self._current_iter_idx - 1
+                )  # -1 since it is incremented before hand
+            else:
+                raise StopIteration
 
     # --- Utils methods
 
@@ -127,15 +190,118 @@ class FrameDependentNpArray(np.ndarray):
         -------
         frame
         """
-        return self[..., f]
+        return self[..., f : f + 1]
+
+    def get_index(self, names):
+        """
+        Return the index associated to label names
+        Parameters
+        ----------
+        names : list(str)
+            names of the label to find the indexes of
+
+        Returns
+        -------
+        indexes
+        """
+        if isinstance(names, list) or isinstance(names, tuple):
+            # Remove the integer
+            names = [n for n in names if isinstance(n, str)]
+        else:
+            names = [names]
+
+        if not names:  # If all integer, return null
+            return []
+        else:
+            return [self.get_labels.index(name) for name in names]
 
     # --- Fileio methods (from_*)
 
     @classmethod
-    def from_csv(cls, filename, first_row=0, time_column=None, first_column=None, last_column_to_remove=None, idx=None,
-                 header=None, names=None, delimiter=',', prefix=None, skiprows=None, na_values=None):
+    def from_excel(
+        cls,
+        filename,
+        sheet_name=None,
+        first_row=0,
+        time_column=None,
+        first_column=None,
+        last_column_to_remove=None,
+        idx=None,
+        header=None,
+        names=None,
+        prefix=None,
+        skiprows=None,
+        na_values=None,
+    ):
+        """
+        Read Excel data and transform it in vector3d format
+
+        Parameters
+        ----------
+        caller : str
+            if the caller is the from_csv (`csv`) or from_excel (`excel`) method
+        filename : Union[str, Path]
+            Path of file
+        sheet_name: Union[str, int, list]
+            Strings are used for sheet names. Integers are used in zero-indexed sheet positions. Lists of strings/integers are used to request multiple sheets. Specify None to get all sheets.
+        first_row : int
+            Index of first rows of data (0th indexed)
+        first_column : int
+            Index of first column of data (0th indexed)
+        last_column_to_remove : int
+            If for some reason the csv reads extra columns, how many should be ignored
+        time_column : int
+            Index of the time column, if None time column is the index
+        idx : list(int)
+            Order of columns given by index
+        header : int
+            row of the header (0th indexed)
+        names : list(str)
+            Order of columns given by names, if both names and idx are provided, an error occurs
+        delimiter : str
+            Delimiter of the CSV file
+        prefix : str
+            Prefix to remove in the header
+
+        Returns
+        -------
+        Data set in Vectors3d format
+        """
+        return cls._from_csv_or_excel(
+            caller="excel",
+            filename=filename,
+            sheet_name=sheet_name,
+            first_row=first_row,
+            time_column=time_column,
+            first_column=first_column,
+            last_column_to_remove=last_column_to_remove,
+            idx=idx,
+            header=header,
+            names=names,
+            prefix=prefix,
+            skiprows=skiprows,
+            na_values=na_values,
+        )
+
+    @classmethod
+    def from_csv(
+        cls,
+        filename,
+        first_row=0,
+        time_column=None,
+        first_column=None,
+        last_column_to_remove=None,
+        idx=None,
+        header=None,
+        names=None,
+        delimiter=",",
+        prefix=None,
+        skiprows=None,
+        na_values=None,
+    ):
         """
         Read csv data and convert to Vectors3d format
+
         Parameters
         ----------
         filename : Union[str, Path]
@@ -163,9 +329,79 @@ class FrameDependentNpArray(np.ndarray):
         -------
         Data set in Vectors3d format
         """
+        return cls._from_csv_or_excel(
+            caller="csv",
+            filename=filename,
+            first_row=first_row,
+            time_column=time_column,
+            first_column=first_column,
+            last_column_to_remove=last_column_to_remove,
+            idx=idx,
+            header=header,
+            names=names,
+            delimiter=delimiter,
+            prefix=prefix,
+            skiprows=skiprows,
+            na_values=na_values,
+        )
+
+    @classmethod
+    def _from_csv_or_excel(
+        cls,
+        caller,
+        filename,
+        sheet_name=0,
+        first_row=0,
+        time_column=None,
+        first_column=None,
+        last_column_to_remove=None,
+        idx=None,
+        header=None,
+        names=None,
+        delimiter=",",
+        prefix=None,
+        skiprows=None,
+        na_values=None,
+    ):
+        """
+        Private function to parse pandas based data to vector3d format
+
+        Parameters
+        ----------
+        caller : str
+            if the caller is the from_csv (`csv`) or from_excel (`excel`) method
+        filename : Union[str, Path]
+            Path of file
+        sheet_name: Union[str, int, list]
+            Strings are used for sheet names. Integers are used in zero-indexed sheet positions. Lists of strings/integers are used to request multiple sheets. Specify None to get all sheets.
+        first_row : int
+            Index of first rows of data (0th indexed)
+        first_column : int
+            Index of first column of data (0th indexed)
+        last_column_to_remove : int
+            If for some reason the csv reads extra columns, how many should be ignored
+        time_column : int, str
+            Index or string of the time column, if None time column is the index
+        idx : list(int)
+            Order of columns given by index
+        header : int
+            row of the header (0th indexed)
+        names : list(str)
+            Order of columns given by names, if both names and idx are provided, an error occurs
+        delimiter : str
+            Delimiter of the CSV file
+        prefix : str
+            Prefix to remove in the header
+
+        Returns
+        -------
+        Data set in Vectors3d format
+        """
 
         if names and idx:
-            raise ValueError("names and idx can't be set simultaneously, please select only one")
+            raise ValueError(
+                "names and idx can't be set simultaneously, please select only one"
+            )
 
         if not skiprows:
             if not header:
@@ -173,11 +409,32 @@ class FrameDependentNpArray(np.ndarray):
             else:
                 skiprows = np.arange(header + 1, first_row)
 
-        data = pd.read_csv(str(filename), sep=delimiter, header=header, skiprows=skiprows, na_values=na_values)
+        if caller == "csv":
+            data = pd.read_csv(
+                filename,
+                sep=delimiter,
+                header=header,
+                skiprows=skiprows,
+                na_values=na_values,
+            )
+        else:
+            data = pd.read_excel(
+                filename,
+                sheet_name=sheet_name,
+                header=header,
+                skiprows=skiprows,
+                na_values=na_values,
+            )
+
         if time_column is None:
             time_frames = np.arange(0, data.shape[0])
         else:
-            time_frames = np.array(data.iloc[:, time_column])
+            if isinstance(time_column, int):
+                time_frames = data.iloc[:, time_column].values
+                data = data.drop(data.columns[time_column], axis=1)
+            else:
+                time_frames = data.loc[:, time_column].values
+                data = data.drop(time_column, axis=1)
 
         if first_column:
             data.drop(data.columns[:first_column], axis=1, inplace=True)
@@ -186,17 +443,32 @@ class FrameDependentNpArray(np.ndarray):
             data.drop(data.columns[-last_column_to_remove], axis=1, inplace=True)
 
         column_names = data.columns.tolist()
-        if header and cls._get_class_name()[:9] == 'Markers3d':
-            column_names = [icol.split(prefix)[-1] for icol in column_names if
-                            not (len(icol) >= 7 and icol[:7] == 'Unnamed')]
-        metadata = {'get_first_frame': [], 'get_last_frame': [], 'get_rate': [], 'get_labels': [], 'get_unit': [],
-                    'get_time_frames': time_frames}
+        if header and cls._get_class_name()[:9] == "Markers3d":
+            column_names = [
+                icol.split(prefix)[-1]
+                for icol in column_names
+                if not (len(icol) >= 7 and icol[:7] == "Unnamed")
+            ]
+        metadata = {
+            "get_first_frame": [],
+            "get_last_frame": [],
+            "get_rate": [],
+            "get_labels": [],
+            "get_unit": [],
+            "get_time_frames": time_frames,
+        }
         if names:
-            metadata.update({'get_labels': names})
+            metadata.update({"get_labels": names})
         else:
             names = column_names
 
-        return cls._to_vectors(data=data.values, idx=idx, all_names=column_names, target_names=names, metadata=metadata)
+        return cls._to_vectors(
+            data=data.values,
+            idx=idx,
+            all_names=column_names,
+            target_names=names,
+            metadata=metadata,
+        )
 
     @staticmethod
     def _parse_c3d(c3d, prefix):
@@ -219,7 +491,7 @@ class FrameDependentNpArray(np.ndarray):
         metadata
             Structure of properties in the c3d files
         """
-        raise NotImplementedError('_parse_c3d_info is an abstract function')
+        raise NotImplementedError("_parse_c3d_info is an abstract function")
 
     @classmethod
     def from_c3d(cls, filename, idx=None, names=None, prefix=None):
@@ -241,47 +513,50 @@ class FrameDependentNpArray(np.ndarray):
         Data set in Vectors3d format or Data set in Vectors3d format and metadata dict if get_metadata is True
         """
         if names and idx:
-            raise ValueError("names and idx can't be set simultaneously, please select only one")
+            raise ValueError(
+                "names and idx can't be set simultaneously, please select only one"
+            )
         reader = ezc3d.c3d(str(filename)).c3d_swig
         data, channel_names, metadata = cls._parse_c3d(reader, prefix)
 
         if names:
-            metadata.update({'get_labels': names})
+            metadata.update({"get_labels": names})
         else:
-            metadata.update({'get_labels': []})
+            metadata.update({"get_labels": []})
             names = channel_names
 
         # Add time frames
-        metadata['get_time_frames'] = np.arange(metadata['get_first_frame'] / metadata['get_rate'],
-                                                (metadata['get_last_frame'] + 1) / metadata['get_rate'],
-                                                1 / metadata['get_rate'])
+        metadata["get_time_frames"] = np.arange(
+            metadata["get_first_frame"] / metadata["get_rate"],
+            (metadata["get_last_frame"] + 1) / metadata["get_rate"],
+            1 / metadata["get_rate"],
+        )
 
-        return cls._to_vectors(data=data,
-                               idx=idx,
-                               all_names=channel_names,
-                               target_names=names,
-                               metadata=metadata)
+        return cls._to_vectors(
+            data=data,
+            idx=idx,
+            all_names=channel_names,
+            target_names=names,
+            metadata=metadata,
+        )
 
     @classmethod
     def _to_vectors(cls, data, idx, all_names, target_names, metadata=None):
         if not idx:
-            # find names in column_names
-            idx = []
-            for i, m in enumerate(target_names):
-                idx.append([i for i, s in enumerate(all_names) if m in s][0])
+            idx = [all_names.index(itarget) for itarget in target_names]
 
         data = cls.__new__(cls, data)  # Dynamically cast the data to fit the child
         data = data.get_specific_data(idx)
 
-        data.get_first_frame = metadata['get_first_frame']
-        data.get_last_frame = metadata['get_last_frame']
-        data.get_rate = metadata['get_rate']
-        data.get_unit = metadata['get_unit']
-        data.get_time_frames = metadata['get_time_frames']
-        if np.array(idx).ndim == 1 and not metadata['get_labels']:
+        data.get_first_frame = metadata["get_first_frame"]
+        data.get_last_frame = metadata["get_last_frame"]
+        data.get_rate = metadata["get_rate"]
+        data.get_unit = metadata["get_unit"]
+        data.get_time_frames = metadata["get_time_frames"]
+        if np.array(idx).ndim == 1 and not metadata["get_labels"]:
             data.get_labels = [name for i, name in enumerate(all_names) if i in idx]
-        elif metadata['get_labels']:
-            data.get_labels = metadata['get_labels']
+        elif metadata["get_labels"]:
+            data.get_labels = metadata["get_labels"]
         return data
 
     def get_specific_data(self, idx):
@@ -304,7 +579,9 @@ class FrameDependentNpArray(np.ndarray):
                 data += self[:, np.array(idx)[i, :], :]
             data /= idx.shape[0]
         except IndexError:
-            raise IndexError('get_specific_data works only on 3xNxF matrices and idx must be a ixj array')
+            raise IndexError(
+                "get_specific_data works only on 3xNxF matrices and idx must be a ixj array"
+            )
         return data
 
     # --- Fileio methods (to_*)
@@ -369,17 +646,31 @@ class FrameDependentNpArray(np.ndarray):
         file_name = self.check_parent_dir(file_name)
         mat_dict = {}
         if metadata:
-            mat_dict.update({
-                'get_first_frame': self.get_first_frame,
-                'get_last_frame': self.get_last_frame,
-                'get_time_frames': self.get_time_frames,
-                'get_rate': self.get_rate,
-                'get_labels': self.get_labels,
-                'get_unit': self.get_unit,
-                'get_nan_idx': self.get_nan_idx
-            })
-        mat_dict.update({'data': self})
+            mat_dict.update(
+                {
+                    "get_first_frame": self.get_first_frame,
+                    "get_last_frame": self.get_last_frame,
+                    "get_time_frames": self.get_time_frames,
+                    "get_rate": self.get_rate,
+                    "get_labels": self.get_labels,
+                    "get_unit": self.get_unit,
+                    "get_nan_idx": self.get_nan_idx,
+                }
+            )
+        mat_dict.update({"data": self})
         savemat(file_name, mat_dict)
+
+    def to_numpy(self):
+        """
+        Return a numpy array
+
+
+        Returns
+        -------
+
+        np.array
+        """
+        return np.array(self)
 
     # --- Plot method
 
@@ -462,7 +753,7 @@ class FrameDependentNpArray(np.ndarray):
         -------
         FrameDependentNpArray
         """
-        return super().mean(*args, axis=axis, **kwargs)
+        return super().mean(*args, axis=axis, keepdims=True, **kwargs)
 
     def nanmean(self, *args, axis=2, **kwargs):
         """
@@ -472,7 +763,7 @@ class FrameDependentNpArray(np.ndarray):
         -------
         FrameDependentNpArray
         """
-        return np.nanmean(self, *args, axis=axis, **kwargs)
+        return np.nanmean(self, *args, axis=axis, keepdims=True, **kwargs)
 
     def rms(self, axis=2):
         """
@@ -552,7 +843,9 @@ class FrameDependentNpArray(np.ndarray):
         -------
         FrameDependentNpArray
         """
-        original_time_vector = np.linspace(time_vector[0], time_vector[-1], self.shape[axis])
+        original_time_vector = np.linspace(
+            time_vector[0], time_vector[-1], self.shape[axis]
+        )
         f = interp1d(original_time_vector, self, axis=axis)
         return self.dynamic_child_cast(f(time_vector))
 
@@ -634,7 +927,9 @@ class FrameDependentNpArray(np.ndarray):
             consecutive_nans = np.apply_along_axis(
                 max_consecutive_nans, axis=-1, arr=self
             ).ravel()
-            above = np.argwhere(consecutive_nans > self.get_rate / threshold_consecutive)
+            above = np.argwhere(
+                consecutive_nans > self.get_rate / threshold_consecutive
+            )
             percentage = (consecutive_nans / self.shape[-1] * 100).ravel()
             if above.any():
                 for iabove in above:
@@ -660,7 +955,9 @@ class FrameDependentNpArray(np.ndarray):
         -------
         FrameDependentNpArray
         """
-        return self.dynamic_child_cast(np.sqrt(filtfilt(np.ones(window_size) / window_size, 1, self * self)))
+        return self.dynamic_child_cast(
+            np.sqrt(filtfilt(np.ones(window_size) / window_size, 1, self * self))
+        )
 
     def moving_average(self, window_size):
         """
@@ -675,7 +972,9 @@ class FrameDependentNpArray(np.ndarray):
         -------
         FrameDependentNpArray
         """
-        return self.dynamic_child_cast(filtfilt(np.ones(window_size) / window_size, 1, self))
+        return self.dynamic_child_cast(
+            filtfilt(np.ones(window_size) / window_size, 1, self)
+        )
 
     def moving_median(self, window_size):
         """
@@ -691,7 +990,9 @@ class FrameDependentNpArray(np.ndarray):
         FrameDependentNpArray
         """
         if window_size % 2 == 0:
-            raise ValueError(f'window_size should be odd. Add or subtract 1. You provided {window_size}')
+            raise ValueError(
+                f"window_size should be odd. Add or subtract 1. You provided {window_size}"
+            )
         if self.ndim == 3:
             window_size = [1, 1, window_size]
         elif self.ndim == 2:
@@ -699,7 +1000,9 @@ class FrameDependentNpArray(np.ndarray):
         elif self.ndim == 1:
             pass
         else:
-            raise ValueError(f'dim should be 1, 2 or 3. You provided an array with {self.ndim} dimensions.')
+            raise ValueError(
+                f"dim should be 1, 2 or 3. You provided an array with {self.ndim} dimensions."
+            )
         return self.dynamic_child_cast(medfilt(self, window_size))
 
     def _base_filter(self, freq, order, cutoff, btype, interp_nans):
@@ -733,7 +1036,9 @@ class FrameDependentNpArray(np.ndarray):
             x = self.dynamic_child_cast(self.fill_values())
         else:
             # there is nans and we don't want to interpolate
-            raise ValueError('filters do not work well with nans. Try interp_nans=True flag')
+            raise ValueError(
+                "filters do not work well with nans. Try interp_nans=True flag"
+            )
 
         nyquist = freq / 2
         corrected_freq = np.array(cutoff) / nyquist
@@ -760,7 +1065,7 @@ class FrameDependentNpArray(np.ndarray):
         FrameDependentNpArray
         """
         return self.dynamic_child_cast(
-            self._base_filter(freq, order, cutoff, 'low', interp_nans)
+            self._base_filter(freq, order, cutoff, "low", interp_nans)
         )
 
     def band_pass(self, freq, order, cutoff, interp_nans=False):
@@ -783,7 +1088,7 @@ class FrameDependentNpArray(np.ndarray):
         FrameDependentNpArray
         """
         return self.dynamic_child_cast(
-            self._base_filter(freq, order, cutoff, 'bandpass', interp_nans)
+            self._base_filter(freq, order, cutoff, "bandpass", interp_nans)
         )
 
     def band_stop(self, freq, order, cutoff, interp_nans=False):
@@ -806,7 +1111,7 @@ class FrameDependentNpArray(np.ndarray):
         FrameDependentNpArray
         """
         return self.dynamic_child_cast(
-            self._base_filter(freq, order, cutoff, 'bandstop', interp_nans)
+            self._base_filter(freq, order, cutoff, "bandstop", interp_nans)
         )
 
     def high_pass(self, freq, order, cutoff, interp_nans=False):
@@ -829,7 +1134,7 @@ class FrameDependentNpArray(np.ndarray):
         FrameDependentNpArray
         """
         return self.dynamic_child_cast(
-            self._base_filter(freq, order, cutoff, 'high', interp_nans)
+            self._base_filter(freq, order, cutoff, "high", interp_nans)
         )
 
     def fft(self, freq, only_positive=True, axis=-1):
@@ -851,12 +1156,12 @@ class FrameDependentNpArray(np.ndarray):
         """
         n = self.shape[axis]
         yfft = fftpack.fft(self, n)
-        freqs = fftpack.fftfreq(n, 1. / freq)
+        freqs = fftpack.fftfreq(n, 1.0 / freq)
 
         if only_positive:
             amp = 2 * np.abs(yfft) / n
-            amp = amp[..., :int(np.floor(n / 2))]
-            freqs = freqs[:int(np.floor(n / 2))]
+            amp = amp[..., : int(np.floor(n / 2))]
+            freqs = freqs[: int(np.floor(n / 2))]
         else:
             amp = np.abs(yfft) / n
         return amp, freqs
@@ -897,16 +1202,24 @@ class FrameDependentNpArray(np.ndarray):
         idx : np.ndarray
             onset events
         """
-        if self.ndim > 1:
-            raise ValueError(f'detect_onset works only for vector (ndim < 2). Your data have {self.ndim} dimensions.')
-        self[np.isnan(self)] = -np.inf
-        idx = np.argwhere(self >= threshold).ravel()
+        if self.ndim != 3:
+            raise ValueError(
+                f"detect_onset works only for vector (ndim == 3). Your data have {self.ndim} dimensions."
+            )
+        if self.shape[0] != 1 or self.shape[1] != 1:
+            raise ValueError(
+                f"detect_onset works on a single time-dependent value for instance: self[i, j, :]."
+            )
+        self[0, 0, np.squeeze(np.isnan(self))] = -np.inf
+        idx = np.argwhere(np.squeeze(self >= threshold)).ravel()
 
         if np.any(idx):
             # initial & final indexes of almost continuous data
             idx = np.vstack(
-                (idx[np.diff(np.hstack((-np.inf, idx))) > below + 1],
-                 idx[np.diff(np.hstack((idx, np.inf))) > below + 1])
+                (
+                    idx[np.diff(np.hstack((-np.inf, idx))) > below + 1],
+                    idx[np.diff(np.hstack((idx, np.inf))) > below + 1],
+                )
             ).T
             # indexes of almost continuous data longer or equal to `above`
             idx = idx[idx[:, 1] - idx[:, 0] >= above - 1, :]
@@ -915,7 +1228,12 @@ class FrameDependentNpArray(np.ndarray):
                 # minimum amplitude of above2 values in x
                 ic = np.ones(idx.shape[0], dtype=bool)
                 for irow in range(idx.shape[0]):
-                    if np.count_nonzero(self[idx[irow, 0]: idx[irow, 1] + 1] >= threshold2) < above2:
+                    if (
+                        np.count_nonzero(
+                            self[0, 0, idx[irow, 0] : idx[irow, 1] + 1] >= threshold2
+                        )
+                        < above2
+                    ):
                         ic[irow] = False
                 idx = idx[ic, :]
 
@@ -939,7 +1257,7 @@ class FrameDependentNpArray(np.ndarray):
         numpy masked array
         """
         if np.any(onset_idx):
-            mask = np.zeros(self.shape, dtype='bool')
+            mask = np.zeros(self.shape, dtype="bool")
             for (inf, sup) in onset_idx:
                 mask[inf:sup] = 1
             sigma = np.nanstd(self[mask])
@@ -967,8 +1285,9 @@ class FrameDependentNpArray(np.ndarray):
         deriv = self.dynamic_child_cast(np.ndarray(self.shape))
         deriv[:, :, 0:window] = np.nan
         deriv[:, :, -window:] = np.nan
-        deriv[:, :, window:-window] = (self[:, :, 2 * window:] - self[:, :, 0:-2 * window]) / \
-                                      (self.get_time_frames[2 * window:] - self.get_time_frames[0:-2 * window])
+        deriv[:, :, window:-window] = (
+            self[:, :, 2 * window :] - self[:, :, 0 : -2 * window]
+        ) / (self.get_time_frames[2 * window :] - self.get_time_frames[0 : -2 * window])
         return deriv
 
 
@@ -1016,6 +1335,8 @@ class FrameDependentNpArrayCollection(list):
             if len(self[0].shape) == 2:
                 return 1
             else:
-                return self[0].shape[2]  # Assume all meshes has the same number of frame, return the first one
+                return self[0].shape[
+                    2
+                ]  # Assume all meshes has the same number of frame, return the first one
         else:
             return -1
