@@ -694,7 +694,10 @@ class FrameDependentNpArray(np.ndarray):
             data_to_plot = np.squeeze(self[i, :, :]).transpose()
             if np.any(x):
                 ax.plot(x, data_to_plot, *args, **kwargs)
-            elif self.get_time_frames is None or self.get_time_frames.shape[0] != self.shape[2]:
+            elif (
+                self.get_time_frames is None
+                or self.get_time_frames.shape[0] != self.shape[2]
+            ):
                 ax.plot(data_to_plot, *args, **kwargs)
             else:
                 ax.plot(self.get_time_frames, data_to_plot, *args, **kwargs)
