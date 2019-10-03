@@ -676,7 +676,9 @@ class FrameDependentNpArray(np.ndarray):
 
     def plot(self, *args, x=None, ax=None, **kwargs):
         """
-        Plot a pyomeca vector3d (Markers3d, Analogs3d, etc.)
+        Plot a pyomeca vector3d (Markers3d, Analogs3d, etc.). Normal parameters
+        from matplotlib.pyplot.plot can also be passed to the function and
+        should behave the same
 
         Parameters
         ----------
