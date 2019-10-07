@@ -190,7 +190,7 @@ class FrameDependentNpArray(np.ndarray):
         -------
         frame
         """
-        return self[..., f]
+        return self[..., f : f + 1]
 
     def get_index(self, names):
         """
@@ -674,9 +674,11 @@ class FrameDependentNpArray(np.ndarray):
 
     # --- Plot method
 
-    def plot(self, x=None, ax=None, fmt="", lw=1, label=None, alpha=1):
+    def plot(self, *args, x=None, ax=None, **kwargs):
         """
-        Plot a pyomeca vector3d (Markers3d, Analogs3d, etc.)
+        Plot a pyomeca vector3d (Markers3d, Analogs3d, etc.). Normal parameters
+        from matplotlib.pyplot.plot can also be passed to the function and
+        should behave the same
 
         Parameters
         ----------
@@ -684,14 +686,6 @@ class FrameDependentNpArray(np.ndarray):
             data to plot on x axis
         ax : matplotlib axe, optional
             axis on which the data will be ploted
-        fmt : str
-            color of the line
-        lw : int
-            line width of the line
-        label : str
-            label associated with the data (useful to plot legend)
-        alpha : int, float
-            alpha
         """
         if not ax:
             _, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 4))
@@ -699,21 +693,14 @@ class FrameDependentNpArray(np.ndarray):
         for i in range(self.shape[0]):
             data_to_plot = np.squeeze(self[i, :, :]).transpose()
             if np.any(x):
-                ax.plot(x, data_to_plot, fmt, lw=lw, label=label, alpha=alpha)
+                ax.plot(x, data_to_plot, *args, **kwargs)
             elif (
                 self.get_time_frames is None
                 or self.get_time_frames.shape[0] != self.shape[2]
             ):
-                ax.plot(data_to_plot, fmt, lw=lw, label=label, alpha=alpha)
+                ax.plot(data_to_plot, *args, **kwargs)
             else:
-                ax.plot(
-                    self.get_time_frames,
-                    data_to_plot,
-                    fmt,
-                    lw=lw,
-                    label=label,
-                    alpha=alpha,
-                )
+                ax.plot(self.get_time_frames, data_to_plot, *args, **kwargs)
         return ax
 
     # --- Signal processing methods

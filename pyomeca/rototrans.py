@@ -328,9 +328,9 @@ class RotoTrans(FrameDependentNpArray):
             raise ValueError("Axis to recalculate must be `x`, `y` or `z`")
 
         rt = RotoTrans(rt=np.zeros((4, 4, data_set.shape[2])))
-        rt[0:3, 0, :] = x.T
-        rt[0:3, 1, :] = y.T
-        rt[0:3, 2, :] = z.T
+        rt[0:3, 0, :] = x.T[:, np.newaxis, :]
+        rt[0:3, 1, :] = y.T[:, np.newaxis, :]
+        rt[0:3, 2, :] = z.T[:, np.newaxis, :]
         rt.set_translation(origin)
         return rt
 
@@ -358,7 +358,7 @@ class RotoTrans(FrameDependentNpArray):
         -------
         Translation part of the RotoTrans
         """
-        return self[0:3, 3, :]
+        return self[0:3, 3:4, :]
 
     def set_translation(self, t):
         """
@@ -368,7 +368,7 @@ class RotoTrans(FrameDependentNpArray):
         t : np.array
             A 3x1xN vector
         """
-        self[0:3, 3, :] = t[0:3, :, :].reshape(3, t.shape[2])
+        self[0:3, 3:4, :] = t[0:3, :, :]
 
     def transpose(self):
         """
