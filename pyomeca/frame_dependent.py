@@ -494,7 +494,9 @@ class FrameDependentNpArray(np.ndarray):
         raise NotImplementedError("_parse_c3d_info is an abstract function")
 
     @classmethod
-    def from_c3d(cls, filename, idx=None, names=None, ignore_non_present_names=False, prefix=None):
+    def from_c3d(
+        cls, filename, idx=None, names=None, ignore_non_present_names=False, prefix=None
+    ):
         """
         Read c3d data and convert to Vectors3d format
         Parameters
@@ -544,7 +546,15 @@ class FrameDependentNpArray(np.ndarray):
         )
 
     @classmethod
-    def _to_vectors(cls, data, idx, all_names, target_names, metadata=None, ignore_non_present_names=False):
+    def _to_vectors(
+        cls,
+        data,
+        idx,
+        all_names,
+        target_names,
+        metadata=None,
+        ignore_non_present_names=False,
+    ):
         if not idx:
             if ignore_non_present_names:
                 idx = []
