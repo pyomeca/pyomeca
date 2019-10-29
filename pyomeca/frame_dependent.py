@@ -494,7 +494,7 @@ class FrameDependentNpArray(np.ndarray):
         raise NotImplementedError("_parse_c3d_info is an abstract function")
 
     @classmethod
-    def from_c3d(cls, filename, idx=None, names=None, prefix=None):
+    def from_c3d(cls, filename, idx=None, names=None, ignore_non_present_names=False, prefix=None):
         """
         Read c3d data and convert to Vectors3d format
         Parameters
@@ -505,6 +505,9 @@ class FrameDependentNpArray(np.ndarray):
             Order of columns given by index
         names : list(str)
             Order of columns given by names, if both names and idx are provided, an error occurs
+        ignore_non_present_names : bool
+            If True, it silently ignores when the requested names are not in the C3D file,
+            changing them for a nan column. If this is False, it raises a ValueError
         prefix : str
             Prefix to remove in the header
 
@@ -541,12 +544,25 @@ class FrameDependentNpArray(np.ndarray):
         )
 
     @classmethod
-    def _to_vectors(cls, data, idx, all_names, target_names, metadata=None):
+    def _to_vectors(cls, data, idx, all_names, target_names, metadata=None, ignore_non_present_names=False):
         if not idx:
-            idx = [all_names.index(itarget) for itarget in target_names]
+            if ignore_non_present_names:
+                idx = []
+                for itarget in target_names:
+                    try:
+                        idx.append(all_names.index(itarget))
+                    except:
+                        idx.append(-1)  # Watch out, this will read the last column!
+            else:
+                idx = [all_names.index(itarget) for itarget in target_names]
 
         data = cls.__new__(cls, data)  # Dynamically cast the data to fit the child
         data = data.get_specific_data(idx)
+        if ignore_non_present_names:
+            # Drop the last column read by -1
+            for col, i in enumerate(idx):
+                if i == -1:
+                    data[:, col, :] = np.nan
 
         data.get_first_frame = metadata["get_first_frame"]
         data.get_last_frame = metadata["get_last_frame"]
