@@ -561,7 +561,7 @@ class FrameDependentNpArray(np.ndarray):
                 for itarget in target_names:
                     try:
                         idx.append(all_names.index(itarget))
-                    except:
+                    except ValueError:
                         idx.append(-1)  # Watch out, this will read the last column!
             else:
                 idx = [all_names.index(itarget) for itarget in target_names]
