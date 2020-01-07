@@ -495,7 +495,7 @@ class FrameDependentNpArray(np.ndarray):
 
     @classmethod
     def from_c3d(
-        cls, filename, idx=None, names=None, ignore_non_present_names=False, prefix=None
+        cls, filename, idx=None, names=None, ignore_non_existing_names=False, prefix=None
     ):
         """
         Read c3d data and convert to Vectors3d format
@@ -507,7 +507,7 @@ class FrameDependentNpArray(np.ndarray):
             Order of columns given by index
         names : list(str)
             Order of columns given by names, if both names and idx are provided, an error occurs
-        ignore_non_present_names : bool
+        ignore_non_existing_names : bool
             If True, it silently ignores when the requested names are not in the C3D file,
             changing them for a nan column. If this is False, it raises a ValueError
         prefix : str
@@ -553,10 +553,10 @@ class FrameDependentNpArray(np.ndarray):
         all_names,
         target_names,
         metadata=None,
-        ignore_non_present_names=False,
+        ignore_non_existing_names=False,
     ):
         if not idx:
-            if ignore_non_present_names:
+            if ignore_non_existing_names:
                 idx = []
                 for itarget in target_names:
                     try:
@@ -568,7 +568,7 @@ class FrameDependentNpArray(np.ndarray):
 
         data = cls.__new__(cls, data)  # Dynamically cast the data to fit the child
         data = data.get_specific_data(idx)
-        if ignore_non_present_names:
+        if ignore_non_existing_names:
             # Drop the last column read by -1
             for col, i in enumerate(idx):
                 if i == -1:
