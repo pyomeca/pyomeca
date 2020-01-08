@@ -442,7 +442,7 @@ class RotoTrans(FrameDependentNpArray):
         -------
         The norm
         """
-        return np.linalg.norm(self, axis=(0, 1), ord=2)
+        return np.linalg.norm(self[0:3, 0:3, :], axis=(0, 1), ord=2)
 
 
 class RotoTransCollection(FrameDependentNpArrayCollection):
