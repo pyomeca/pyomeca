@@ -169,12 +169,12 @@ class Markers3d(FrameDependentNpArray):
 
     def norm(self):
         """
-        Compute the Euclidean norm of vectors
-        Returns:
+        Compute the norm of the markers vector
+
+        Parameters
+        ----------
+        Returns
         -------
-        Norm
+        FrameDependentNpArray
         """
-        square = self[0:3, :, :] ** 2
-        sum_square = np.sum(square, axis=0, keepdims=True)
-        norm = np.sqrt(sum_square)
-        return norm  # TODO: clean this
+        return np.linalg.norm(self[0:3, :, :], axis=0, keepdims=True)
