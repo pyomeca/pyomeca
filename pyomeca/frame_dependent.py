@@ -495,7 +495,12 @@ class FrameDependentNpArray(np.ndarray):
 
     @classmethod
     def from_c3d(
-        cls, filename, idx=None, names=None, ignore_non_existing_names=False, prefix=None
+        cls,
+        filename,
+        idx=None,
+        names=None,
+        ignore_non_existing_names=False,
+        prefix=None,
     ):
         """
         Read c3d data and convert to Vectors3d format
