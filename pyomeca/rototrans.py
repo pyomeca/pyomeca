@@ -379,17 +379,15 @@ class RotoTrans(FrameDependentNpArray):
             Transposed RotoTrans matrix ([R.T -R.T*t],[0 0 0 1])
         """
         # Create a matrix with the transposed rotation part
-        rt_t = RotoTrans(rt=np.ndarray((4, 4, self.get_num_frames())))
-        rt_t[0:3, 0:3, :] = np.transpose(self[0:3, 0:3, :], (1, 0, 2))
-
+        rt_t = RotoTrans(rt=np.zeros((4, 4, self.get_num_frames())))
         # Fill the last column and row with 0 and bottom corner with 1
-        rt_t[3, 0:3, :] = 0
-        rt_t[0:3, 3, :] = 0
         rt_t[3, 3, :] = 1
 
-        # Transpose the translation part
-        t = Markers3d(data=np.reshape(self[0:3, 3, :], (3, 1, self.get_num_frames())))
-        rt_t[0:3, 3, :] = t.rotate(-rt_t)[0:3, :].reshape((3, self.get_num_frames()))
+        # The rotation part is just the transposed of the rotation
+        rt_t[0:3, 0:3, :] = np.transpose(self[0:3, 0:3, :], (1, 0, 2))
+
+        # Transpose the translation part is "-rt_transposed * Translation"
+        rt_t[0:3, 3, :] = np.einsum("ijk,jlk->ilk", -rt_t[0:3, 0:3, :], self[0:3, 3, :])
 
         # Return transposed matrix
         return rt_t
@@ -433,6 +431,18 @@ class RotoTrans(FrameDependentNpArray):
         return RotoTrans(
             angles=x_tp, angle_sequence=seq, translations=rt_mean[0:3, 3, :]
         )
+
+    def norm(self):
+        """
+        Compute the RotoTrans Euclidian norm
+
+        Parameters
+        ----------
+        Returns
+        -------
+        The norm
+        """
+        return np.linalg.norm(self, axis=(0, 1), ord=2)
 
 
 class RotoTransCollection(FrameDependentNpArrayCollection):

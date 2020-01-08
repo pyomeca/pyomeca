@@ -93,3 +93,51 @@ def test_rt_mean(angles):
     # but should not be too far most of the time
     angles_to_compare = p.get_euler_angles(angle_sequence=seq).mean()
     np.testing.assert_array_less((angles_mean - angles_to_compare).sum(), 1e-1)
+
+
+def test_rt_transpose():
+    # Convert random angles to RotoTrans
+    nb_frames = 10
+    random_angles = FrameDependentNpArray(np.random.rand(3, 1, nb_frames))
+    rt = RotoTrans.rt_from_euler_angles(random_angles, "xyz")
+
+    # Prepare expected values for transpose
+    rt_matrix = np.array(rt)
+    rt_t_expected = np.zeros((4, 4, nb_frames))
+    rt_t_expected[3, 3, :] = 1
+    for i in range(4):
+        for j in range(4):
+            for k in range(nb_frames):
+                rt_t_expected[j, i, k] = rt_matrix[i, j, k]
+    for k in range(nb_frames):
+        rt_t_expected[0:3, 3, k] = -rt_t_expected[0:3, 0:3, k].dot(rt_matrix[0:3, 3, k])
+
+    # Compute the transpose using pyomeca
+    rt_t = rt.transpose()
+
+    # Compare the two
+    np.testing.assert_equal(rt_t, rt_t_expected)
+
+
+def test_rt_inverse():
+    # Convert random angles to RotoTrans
+    nb_frames = 10
+    random_angles = FrameDependentNpArray(np.random.rand(3, 1, nb_frames))
+    rt = RotoTrans.rt_from_euler_angles(random_angles, "xyz")
+
+    # Prepare expected values for inverse
+    rt_matrix = np.array(rt)
+    rt_t_expected = np.zeros((4, 4, nb_frames))
+    rt_t_expected[3, 3, :] = 1
+    for i in range(4):
+        for j in range(4):
+            for k in range(nb_frames):
+                rt_t_expected[j, i, k] = rt_matrix[i, j, k]
+    for k in range(nb_frames):
+        rt_t_expected[0:3, 3, k] = -rt_t_expected[0:3, 0:3, k].dot(rt_matrix[0:3, 3, k])
+
+    # Compute the inverse using pyomeca
+    rt_t = rt.inverse()
+
+    # Compare the two
+    np.testing.assert_equal(rt_t, rt_t_expected)
