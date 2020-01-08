@@ -68,18 +68,32 @@ def test_rt_from_markers():
     # Produce different RT that should be the same
     all_m = Markers3d(np.random.rand(3, 4, 100))
 
-    rt_xy = RotoTrans.define_axes(all_m[:, 0, :], all_m[:, (0, 1), :], all_m[:, (0, 2), :], 'xy', 'y')
-    rt_yx = RotoTrans.define_axes(all_m[:, 0, :], all_m[:, (0, 2), :], all_m[:, (0, 1), :], 'yx', 'y')
-    rt_xy_x_recalc = RotoTrans.define_axes(all_m[:, 0, :], all_m[:, (0, 1), :], all_m[:, (0, 2), :], 'yx', 'x')
+    rt_xy = RotoTrans.define_axes(
+        all_m[:, 0, :], all_m[:, (0, 1), :], all_m[:, (0, 2), :], "xy", "y"
+    )
+    rt_yx = RotoTrans.define_axes(
+        all_m[:, 0, :], all_m[:, (0, 2), :], all_m[:, (0, 1), :], "yx", "y"
+    )
+    rt_xy_x_recalc = RotoTrans.define_axes(
+        all_m[:, 0, :], all_m[:, (0, 1), :], all_m[:, (0, 2), :], "yx", "x"
+    )
     rt_xy_x_recalc = rt_xy_x_recalc[:, (1, 0, 2, 3), :]
     rt_xy_x_recalc[:, 2, :] = -rt_xy_x_recalc[:, 2, :]
 
-    rt_yz = RotoTrans.define_axes(all_m[:, 0, :], all_m[:, (0, 1), :], all_m[:, (0, 2), :], 'yz', 'z')
-    rt_zy = RotoTrans.define_axes(all_m[:, 0, :], all_m[:, (0, 2), :], all_m[:, (0, 1), :], 'zy', 'z')
+    rt_yz = RotoTrans.define_axes(
+        all_m[:, 0, :], all_m[:, (0, 1), :], all_m[:, (0, 2), :], "yz", "z"
+    )
+    rt_zy = RotoTrans.define_axes(
+        all_m[:, 0, :], all_m[:, (0, 2), :], all_m[:, (0, 1), :], "zy", "z"
+    )
     rt_xy_from_yz = rt_yz[:, (1, 2, 0, 3), :]
 
-    rt_xz = RotoTrans.define_axes(all_m[:, 0, :], all_m[:, (0, 1), :], all_m[:, (0, 2), :], 'xz', 'z')
-    rt_zx = RotoTrans.define_axes(all_m[:, 0, :], all_m[:, (0, 2), :], all_m[:, (0, 1), :], 'zx', 'z')
+    rt_xz = RotoTrans.define_axes(
+        all_m[:, 0, :], all_m[:, (0, 1), :], all_m[:, (0, 2), :], "xz", "z"
+    )
+    rt_zx = RotoTrans.define_axes(
+        all_m[:, 0, :], all_m[:, (0, 2), :], all_m[:, (0, 1), :], "zx", "z"
+    )
     rt_xy_from_zx = rt_xz[:, (0, 2, 1, 3), :]
     rt_xy_from_zx[:, 2, :] = -rt_xy_from_zx[:, 2, :]
 
@@ -93,11 +107,17 @@ def test_rt_from_markers():
     # Produce one that we are sure of the solution (this validate every others at the same time)
     m = np.ndarray((3, 3, 1))
     m[:, :, 0] = np.array(((1, 2, 3), (4, 5, 6), (6, 5, 4))).T
-    rt_m_xy = RotoTrans.define_axes(m[:, 0, :], m[:, (0, 1), :], m[:, (0, 2), :], 'xy', 'y')
-    expected_rt_m_xy = np.array([[0.5773502691896257,  0.7071067811865475, -0.408248290463863, 1.0],
-                                 [0.5773502691896257,  0.0,                 0.816496580927726, 2.0],
-                                 [0.5773502691896257, -0.7071067811865475, -0.408248290463863, 3.0],
-                                 [0,                   0,                   0,                 1.0]])
+    rt_m_xy = RotoTrans.define_axes(
+        m[:, 0, :], m[:, (0, 1), :], m[:, (0, 2), :], "xy", "y"
+    )
+    expected_rt_m_xy = np.array(
+        [
+            [0.5773502691896257, 0.7071067811865475, -0.408248290463863, 1.0],
+            [0.5773502691896257, 0.0, 0.816496580927726, 2.0],
+            [0.5773502691896257, -0.7071067811865475, -0.408248290463863, 3.0],
+            [0, 0, 0, 1.0],
+        ]
+    )
     expected_rt_m_xy = expected_rt_m_xy[:, :, np.newaxis]
     np.testing.assert_equal(rt_m_xy, expected_rt_m_xy)
 

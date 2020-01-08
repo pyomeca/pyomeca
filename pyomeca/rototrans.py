@@ -240,9 +240,7 @@ class RotoTrans(FrameDependentNpArray):
         return RotoTrans(rt_out)
 
     @staticmethod
-    def define_axes(
-        origin, axis1, axis2, axes_name, axis_to_recalculate
-    ):
+    def define_axes(origin, axis1, axis2, axes_name, axis_to_recalculate):
         """
         This function creates system of axes from axis1 and axis2
         Parameters
