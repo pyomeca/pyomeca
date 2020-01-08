@@ -116,7 +116,7 @@ def test_rt_transpose():
     rt_t = rt.transpose()
 
     # Compare the two
-    np.testing.assert_equal(rt_t, rt_t_expected)
+    np.testing.assert_almost_equal(rt_t, rt_t_expected, decimal=10)
 
 
 def test_rt_inverse():
@@ -140,4 +140,4 @@ def test_rt_inverse():
     rt_t = rt.inverse()
 
     # Compare the two
-    np.testing.assert_equal(rt_t, rt_t_expected)
+    np.testing.assert_almost_equal(rt_t, rt_t_expected, decimal=10)
