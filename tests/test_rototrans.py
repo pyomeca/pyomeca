@@ -79,7 +79,7 @@ def test_euler2rot_rot2euler(seq, angles, epsilon):
     # Get euler angles back from RotoTrans
     a = p.get_euler_angles(angle_sequence=seq)
 
-    np.testing.assert_array_less((a - angles_to_test).sum(), epsilon)
+    np.testing.assert_array_less(np.abs(a - angles_to_test).sum(), epsilon)
 
 
 @pytest.mark.parametrize("angles", [ANGLES])
@@ -92,4 +92,4 @@ def test_rt_mean(angles):
     # Test the difference with a very relax tolerance since angles_to_compare is false by definition
     # but should not be too far most of the time
     angles_to_compare = p.get_euler_angles(angle_sequence=seq).mean()
-    np.testing.assert_array_less((angles_mean - angles_to_compare).sum(), 1e-1)
+    np.testing.assert_array_less(np.abs(angles_mean - angles_to_compare).sum(), 1e-1)

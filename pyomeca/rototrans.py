@@ -102,25 +102,29 @@ class RotoTrans(FrameDependentNpArray):
             angles[0, :, :] = -np.arcsin(self[0, 1, :])
             angles[1, :, :] = -np.arcsin(self[2, 0, :])
         elif angle_sequence == "xyz":
-            angles[0, :, :] = np.arctan2(self[1, 2, :], self[2, 2, :])
-            angles[1, :, :] = np.arcsin(self[0, 1, :])
+            angles[0, :, :] = np.arctan2(-self[1, 2, :], self[2, 2, :])
+            angles[1, :, :] = np.arcsin(self[0, 2, :])
             angles[2, :, :] = np.arctan2(-self[0, 1, :], self[0, 0, :])
         elif angle_sequence == "xzy":
             angles[0, :, :] = np.arctan2(self[2, 1, :], self[1, 1, :])
             angles[2, :, :] = np.arctan2(self[0, 2, :], self[0, 0, :])
-            angles[1, :, :] = -np.arcsin(self[0, 1, :])
-        elif angle_sequence == "xzy":
-            angles[1, :, :] = -np.arcsin(self[1, 2, :])
+            angles[1, :, :] = np.arcsin(-self[0, 1, :])
+        elif angle_sequence == "yxz":
+            angles[1, :, :] = np.arcsin(-self[1, 2, :])
             angles[0, :, :] = np.arctan2(self[0, 2, :], self[2, 2, :])
             angles[2, :, :] = np.arctan2(self[1, 0, :], self[1, 1, :])
         elif angle_sequence == "yzx":
             angles[2, :, :] = np.arctan2(-self[1, 2, :], self[1, 1, :])
             angles[0, :, :] = np.arctan2(-self[2, 0, :], self[0, 0, :])
-            angles[1, :, :] = np.arcsin(self[1, 2, :])
+            angles[1, :, :] = np.arcsin(self[1, 0, :])
         elif angle_sequence == "zxy":
             angles[1, :, :] = np.arcsin(self[2, 1, :])
             angles[2, :, :] = np.arctan2(-self[2, 0, :], self[2, 2, :])
             angles[0, :, :] = np.arctan2(-self[0, 1, :], self[1, 1, :])
+        elif angle_sequence == "zyx":
+            angles[2, :, :] = np.arctan2(self[2, 1, :], self[2, 2, :])
+            angles[1, :, :] = np.arcsin(-self[2, 0, :])
+            angles[0, :, :] = np.arctan2(self[1, 0, :], self[0, 0, :])
         elif angle_sequence == "zyz":
             angles[0, :, :] = np.arctan2(self[1, 2, :], self[0, 2, :])
             angles[1, :, :] = np.arccos(self[2, 2, :])
