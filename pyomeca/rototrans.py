@@ -244,48 +244,38 @@ class RotoTrans(FrameDependentNpArray):
         return RotoTrans(rt_out)
 
     @staticmethod
-    def define_axes(
-        data_set, idx_axis1, idx_axis2, axes_name, axis_to_recalculate, idx_origin
-    ):
+    def define_axes(origin, axis1, axis2, axes_name, axis_to_recalculate):
         """
         This function creates system of axes from axis1 and axis2
         Parameters
         ----------
-        data_set : Markers3d
-            Whole data set
-        idx_axis1 : list(int)
-            First column is the beginning of the axis, second is the end. Rows are the markers to be mean
-        idx_axis2 : list(int)
-            First column is the beginning of the axis, second is the end. Rows are the markers to be mean
+        origin : Markers3d
+            A Markers3d of dimension [4, 1, nb_frames] of the origin in global reference frame of the RotoTrans
+            Matrix (corresponding to the translation column)
+        axis1 : Marker3d
+            A Markers3d of dimension [4, 2, nb_frames] that describe the axis 1,
+            the first marker being the beginning of the vector, the second being the end of the vector
+        axis2 : Marker3d
+            A Markers3d of dimension [4, 2, nb_frames] that describe the axis 2,
+            the first marker being the beginning of the vector, the second being the end of the vector
         axes_name : str
-            Name of the axis1 and axis2 in that order ("xy", "yx", "xz", ...)
+            Name of the axis1 and axis2 respectively ("xy", "yx", "xz", ...)
         axis_to_recalculate : str
-            Which of the 3 axes to recalculate
-        idx_origin : list(int)
-            Markers to be mean to define the origin of the system of axes
+            Which of the 2 axes to recalculate
 
         Returns
         -------
-        System of axes
+        The systems of axes described by the markers for each frames
         """
-        # Extract mean of each required axis indexes
-        idx_axis1 = np.matrix(idx_axis1)
-        idx_axis2 = np.matrix(idx_axis2)
+        # Do some checks on the number of markers
+        if origin.shape[1] != 1:
+            raise ValueError("Origin must be only one marker")
+        if axis1.shape[1] != 2:
+            raise ValueError("Axis1 must have 2 markers, one beginning and one end")
+        if axis2.shape[1] != 2:
+            raise ValueError("Axis2 must have 2 markers, one beginning and one end")
 
-        axis1 = data_set.get_specific_data(
-            idx_axis1[:, 1]
-        ) - data_set.get_specific_data(idx_axis1[:, 0])
-        axis2 = data_set.get_specific_data(
-            idx_axis2[:, 1]
-        ) - data_set.get_specific_data(idx_axis2[:, 0])
-        origin = data_set.get_specific_data(
-            np.matrix(idx_origin).reshape((len(idx_origin), 1))
-        )
-
-        axis1 = axis1[0:3, :, :].reshape(3, axis1.shape[2]).T
-        axis2 = axis2[0:3, :, :].reshape(3, axis2.shape[2]).T
-
-        # If we inverse axes_names, inverse axes as well
+        # Sort the axes name, If we inverse axes_names, inverse axes as well
         axes_name_tp = "".join(sorted(axes_name))
         if axes_name != axes_name_tp:
             axis1_copy = axis1
@@ -293,16 +283,30 @@ class RotoTrans(FrameDependentNpArray):
             axis2 = axis1_copy
             axes_name = axes_name_tp
 
-        error_msg = "Axes names should be 2 values of `x`, `y` and `z` permutations"
+        # Compute vectors from Markers
+        axis1 = axis1[0:3, 1, :] - axis1[0:3, 0, :]
+        axis2 = axis2[0:3, 1, :] - axis2[0:3, 0, :]
 
+        if len(origin.shape) == 2:
+            origin = origin.reshape((origin.shape[0], origin.shape[1], 1))
+        if len(axis1.shape) == 2:
+            axis1 = axis1.reshape((axis1.shape[0], axis1.shape[1], 1))
+        if len(axis2.shape) == 2:
+            axis2 = axis2.reshape((axis2.shape[0], axis2.shape[1], 1))
+
+        # Do some checks on number of frames
+        if origin.shape[2] != axis1.shape[2] or origin.shape[2] != axis2.shape[2]:
+            raise ValueError("Number of frame for origin and axes must be the same")
+
+        error_msg = "Axes names should be 2 values of `x`, `y` and `z` permutations"
         if axes_name[0] == "x":
             x = axis1
             if axes_name[1] == "y":
                 y = axis2
-                z = np.cross(x, y)
+                z = np.cross(x, y, axis=0)
             elif axes_name[1] == "z":
                 z = axis2
-                y = np.cross(z, x)
+                y = np.cross(z, x, axis=0)
             else:
                 raise ValueError(error_msg)
 
@@ -310,31 +314,31 @@ class RotoTrans(FrameDependentNpArray):
             y = axis1
             if axes_name[1] == "z":
                 z = axis2
-                x = np.cross(y, z)
+                x = np.cross(y, z, axis=0)
             else:
                 raise ValueError(error_msg)
         else:
             raise ValueError(error_msg)
 
-        # Normalize each vector
-        x = x / np.matrix(np.linalg.norm(x, axis=1)).T
-        y = y / np.matrix(np.linalg.norm(y, axis=1)).T
-        z = z / np.matrix(np.linalg.norm(z, axis=1)).T
-
-        # # Recalculate the temporary axis
+        # Recalculate the temporary axis
         if axis_to_recalculate == "x":
-            x = np.cross(y, z)
+            x = np.cross(y, z, axis=0)
         elif axis_to_recalculate == "y":
-            y = np.cross(z, x)
+            y = np.cross(z, x, axis=0)
         elif axis_to_recalculate == "z":
-            z = np.cross(x, y)
+            z = np.cross(x, y, axis=0)
         else:
             raise ValueError("Axis to recalculate must be `x`, `y` or `z`")
 
-        rt = RotoTrans(rt=np.zeros((4, 4, data_set.shape[2])))
-        rt[0:3, 0, :] = x.T[:, np.newaxis, :]
-        rt[0:3, 1, :] = y.T[:, np.newaxis, :]
-        rt[0:3, 2, :] = z.T[:, np.newaxis, :]
+        # Normalize each vector
+        x = x / np.linalg.norm(x, axis=0)
+        y = y / np.linalg.norm(y, axis=0)
+        z = z / np.linalg.norm(z, axis=0)
+
+        rt = RotoTrans(rt=np.zeros((4, 4, origin.shape[2])))
+        rt[0:3, 0, :] = x
+        rt[0:3, 1, :] = y
+        rt[0:3, 2, :] = z
         rt.set_translation(origin)
         return rt
 
@@ -383,17 +387,15 @@ class RotoTrans(FrameDependentNpArray):
             Transposed RotoTrans matrix ([R.T -R.T*t],[0 0 0 1])
         """
         # Create a matrix with the transposed rotation part
-        rt_t = RotoTrans(rt=np.ndarray((4, 4, self.get_num_frames())))
-        rt_t[0:3, 0:3, :] = np.transpose(self[0:3, 0:3, :], (1, 0, 2))
-
+        rt_t = RotoTrans(rt=np.zeros((4, 4, self.get_num_frames())))
         # Fill the last column and row with 0 and bottom corner with 1
-        rt_t[3, 0:3, :] = 0
-        rt_t[0:3, 3, :] = 0
         rt_t[3, 3, :] = 1
 
-        # Transpose the translation part
-        t = Markers3d(data=np.reshape(self[0:3, 3, :], (3, 1, self.get_num_frames())))
-        rt_t[0:3, 3, :] = t.rotate(-rt_t)[0:3, :].reshape((3, self.get_num_frames()))
+        # The rotation part is just the transposed of the rotation
+        rt_t[0:3, 0:3, :] = np.transpose(self[0:3, 0:3, :], (1, 0, 2))
+
+        # Transpose the translation part is "-rt_transposed * Translation"
+        rt_t[0:3, 3, :] = np.einsum("ijk,jlk->ilk", -rt_t[0:3, 0:3, :], self[0:3, 3, :])
 
         # Return transposed matrix
         return rt_t
@@ -437,6 +439,18 @@ class RotoTrans(FrameDependentNpArray):
         return RotoTrans(
             angles=x_tp, angle_sequence=seq, translations=rt_mean[0:3, 3, :]
         )
+
+    def norm(self):
+        """
+        Compute the RotoTrans Euclidian norm
+
+        Parameters
+        ----------
+        Returns
+        -------
+        The norm
+        """
+        return np.linalg.norm(self[0:3, 0:3, :], axis=(0, 1), ord=2)
 
 
 class RotoTransCollection(FrameDependentNpArrayCollection):
