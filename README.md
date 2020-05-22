@@ -3,15 +3,15 @@
       src="https://raw.githubusercontent.com/pyomeca/design/master/logo/logo_plain_doc.svg?sanitize=true"
       alt="logo"
     />
-  <a href="https://github.com/romainmartinez/pyomeca/actions"
+  <a href="https://github.com/pyomeca/pyomeca/actions"
     ><img
       alt="Actions Status"
-      src="https://github.com/romainmartinez/pyomeca/workflows/CI/badge.svg"
+      src="https://github.com/pyomeca/pyomeca/workflows/CI/badge.svg"
   /></a>
-  <a href="https://coveralls.io/github/romainmartinez/pyomeca?branch=master"
+  <a href="https://coveralls.io/github/pyomeca/pyomeca?branch=master"
     ><img
       alt="Coverage Status"
-      src="https://coveralls.io/repos/github/romainmartinez/pyomeca/badge.svg?branch=master"
+      src="https://coveralls.io/repos/github/pyomeca/pyomeca/badge.svg?branch=master"
   /></a>
   <a href="https://anaconda.org/conda-forge/pyomeca"
     ><img
@@ -43,9 +43,9 @@ See Pyomeca's [documentation site](https://pyomeca.github.io).
 
 ## Example
 
-Pyomeca implements specialized functionalities commonly used in biomechanics. As an example, let's process the electromyographic data contained in this [`c3d file`](https://github.com/romainmartinez/pyomeca/blob/master/tests/data/markers_analogs.c3d).
+Pyomeca implements specialized functionalities commonly used in biomechanics. As an example, let's process the electromyographic data contained in this [`c3d file`](https://github.com/pyomeca/pyomeca/blob/master/tests/data/markers_analogs.c3d).
 
-You can follow along without installing anything by using our binder server: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/romainmartinez/pyomeca/master?filepath=notebooks)
+You can follow along without installing anything by using our binder server: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/pyomeca/pyomeca/master?filepath=notebooks)
 
 ```python
 from pyomeca import Analogs

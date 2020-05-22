@@ -49,7 +49,7 @@ Pyomeca supports most of the formats used in biomechanics.
 
 !!! note
     Pyomeca does not support a format you need?
-    You can inform us by opening an [issue](https://github.com/romainmartinez/pyomeca/issues) or even submit a [pull request](https://github.com/romainmartinez/pyomeca/pulls) to make your implementation available to the whole community!
+    You can inform us by opening an [issue](https://github.com/pyomeca/pyomeca/issues) or even submit a [pull request](https://github.com/pyomeca/pyomeca/pulls) to make your implementation available to the whole community!
 
 === "c3d"
     !!! Example
