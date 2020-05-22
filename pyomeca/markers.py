@@ -157,7 +157,7 @@ class Markers:
             Markers `xarray.DataArray` with the specified data and coordinates
 
         !!! example
-            To read [this csv file](https://github.com/romainmartinez/pyomeca/blob/master/tests/data/markers.csv),
+            To read [this csv file](https://github.com/pyomeca/pyomeca/blob/master/tests/data/markers.csv),
             type:
 
             ```python
@@ -267,7 +267,7 @@ class Markers:
             Markers `xarray.DataArray` with the specified data and coordinates
 
         !!! example
-            To read [this excel file](https://github.com/romainmartinez/pyomeca/blob/master/tests/data/markers.xlsx),
+            To read [this excel file](https://github.com/pyomeca/pyomeca/blob/master/tests/data/markers.xlsx),
             type:
 
             ```python
@@ -362,7 +362,7 @@ class Markers:
             Markers `xarray.DataArray` with the specified data and coordinates
 
         !!! example
-            To read [this c3d file](https://github.com/romainmartinez/pyomeca/blob/master/tests/data/markers_analogs.c3d),
+            To read [this c3d file](https://github.com/pyomeca/pyomeca/blob/master/tests/data/markers_analogs.c3d),
             type:
 
             ```python
@@ -406,7 +406,7 @@ class Markers:
             Markers `xarray.DataArray` with the specified data and coordinates
 
         !!! example
-            To read [this trc file](https://github.com/romainmartinez/pyomeca/blob/master/tests/data/markers.trc),
+            To read [this trc file](https://github.com/pyomeca/pyomeca/blob/master/tests/data/markers.trc),
             type:
 
             ```python

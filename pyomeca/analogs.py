@@ -151,7 +151,7 @@ class Analogs:
             Analogs `xarray.DataArray` with the specified data and coordinates
 
         !!! example
-            To read [this csv file](https://github.com/romainmartinez/pyomeca/blob/master/tests/data/analogs.csv),
+            To read [this csv file](https://github.com/pyomeca/pyomeca/blob/master/tests/data/analogs.csv),
             type:
 
             ```python
@@ -261,7 +261,7 @@ class Analogs:
             Analogs `xarray.DataArray` with the specified data and coordinates
 
         !!! example
-            To read [this excel file](https://github.com/romainmartinez/pyomeca/blob/master/tests/data/analogs.xlsx),
+            To read [this excel file](https://github.com/pyomeca/pyomeca/blob/master/tests/data/analogs.xlsx),
             type:
 
             ```python
@@ -333,7 +333,7 @@ class Analogs:
             Analogs `xarray.DataArray` with the specified data and coordinates
 
         !!! example
-            To read [this sto file](https://github.com/romainmartinez/pyomeca/blob/master/tests/data/inverse_dyn.sto),
+            To read [this sto file](https://github.com/pyomeca/pyomeca/blob/master/tests/data/inverse_dyn.sto),
             type:
 
             ```python
@@ -375,7 +375,7 @@ class Analogs:
             Analogs `xarray.DataArray` with the specified data and coordinates
 
         !!! example
-            To read [this mot file](https://github.com/romainmartinez/pyomeca/blob/master/tests/data/inverse_kin.mot),
+            To read [this mot file](https://github.com/pyomeca/pyomeca/blob/master/tests/data/inverse_kin.mot),
             type:
 
             ```python
@@ -425,7 +425,7 @@ class Analogs:
             Analogs `xarray.DataArray` with the specified data and coordinates
 
         !!! example
-            To read [this c3d file](https://github.com/romainmartinez/pyomeca/blob/master/tests/data/markers_analogs.c3d),
+            To read [this c3d file](https://github.com/pyomeca/pyomeca/blob/master/tests/data/markers_analogs.c3d),
             type:
 
             ```python
