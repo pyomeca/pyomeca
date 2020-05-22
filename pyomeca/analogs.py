@@ -1,371 +1,508 @@
 from pathlib import Path
+from typing import Union, Optional, List, Tuple
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import xarray as xr
 
-from pyomeca import FrameDependentNpArray
+from pyomeca.io import read, utils
 
 
-class Analogs3d(FrameDependentNpArray):
-    def __new__(cls, data=np.ndarray((1, 0, 0)), names=list(), *args, **kwargs):
+class Analogs:
+    def __new__(
+        cls,
+        data: Optional[Union[np.array, np.ndarray, xr.DataArray]] = None,
+        channels: Optional[list] = None,
+        time: Optional[Union[np.array, list, pd.Series]] = None,
+        **kwargs,
+    ) -> xr.DataArray:
         """
-        Parameters
-        ----------
-        data : np.ndarray
-            1xNxF matrix of analogs data
-        names : list of string
-            name of the analogs that correspond to second dimension of the matrix
+        Analogs DataArray with `channel` and `time` dimensions
+         used for generic signals such as EMGs, force signals or any other analog signals.
+         ![analogs](/images/objects/analogs.svg)
+
+        Arguments:
+            data: Array to be passed to xarray.DataArray
+            channels: Channel names
+            time: Time vector in seconds associated with the `data` parameter
+            kwargs: Keyword argument(s) to be passed to xarray.DataArray
+
+        Returns:
+            Analogs `xarray.DataArray` with the specified data and coordinates
+
+        !!! example
+            To instantiate an `Analogs` with 4 channels and 100 frames filled with some random data:
+
+            ```python
+            import numpy as np
+            from pyomeca import Analogs
+
+            n_channels = 4
+            n_frames = 100
+            data = np.random.random(size=(n_channels, n_frames))
+            analogs = Analogs(data)
+            ```
+
+            You can add the channel names:
+
+            ```python
+            names = ["A", "B", "C", "D"]
+            analogs = Analogs(data, channels=names)
+            ```
+
+            And an associate time vector:
+
+            ```python
+            rate = 100  # Hz
+            time = np.arange(start=0, stop=n_frames / rate, step=1 / rate)
+            analogs = Analogs(data, channels=names, time=time)
+            ```
+
+        !!! note
+            Calling `Analogs()` generate an empty array.
         """
-        if data.ndim == 2:
-            data = Analogs3d.from_2d(data)
-
-        if data.ndim == 3:
-            s = data.shape
-            if s[0] != 1:
-                raise IndexError(
-                    "Analogs3d must have a length of 1 on the first dimension"
-                )
-            analog = data
-        else:
-            raise TypeError("Data must be 2d or 3d matrix")
-
-        return super(Analogs3d, cls).__new__(cls, array=analog, *args, **kwargs)
-
-    def __array_finalize__(self, obj):
-        super().__array_finalize__(obj)
-        # Allow slicing
-        if obj is None or not isinstance(obj, Analogs3d):
-            return
-
-    # --- Get metadata methods
-
-    def get_num_analogs(self):
-        """
-        Returns
-        -------
-        The number of analogs
-        """
-        return self.shape[1]
-
-    def get_2d_labels(self):
-        """
-        Takes a Analogs style labels and returns 2d style labels
-        Returns
-        -------
-        2d style labels
-        """
-        return self.get_labels
-
-    # --- Fileio methods (from_*)
-
-    @staticmethod
-    def from_2d(m):
-        """
-        Takes a tabular matrix and returns a Vectors3d
-        Parameters
-        ----------
-        m : np.array
-            A CSV tabular matrix (Fx3*N)
-        Returns
-        -------
-        Vectors3d of data set
-        """
-        s = m.shape
-        return Analogs3d(np.reshape(m.T, (1, s[1], s[0]), "F"))
-
-    @classmethod
-    def from_mot(cls, filename):
-        mot = cls.from_csv(
-            filename, header=8, first_column=1, time_column=0, delimiter="\t"
+        coords = {}
+        if data is None:
+            data = np.ndarray((0, 0))
+        if channels is not None:
+            coords["channel"] = channels
+        if time is not None:
+            coords["time"] = time
+        return xr.DataArray(
+            data=data,
+            dims=("channel", "time"),
+            coords=coords,
+            name="analogs",
+            **kwargs,
         )
-        mot.get_rate = (1 / (mot.get_time_frames[1] - mot.get_time_frames[0])).round()
-        return mot
 
     @classmethod
-    def from_sto(cls, filename, endheader_range=20, na_values=None):
-        # detect where 'endheader' is
-        meta = pd.read_csv(
-            filename, usecols=[0], nrows=endheader_range, delimiter="\t"
-        ).values.ravel()
-        end_header = np.argwhere((meta == "endheader"))[0][0] + 2
-        if end_header:
-            sto = cls.from_csv(
-                filename,
-                header=end_header,
-                first_column=1,
-                time_column=0,
-                delimiter="\t",
-                na_values=na_values,
-            )
-            sto.get_rate = (
-                1 / (sto.get_time_frames[1] - sto.get_time_frames[0])
-            ).round()
-        else:
-            raise ValueError(
-                f"""endheader" not detected in the first {endheader_range} rows.
-            Try increasing the `endheader_range` parameter'"""
-            )
-        return sto
-
-    # --- Fileio methods (to_*)
-
-    def to_2d(self):
+    def from_random_data(
+        cls, distribution: str = "normal", size: tuple = (10, 100), **kwargs
+    ) -> xr.DataArray:
         """
-        Takes a Analogs3d style matrix and returns a tabular matrix
-        Returns
-        -------
-        Tabular matrix
+        Create random data from a specified distribution (normal by default) using random walk.
+
+        Arguments:
+            distribution: Distribution available in
+                [numpy.random](https://docs.scipy.org/doc/numpy-1.14.0/reference/routines.random.html#distributions)
+            size: Shape of the desired array
+            kwargs: Keyword argument(s) to be passed to numpy.random.`distribution`
+
+        Returns:
+            Random Analogs `xarray.DataArray` sampled from a given distribution
+
+        !!! example
+            To instantiate an `Analogs` with some random data sampled from a normal distribution:
+
+            ```python
+            from pyomeca import Analogs
+
+            n_channels = 10
+            n_frames = 100
+            size = n_channels, n_frames
+            analogs = Analogs.from_random_data(size=size)
+            ```
+
+            You can choose any distribution available in
+                [numpy.random](https://docs.scipy.org/doc/numpy-1.14.0/reference/routines.random.html#distributions):
+
+            ```python
+            analogs = Analogs.from_random_data(distribution="uniform", size=size, low=1, high=10)
+            ```
         """
-        return np.squeeze(self.T, axis=2)
+        return Analogs(getattr(np.random, distribution)(size=size, **kwargs).cumsum(-1))
+
+    @classmethod
+    def from_csv(
+        cls,
+        filename: Union[str, Path],
+        usecols: Optional[List[Union[str, int]]] = None,
+        header: Optional[int] = None,
+        first_row: int = 0,
+        first_column: Optional[Union[str, int]] = None,
+        time_column: Optional[Union[str, int]] = None,
+        last_column_to_remove: Optional[Union[str, int]] = None,
+        prefix_delimiter: Optional[str] = None,
+        suffix_delimiter: Optional[str] = None,
+        skiprows: Optional[List[int]] = None,
+        pandas_kwargs: Optional[dict] = None,
+        attrs: Optional[dict] = None,
+    ) -> xr.DataArray:
+        """
+        Analogs DataArray from a csv file.
+
+        Arguments:
+            filename: Any valid string path
+            usecols: All elements must either be positional or strings that correspond to column names.
+                For example, a valid list-like usecols parameter would be [0, 1, 2] or ['foo', 'bar', 'baz']
+            header: Row of the header (0-indexed)
+            first_row: First row of the data (0-indexed)
+            first_column: First column of the data (0-indexed)
+            time_column: Location of the time column. If None, indices are associated
+            last_column_to_remove: If for some reason the csv reads extra columns, how many should be ignored
+            prefix_delimiter: Delimiter that split each column name by its prefix (we keep only the column name)
+            suffix_delimiter: Delimiter that split each column name by its suffix (we keep only the column name)
+            skiprows: Line numbers to skip (0-indexed)
+            pandas_kwargs: Keyword arguments to be passed to `pandas.read_csv`
+            attrs: attrs to be passed to `xr.DataArray`. If attrs['rate'] is provided, compute the time accordingly
+
+        Returns:
+            Analogs `xarray.DataArray` with the specified data and coordinates
+
+        !!! example
+            To read [this csv file](https://github.com/romainmartinez/pyomeca/blob/master/tests/data/analogs.csv),
+            type:
+
+            ```python
+            from pyomeca import Analogs
+
+            data_path = "./tests/data/analogs.csv"
+            analogs = Analogs.from_csv(data_path, header=3, first_row=5, first_column=2)
+            ```
+
+            If you know the channel names, you can retrieve only the ones you are interested in by specifying strings:
+
+            ```python
+            channels = ["IM EMG1", "IM EMG2", "IM EMG3"]
+            analogs = Analogs.from_csv(
+                data_path, header=3, first_row=5, first_column=2, usecols=channels
+            )
+            ```
+
+            Or by position:
+
+            ```python
+            channels = [5, 6, 7]
+            analogs = Analogs.from_csv(
+                data_path, header=3, first_row=5, first_column=2, usecols=channels
+            )
+            ```
+
+            Sometimes the channel name is delimited by a suffix or prefix.
+            To access the prefix, you can specify `prefix_delimiter` and `suffix_delimiter` for the suffix.
+            For example, if the name is `"IM EMG1"` and you specify `suffix_delimiter=" "`, you will select "IM".
+            Similarly, if you specify `prefix_delimiter=" ":
+
+            ```python
+            channels = ["EMG1", "EMG2", "EMG3"]
+            analogs = Analogs.from_csv(
+                data_path,
+                header=3,
+                first_row=5,
+                first_column=2,
+                usecols=channels,
+                suffix_delimiter=" ",
+            )
+            ```
+
+            It is also possible to specify a column containing the time vector:
+
+            ```python
+            analogs = Analogs.from_csv(
+                data_path, header=3, first_row=5, first_column=1, time_column=0
+            )
+            ```
+        """
+        return read.read_csv_or_excel(
+            cls,
+            "csv",
+            filename,
+            usecols,
+            header,
+            first_row,
+            first_column,
+            time_column,
+            last_column_to_remove,
+            prefix_delimiter,
+            suffix_delimiter,
+            skiprows,
+            pandas_kwargs,
+            attrs,
+        )
+
+    @classmethod
+    def from_excel(
+        cls,
+        filename: Union[str, Path],
+        sheet_name: Union[str, int] = 0,
+        usecols: Optional[List[Union[str, int]]] = None,
+        header: Optional[int] = None,
+        first_row: int = 0,
+        first_column: Optional[Union[str, int]] = None,
+        time_column: Optional[Union[str, int]] = None,
+        last_column_to_remove: Optional[Union[str, int]] = None,
+        prefix_delimiter: Optional[str] = None,
+        suffix_delimiter: Optional[str] = None,
+        skiprows: Optional[List[int]] = None,
+        pandas_kwargs: Optional[dict] = None,
+        attrs: Optional[dict] = None,
+    ) -> xr.DataArray:
+        """
+        Analogs DataArray from a excel file.
+
+        Arguments:
+            filename: Any valid string path
+            sheet_name: Strings are used for sheet names. Integers are used in zero-indexed sheet positions
+            usecols: All elements must either be positional or strings that correspond to column names.
+                For example, a valid list-like usecols parameter would be [0, 1, 2] or ['foo', 'bar', 'baz']
+            header: Row of the header (0-indexed)
+            first_row: First row of the data (0-indexed)
+            first_column: First column of the data (0-indexed)
+            time_column: Location of the time column. If None, indices are associated
+            last_column_to_remove: If for some reason the csv reads extra columns, how many should be ignored
+            prefix_delimiter: Delimiter that split each column name by its prefix (we keep only the column name)
+            suffix_delimiter: Delimiter that split each column name by its suffix (we keep only the column name)
+            skiprows: Line numbers to skip (0-indexed)
+            pandas_kwargs: Keyword arguments to be passed to `pandas.read_excel`
+            attrs: attrs to be passed to `xr.DataArray`. If attrs['rate'] is provided, compute the time accordingly
+
+        Returns:
+            Analogs `xarray.DataArray` with the specified data and coordinates
+
+        !!! example
+            To read [this excel file](https://github.com/romainmartinez/pyomeca/blob/master/tests/data/analogs.xlsx),
+            type:
+
+            ```python
+            from pyomeca import Analogs
+
+            data_path = "./tests/data/analogs.xlsx"
+            analogs = Analogs.from_excel(data_path, header=3, first_row=5, first_column=2)
+            ```
+
+            If you know the channel names, you can retrieve only the ones you are interested in by specifying strings:
+
+            ```python
+            channels = ["A"]
+            analogs = Analogs.from_excel(
+                data_path, header=3, first_row=5, first_column=2, usecols=channels
+            )
+            ```
+
+            Or by position:
+
+            ```python
+            channels = [1]
+            analogs = Analogs.from_excel(
+                data_path, header=3, first_row=5, first_column=2, usecols=channels
+            )
+            ```
+
+            It is also possible to specify a column containing the time vector:
+
+            ```python
+            analogs = Analogs.from_excel(
+                data_path, header=3, first_row=5, first_column=1, time_column=0
+            )
+            ```
+
+        """
+        return read.read_csv_or_excel(
+            cls,
+            "excel",
+            filename,
+            usecols,
+            header,
+            first_row,
+            first_column,
+            time_column,
+            last_column_to_remove,
+            prefix_delimiter,
+            suffix_delimiter,
+            skiprows,
+            pandas_kwargs,
+            attrs,
+            sheet_name,
+        )
+
+    @classmethod
+    def from_sto(
+        cls, filename: Union[str, Path], end_header: Optional[bool] = None, **kwargs
+    ) -> xr.DataArray:
+        """
+        Analogs DataArray from a sto file.
+
+        Arguments:
+            filename: Any valid string path
+            end_header: Index where `endheader` appears (0 indexed).
+                If not provided, the index is automatically determined
+            kwargs: Keyword arguments to be passed to `from_csv`
+
+        Returns:
+            Analogs `xarray.DataArray` with the specified data and coordinates
+
+        !!! example
+            To read [this sto file](https://github.com/romainmartinez/pyomeca/blob/master/tests/data/inverse_dyn.sto),
+            type:
+
+            ```python
+            from pyomeca import Analogs
+
+            data_path = "./tests/data/inverse_dyn.sto"
+            analogs = Analogs.from_sto(data_path)
+            ```
+
+            If you know the channel names, you can retrieve only the ones you are interested in by specifying strings:
+
+            ```python
+            channels = ["shoulder_plane_moment", "shoulder_ele_moment"]
+            analogs = Analogs.from_sto(data_path, usecols=channels)
+            ```
+
+            Or by position:
+
+            ```python
+            channels = [3, 4]
+            analogs = Analogs.from_sto(data_path, usecols=channels)
+            ```
+        """
+        return read.read_sto_or_mot(cls, filename, end_header, **kwargs)
+
+    @classmethod
+    def from_mot(
+        cls, filename: Union[str, Path], end_header: Optional[bool] = None, **kwargs
+    ) -> xr.DataArray:
+        """
+        Analogs DataArray from a mot file.
+
+        Arguments:
+            filename: Any valid string path
+            end_header: Index where `endheader` appears (0 indexed). If not provided, the index is automatically determined.
+            kwargs: Keyword arguments to be passed to `from_csv`
+
+        Returns:
+            Analogs `xarray.DataArray` with the specified data and coordinates
+
+        !!! example
+            To read [this mot file](https://github.com/romainmartinez/pyomeca/blob/master/tests/data/inverse_kin.mot),
+            type:
+
+            ```python
+            from pyomeca import Analogs
+
+            data_path = "./tests/data/inverse_kin.mot"
+            analogs = Analogs.from_mot(data_path)
+            ```
+
+            If you know the channel names, you can retrieve only the ones you are interested in by specifying strings:
+
+            ```python
+            channels = ["elbow_flexion", "pro_sup"]
+            analogs = Analogs.from_mot(data_path, usecols=channels)
+            ```
+
+            Or by position:
+
+            ```python
+            channels = [3, 4]
+            analogs = Analogs.from_mot(data_path, usecols=channels)
+            ```
+        """
+        return read.read_sto_or_mot(cls, filename, end_header, **kwargs)
+
+    @classmethod
+    def from_c3d(
+        cls,
+        filename: Union[str, Path],
+        usecols: Optional[List[Union[str, int]]] = None,
+        prefix_delimiter: Optional[str] = None,
+        suffix_delimiter: Optional[str] = None,
+        attrs: Optional[dict] = None,
+    ) -> xr.DataArray:
+        """
+        Analogs DataArray from a c3d file.
+
+        Arguments:
+            filename: Any valid string path
+            usecols: All elements must either be positional or strings that correspond to column names.
+                For example, a valid list-like usecols parameter would be [0, 1, 2] or ['foo', 'bar', 'baz'].
+            prefix_delimiter: Delimiter that split each column name by its prefix (we keep only the column name)
+            suffix_delimiter: Delimiter that split each column name by its suffix (we keep only the column name)
+            attrs: attrs to be passed to xr.DataArray
+
+        Returns:
+            Analogs `xarray.DataArray` with the specified data and coordinates
+
+        !!! example
+            To read [this c3d file](https://github.com/romainmartinez/pyomeca/blob/master/tests/data/markers_analogs.c3d),
+            type:
+
+            ```python
+            from pyomeca import Analogs
+
+            data_path = "./tests/data/markers_analogs.c3d"
+            analogs = Analogs.from_c3d(data_path)
+            ```
+
+            If you know the channel names, you can retrieve only the ones you are interested in:
+
+            ```python
+            channels = ["Voltage.1", "Voltage.2", "Voltage.3"]
+            analogs = Analogs.from_c3d(data_path, usecols=channels)
+            ```
+
+            Sometimes the channel name is delimited by a suffix or prefix.
+            To access the prefix, you can specify `prefix_delimiter` and `suffix_delimiter` for the suffix.
+            For example, if the name is `"Voltage.1"` and you specify `suffix_delimiter="."`, you will select "Voltage".
+            Similarly, if you specify `prefix_delimiter=".":
+
+            ```python
+            channels = ["1", "2", "3"]
+            analogs = Analogs.from_c3d(data_path, usecols=channels, prefix_delimiter=".")
+            ```
+        """
+        return read.read_c3d(
+            cls, filename, usecols, prefix_delimiter, suffix_delimiter, attrs
+        )
 
     @staticmethod
-    def _parse_c3d(c3d, prefix):
+    def _reshape_flat_array(array: Union[np.array, np.ndarray]) -> xr.DataArray:
         """
-        Implementation on how to read c3d header and parameter for analogs
-        Parameters
-        ----------
-        c3d : ezc3d
+        Takes a tabular numpy array (frames x N) and return a (N x frames) numpy array
 
-        prefix : str, optional
-            Participant's prefix
+        Arguments:
+            array: A tabular array (frames x N) with N = 3 x marker
 
-        Returns
-        -------
-        metadata, channel_names, data
+        Returns:
+            Reshaped Analogs `xarray.DataArray`
         """
-        channel_names = [
-            i.split(prefix)[-1]
-            for i in c3d.parameters()
-            .group("ANALOG")
-            .parameter("LABELS")
-            .valuesAsString()
-        ]
-        metadata = {
-            "get_num_analogs": c3d.header().nbAnalogs(),
-            "get_num_frames": c3d.header().nbAnalogsMeasurement(),
-            "get_first_frame": c3d.header().firstFrame()
-            * c3d.header().nbAnalogByFrame(),
-            "get_last_frame": c3d.header().lastFrame() * c3d.header().nbAnalogByFrame(),
-            "get_time_frames": None,
-            "get_rate": c3d.header().frameRate() * c3d.header().nbAnalogByFrame(),
-            "get_unit": [],
-        }
-        data = c3d.get_analogs()
+        return array.T
 
-        return data, channel_names, metadata
-
-    def rectify(self):
-        """
-        Rectify a signal (i.e., get absolute values)
-
-        Returns
-        -------
-        FrameDependentNpArray
-        """
-        return self.abs()
-
-
-class MVC:
-    """
-    Return the Maximal Voluntary Contraction (MVA) array.
-    MVA is computed as follow:
-            1. read the files
-            2. process trial (band-pass, center, rectify, low-pass). You can modify the parameters of these steps in
-                self.params
-            3. detect onset
-            4. remove data that are more than `outlier` standard deviations from the average of the onset
-            5. concatenate all trials for a given muscle
-            6. get mean of the highest sorted_values activation during `time` seconds
-
-    Parameters
-    ----------
-    directories : list
-        List of directories containing the trials to be processed
-    channels : list
-        List (or list of lists) of string associated with each channel
-    plot_trials : bool
-        If the plot of each trial must be displayed
-    plot_mva : bool
-        If the plot of each mva must be displayed
-    outlier : int
-        Multiple of standard deviation from which data is considered outlier
-    band_pass_cutoff : list
-        Band-pass cut-off frequencies
-    low_pass_cutoff : int
-        Low-pass cut-off frequencies
-    order : int
-        Order of the filter
-    """
-
-    def __init__(
-        self,
-        directories,
-        channels,
-        plot_trials=False,
-        plot_mva=False,
-        outlier=3,
-        band_pass_cutoff=None,
-        low_pass_cutoff=None,
-        order=4,
-    ):
-        self.trials_path = []
-        for idir in directories:
-            idir = Path(idir)
-            if not idir.is_dir():
-                raise ValueError(f"{str(idir)} does not exist.")
-            for ifile in idir.glob("*.c3d"):
-                self.trials_path.append(ifile)
-        # make a nested list if not already nested
-        if not any(isinstance(i, list) for i in channels):
-            channels = [channels]
-        self.channels = channels
-        self.plot_trials = plot_trials
-        self.plot_mva = plot_mva
-
-        self.band_pass_cutoff = band_pass_cutoff if band_pass_cutoff else [10, 425]
-        self.low_pass_cutoff = low_pass_cutoff if low_pass_cutoff else 5
-        self.order = order
-        self.outlier = outlier
-
-        self.trials = self.read_files()
-        self.concatenated = self.process_trials()
-
-    def read_files(self):
-        """Read c3d files and append them to a list"""
-        trials = []
-        for itrial in self.trials_path:
-            for iassign in self.channels:
-                # get index where assignment are empty
-                nan_idx = [i for i, v in enumerate(iassign) if not v]
-                if nan_idx:
-                    iassign_without_nans = [i for i in iassign if i]
-                else:
-                    iassign_without_nans = iassign
-
-                try:
-                    emg = Analogs3d.from_c3d(
-                        f"{itrial}", prefix=":", names=iassign_without_nans
+    @staticmethod
+    def _get_requested_channels_from_pandas(
+        columns, header, usecols, prefix_delimiter: str, suffix_delimiter: str
+    ) -> Tuple[Optional[list], Optional[list]]:
+        if usecols:
+            idx, channels = [], []
+            if isinstance(usecols[0], int):
+                for i in usecols:
+                    idx.append(i)
+                    channels.append(
+                        utils.col_spliter(
+                            columns[i], prefix_delimiter, suffix_delimiter
+                        )
                     )
-                    if nan_idx:
-                        # if there is any empty assignment, fill the dimension with nan
-                        emg.get_nan_idx = np.array(nan_idx)
-                        for i in nan_idx:
-                            emg = np.insert(emg, i, np.nan, axis=1)
-                        # check if nan dimension are correctly inserted
-                        n = np.isnan(emg).sum(axis=2).ravel()
-                        if not np.array_equal(n.argsort()[-len(nan_idx) :], nan_idx):
-                            raise ValueError("NaN dimensions misplaced")
-                        print(f"\t{itrial.stem} (NaNs: {nan_idx})")
-                    else:
-                        print(f"\t{itrial.stem}")
-
-                    # check if dimensions are ok
-                    if not emg.shape[1] == len(iassign):
-                        raise ValueError("Wrong dimensions")
-                    break
-                except IndexError:
-                    emg = []
-
-            if np.any(emg):
-                trials.append(emg)
+            elif isinstance(usecols[0], str):
+                columns_split = [
+                    utils.col_spliter(col, prefix_delimiter, suffix_delimiter)
+                    for col in columns
+                ]
+                for col in usecols:
+                    idx.append(columns_split.index(col))
+                    channels.append(col)
             else:
                 raise ValueError(
-                    f"no assignments were found for the trial {itrial.stem}"
+                    "usecols should be None, list of string or list of int."
+                    f"You provided {type(usecols)}"
                 )
+            return channels, idx
 
-        return trials
+        if header is None:
+            return None, None
 
-    def process_trials(self):
-        """Process trials from a list and concatenate them in a single dict"""
-        print("Processing trials...")
-        concatenated = {
-            imuscle: np.array([]) for imuscle in range(self.trials[0].shape[1])
-        }
-
-        for i, itrial in enumerate(self.trials):
-            # emg processing
-            itrial = (
-                itrial.band_pass(
-                    freq=itrial.get_rate, order=self.order, cutoff=self.band_pass_cutoff
-                )
-                .center()
-                .rectify()
-                .low_pass(
-                    freq=itrial.get_rate, order=self.order, cutoff=self.low_pass_cutoff
-                )
-            )
-
-            for imuscle in range(itrial.shape[1]):
-                if self.channels[0][imuscle] == "":
-                    concatenated[imuscle] = np.append(concatenated[imuscle], np.nan)
-                else:
-                    x = itrial[0, imuscle, :]
-                    # onset detection
-                    idx = x.detect_onset(
-                        threshold=np.nanmean(x[..., : int(itrial.get_rate)]),
-                        above=int(itrial.get_rate) / 2,
-                        below=3,
-                        threshold2=np.nanmean(x[..., : int(itrial.get_rate)]) * 2,
-                        above2=5,
-                    )
-
-                    # outliers detection
-                    x_without_outliers = x.detect_outliers(
-                        onset_idx=idx, threshold=self.outlier
-                    )
-
-                    # append the current trial to a dictionary concatenating all trials for each of the muscles
-                    concatenated[imuscle] = np.append(
-                        concatenated[imuscle], np.ma.compressed(x_without_outliers)
-                    )
-
-                    if self.plot_trials:
-                        plt.plot(x_without_outliers, "k-")
-                        if x_without_outliers.mask.any():
-                            plt.plot(
-                                np.ma.masked_array(x, ~x_without_outliers.mask),
-                                "r-",
-                                label="outlier",
-                            )
-                            plt.legend()
-                        plt.title(
-                            f"{self.channels[0][imuscle]} | {self.trials_path[i].stem}"
-                        )
-                        plt.show()
-        return concatenated
-
-    def get_mva(self, time=2):
-        """
-        Return the Maximal Voluntary Contraction (MVA) array.
-        MVA is computed as follow:
-            for each muscle:
-                1. sort the vector of all the concatenated trials
-                2. get mean of the highest sorted_values activation during `time` seconds
-
-        Parameters
-        ----------
-        time : int
-            Time during which the average is calculated
-
-        Returns
-        -------
-        numpy.ndarray
-        """
-        seconds = int(time * self.trials[0].get_rate)
-        mva = []
-        for imuscle, values in self.concatenated.items():
-            if not np.isnan(values).all():
-                sorted_values = np.sort(values)
-                mu = np.nanmean(sorted_values[-seconds:])
-                mva.append(mu)
-
-                if self.plot_mva:
-                    plt.plot(sorted_values[-seconds:], "b-", label="sorted activation")
-                    plt.axhline(y=mu, c="k", ls="--", label="MVA")
-                    plt.title(f"Last {time} seconds | {self.channels[0][imuscle]}")
-                    plt.legend()
-                    plt.show()
-            else:
-                mva.append(None)
-        return mva
+        channels = [
+            utils.col_spliter(col, prefix_delimiter, suffix_delimiter)
+            for col in columns
+        ]
+        return channels, None

@@ -1,0 +1,54 @@
+site_name: Pyomeca
+site_description: An Open-Source Framework for Biomechanical Analysis
+site_author: Romain Martinez
+site_url: https://pyomeca.github.io
+
+theme:
+  name: material
+  palette:
+    primary: blue grey
+    accent: teal
+  logo: images/logo.svg
+  favicon: images/favicon.ico
+nav:
+  - Home: index.md
+  - Overview: overview.md
+  - Getting Started: getting-started.md
+  - User Guide:
+    - Object creation: object-creation.md
+    - Data processing: data-processing.md
+  - About: about.md
+  - API reference:
+      Analogs: api/analogs.md
+      Angles: api/angles.md
+      Markers: api/markers.md
+      DataArray_accessor: api/dataarray_accessor.md
+      Rototrans: api/rototrans.md
+
+markdown_extensions:
+  - admonition
+  - footnotes
+  - codehilite
+  - pymdownx.superfences
+  - pymdownx.tabbed
+
+plugins:
+  - search
+  - mkdocstrings:
+      watch:
+        - pyomeca
+  - minify:
+      minify_html: true
+
+repo_name: pyomeca/pyomeca
+repo_url: https://github.com/pyomeca/pyomeca
+
+copyright: Copyright &copy; 2019 Romain Martinez
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/romainmartinez
+
+extra_css:
+  - custom.css

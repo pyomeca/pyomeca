@@ -1,86 +1,129 @@
-<img src="https://github.com/pyomeca/design/blob/master/logo/logo_plain.svg" width="70%">
+<p align="center">
+    <img
+      src="https://raw.githubusercontent.com/pyomeca/design/master/logo/logo_plain_doc.svg?sanitize=true"
+      alt="logo"
+    />
+  <a href="https://github.com/romainmartinez/pyomeca/actions"
+    ><img
+      alt="Actions Status"
+      src="https://github.com/romainmartinez/pyomeca/workflows/CI/badge.svg"
+  /></a>
+  <a href="https://coveralls.io/github/romainmartinez/pyomeca?branch=master"
+    ><img
+      alt="Coverage Status"
+      src="https://coveralls.io/repos/github/romainmartinez/pyomeca/badge.svg?branch=master"
+  /></a>
+  <a href="https://anaconda.org/conda-forge/pyomeca"
+    ><img
+      alt="License: MIT"
+      src="https://anaconda.org/conda-forge/pyomeca/badges/license.svg"
+  /></a>
+  <a href="https://anaconda.org/conda-forge/pyomeca"
+    ><img
+      alt="PyPI"
+      src="https://anaconda.org/conda-forge/pyomeca/badges/latest_release_date.svg"
+  /></a>
+  <a href="https://anaconda.org/conda-forge/pyomeca"
+    ><img
+      alt="Downloads"
+      src="https://anaconda.org/conda-forge/pyomeca/badges/downloads.svg"
+  /></a>
+  <a href="https://github.com/psf/black"
+    ><img
+      alt="Code style: black"
+      src="https://img.shields.io/badge/code%20style-black-000000.svg"
+  /></a>
+</p>
 
-# Pyomeca
-
-> Pyomeca is a python library allowing you to carry out a complete biomechanical analysis; in a simple, logical and concise way.
-
-## Status
-
-| | |
-|---|---|
-| Continuous integration (Linux) | [![Build Status](https://travis-ci.org/pyomeca/pyomeca.svg?branch=travis)](https://travis-ci.org/pyomeca/pyomeca) |
-| Continuous integration (Windows) | [![Build status](https://ci.appveyor.com/api/projects/status/c988kaow6dbac3lk?svg=true)](https://ci.appveyor.com/project/romainmartinez/pyomeca) |
-| Code coverage | [![codecov](https://codecov.io/gh/pyomeca/pyomeca/branch/dev/graph/badge.svg)](https://codecov.io/gh/pyomeca/pyomeca) |
-| Code quality | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/89e663b2541b4575bcccc37b63dfb462)](https://www.codacy.com/app/romainmartinez/pyomeca?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pyomeca/pyomeca&amp;utm_campaign=Badge_Grade) |
-| Last release | [![Anaconda-Server Badge](https://anaconda.org/conda-forge/pyomeca/badges/latest_release_relative_date.svg)](https://anaconda.org/conda-forge/pyomeca) |
-| Installation | [![Anaconda-Server Badge](https://anaconda.org/conda-forge/pyomeca/badges/installer/conda.svg)](https://anaconda.org/conda-forge/pyomeca) |
+Pyomeca is a python library allowing you to carry out a complete biomechanical analysis; in a simple, logical and concise way.
 
 ## Pyomeca documentation
 
-See pyomeca's [documentation site]() (under construction and not usable yet), as well as pyomeca's [tutorial notebooks](https://github.com/pyomeca/tutorials).
+See Pyomeca's [documentation site](https://pyomeca.github.io).
 
 ## Example
 
-Here is an example of a complete EMG pipeline in just one command:
+Pyomeca implements specialized functionalities commonly used in biomechanics. As an example, let's process the electromyographic data contained in this [`c3d file`](https://github.com/romainmartinez/pyomeca/blob/master/tests/data/markers_analogs.c3d).
+
+You can follow along without installing anything by using our binder server: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/romainmartinez/pyomeca/master?filepath=notebooks)
 
 ```python
-from pyomeca import Analogs3d
+from pyomeca import Analogs
 
-emg = (
-    Analogs3d.from_c3d("path/to/your/c3d.c3d", names=['anterior_deltoid', 'biceps'])
-    .band_pass(freq=2000, order=4, cutoff=[10, 425])
-    .center()
-    .rectify()
-    .low_pass(freq=2000, order=4, cutoff=5)
-    .normalization()
-    .time_normalization()
-)
+data_path = "../tests/data/markers_analogs.c3d"
+muscles = [
+    "Delt_ant",
+    "Delt_med",
+    "Delt_post",
+    "Supra",
+    "Infra",
+    "Subscap",
+]
+emg = Analogs.from_c3d(data_path, suffix_delimiter=".", usecols=muscles)
+emg.plot(x="time", col="channel", col_wrap=3)
 ```
+
+![svg](docs/images/readme-example_files/readme-example_3_0.svg)
+
+```python
+emg_processed = (
+    emg.meca.band_pass(freq=emg.rate, order=2, cutoff=[10, 425])
+    .meca.center()
+    .meca.abs()
+    .meca.low_pass(freq=emg.rate, order=4, cutoff=5)
+    .meca.normalize()
+)
+
+emg_processed.plot(x="time", col="channel", col_wrap=3)
+```
+
+![svg](docs/images/readme-example_files/readme-example_4_0.svg)
+
+```python
+import matplotlib.pyplot as plt
+
+fig, axes = plt.subplots(ncols=2, figsize=(10, 4))
+
+emg_processed.mean("channel").plot(ax=axes[0])
+axes[0].set_title("Mean EMG activation")
+
+emg_processed.plot.hist(ax=axes[1], bins=50)
+axes[1].set_title("EMG activation distribution")
+```
+
+![svg](docs/images/readme-example_files/readme-example_5_1.svg)
+
+See [the documentation](https://pyomeca.github.io) for more details and examples.
 
 ## Features
 
-- Object-oriented architecture where each class is associated with common and specialized functionalities:
-  - **Markers3d**: 3d markers positions
-  - **Analogs3d**: analogs (emg, force or any analog signal)
-  - **GeneralizedCoordinate**: generalized coordinate (joint angle)
-  - **RotoTrans**: roto-translation matrix
+- Signal processing routine commonly used in biomechanics such as filters, normalization, onset detection, outliers detection, derivatives, etc.
+- Common matrix manipulation routines implemented such as getting Euler angles to/from a rototranslation matrix, creating a system of axes, setting a rotation or translation, transpose or inverse, etc.
+- Easy reading and writing interface to common files in biomechanics (`c3d`, `csv`, `xlsx`,`mat`, `trc`, `sto`, `mot`)
+- All of [xarray](http://xarray.pydata.org/en/stable/index.html)'s awesome features
 
+The following illustration shows all of pyomeca's public API.
+An interactive version is available in the [documentation](https://pyomeca.github.io/overview/).
 
-- Specialized functionalities include signal processing routine commonly used in biomechanics: filters, normalization, onset detection, outliers detection, derivative, etc.
-
-
-- Each functionality can be chained. In addition to making it easier to write and read code, it allows you to add and remove analysis steps easily (such as Lego blocks).
-
-
-- Each class inherits from a numpy array, so you can create your own analysis step easily.
-
-
-- Easy reading and writing interface to common files in biomechanics:
-  - **c3d** (binary file used in biomechanics): `from_c3d` and `to_c3d`
-  - **csv**: `from_csv` and `to_csv`
-  - **mat** (_MATLAB_ file): `from_mat` and `to_mat`
-  - **sto** (OpenSim storage file): `to_sto` (must install pyosim)
-  - **trc** (OpenSim markers position file): `to_trc` (must install pyosim)
-
-
-- Common linear algebra routine implemented: get Euler angles to/from roto-translation matrix, create a system of axes, set a rotation or translation, transpose or inverse, etc.
+<p align="center">
+    <img src="docs/images/api.svg" alt="api">
+</p>
 
 ## Installation
 
-### Using Conda
+Pyomeca itself is a pure Python package, but its dependencies are not.
+The easiest way to get everything installed is to use [conda](https://conda.io/en/latest/miniconda.html).
 
-First, install [miniconda](https://conda.io/miniconda.html) or [anaconda](https://www.anaconda.com/download/).
-Then type:
+To install pyomeca with its recommended dependencies using the conda command line tool:
 
+```bash
+conda install -c conda-forge pyomeca
 ```
-conda install pyomeca -c conda-forge
+Now that you have installed pyomeca, you should be able to import it:
+
+```python
+import pyomeca
 ```
-
-### Using pip
-
-First, you need to install python, swig and numpy. 
-Then, follow the instructions to compile [ezc3d](https://github.com/pyomeca/ezc3d).
-Finally, install pyomeca with `pip install git+https://github.com/pyomeca/pyomeca/`.
 
 ## Integration with other modules
 
@@ -89,12 +132,17 @@ Pyomeca is designed to work well with other libraries that we have developed:
 - [pyosim](https://github.com/pyomeca/pyosim): interface between [OpenSim](http://opensim.stanford.edu/) and pyomeca to perform batch musculoskeletal analyses
 - [ezc3d](https://github.com/pyomeca/ezc3d): Easy to use C3D reader/writer in C++, Python and Matlab
 - [biorbd](https://github.com/pyomeca/biorbd): C++ interface and add-ons to the Rigid Body Dynamics Library, with Python and Matlab binders.
-- [pyoviz](https://github.com/pyomeca/pyoviz): pyomeca visualization toolkit and GUIs (still in development and not usable yet)
 
-## Bug Reports & Questions
+## Bug reports & questions
 
-Pyomeca is Apache-licensed and the source code is available on [GitHub](https://github.com/pyomeca/pyomeca).
+Pyomeca is Apache-licensed and the source code is available on [GitHub](https://github.com/pyomeca/pyomeca). If any questions or issues come up as you use pyomeca, please get in touch via [GitHub issues](https://github.com/pyomeca/pyomeca/issues). We welcome any input, feedback, bug reports, and contributions.
 
-If any questions or issues come up as you use pyomeca, please get in touch via [GitHub issues](https://github.com/pyomeca/pyomeca/issues).
+## Contributors and support
 
-We welcome any input, feedback, bug reports, and contributions.
+- [Romain Martinez](https://github.com/romainmartinez)
+- [Benjamin Michaud](https://github.com/pariterre)
+- [Mickael Begon](https://github.com/mickaelbegon)
+- [Jenn Dowling-Medley](https://github.com/jdowlingmedley)
+- [Ariane Dang](https://github.com/Dangzilla)
+
+Pyomeca is an open-source project created and supported by the [S2M lab](https://www.facebook.com/s2mlab/).
