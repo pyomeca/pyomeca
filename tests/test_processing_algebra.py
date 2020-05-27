@@ -11,11 +11,12 @@ def test_proc_abs():
 
 
 def test_proc_matmul():
+    np.random.seed(42)  # restard the seed
     random_markers_1 = Markers.from_random_data()
     random_markers_2 = Markers.from_random_data()
     markers_matmul = random_markers_1.meca.matmul(random_markers_2)
     ref_markers_matmul = random_markers_1 @ random_markers_2
-    np.testing.assert_almost_equal(markers_matmul, 38333.42705246, decimal=6)
+    np.testing.assert_almost_equal(markers_matmul, -33729.52497131, decimal=6)
     np.testing.assert_almost_equal(markers_matmul, ref_markers_matmul, decimal=6)
 
 
