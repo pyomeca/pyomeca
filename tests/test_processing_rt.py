@@ -3,7 +3,7 @@ from itertools import permutations
 import numpy as np
 import pytest
 
-from pyomeca import Angles, Rototrans, Markers
+from pyomeca import Angles, Markers, Rototrans
 
 SEQ = (
     ["".join(p) for i in range(1, 4) for p in permutations("xyz", i)]
@@ -242,10 +242,6 @@ def test_rt_transpose():
 
 
 def test_average_rt():
-    # TODO: investigate why this does not work
-    # angles = Angles.from_random_data(size=(3, 1, 100))
-    # or
-    # angles = Angles(np.arange(300).reshape((3, 1, 100)))
     angles = Angles(np.random.rand(3, 1, 100))
     seq = "xyz"
 
