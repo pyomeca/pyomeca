@@ -191,8 +191,7 @@ def rototrans_from_averaged_rototrans(
     def objective_function(x):
         angles[:3, 0, 0] = x
         rt = caller.from_euler_angles(angles, seq)
-        return (rt[:3, :3] - target[:3, :3]).values.reshape(9)
-        # return np.ravel(rt.meca.rotation - target.meca.rotation)
+        return np.ravel(rt.meca.rotation - target.meca.rotation)
 
     initia_guess = Angles.from_rototrans(target, seq).squeeze()
     angles[:3, 0, 0] = least_squares(objective_function, initia_guess).x
