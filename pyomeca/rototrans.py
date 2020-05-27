@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
+from pyomeca import Angles
 from pyomeca.processing import rototrans
 
 
@@ -115,8 +116,9 @@ class Rototrans:
             rt = Rototrans.from_random_data(distribution="uniform", size=size, low=1, high=10)
             ```
         """
-        return Rototrans(
-            getattr(np.random, distribution)(size=size, **kwargs).cumsum(-1)
+        return Rototrans.from_euler_angles(
+            Angles.from_random_data(distribution, size=(3, 1, size[-1]), **kwargs),
+            "xyz",
         )
 
     @classmethod

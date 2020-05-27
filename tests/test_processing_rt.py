@@ -220,13 +220,10 @@ def test_rt_from_markers():
 
 
 def test_rt_transpose():
-    n_frames = 10
-    angles = Angles.from_random_data(size=(3, 1, n_frames))
-    rt = Rototrans.from_euler_angles(angles, angle_sequence="xyz")
-
+    rt = Rototrans.from_random_data()
     rt_t = Rototrans.from_transposed_rototrans(rt)
 
-    rt_t_expected = np.zeros((4, 4, n_frames))
+    rt_t_expected = np.zeros((4, 4, rt.time.size))
     rt_t_expected[3, 3, :] = 1
     for row in range(rt.row.size):
         for col in range(rt.col.size):
