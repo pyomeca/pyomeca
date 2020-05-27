@@ -87,7 +87,7 @@ class Angles:
             from pyomeca import Angles
 
             n_frames = 100
-            size = 10, 10, n_frames
+            size = 3, 10, n_frames
             angles = Angles.from_random_data(size=size)
             ```
 
