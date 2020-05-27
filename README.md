@@ -43,7 +43,8 @@ See Pyomeca's [documentation site](https://pyomeca.github.io).
 
 ## Example
 
-Pyomeca implements specialized functionalities commonly used in biomechanics. As an example, let's process the electromyographic data contained in this [`c3d file`](https://github.com/pyomeca/pyomeca/blob/master/tests/data/markers_analogs.c3d).
+Pyomeca implements specialized functionalities commonly used in biomechanics.
+As an example, let's process the electromyographic data contained in this [`c3d file`](https://github.com/pyomeca/pyomeca/blob/master/tests/data/markers_analogs.c3d).
 
 You can follow along without installing anything by using our binder server: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/pyomeca/pyomeca/master?filepath=notebooks)
 
@@ -119,6 +120,7 @@ To install pyomeca with its recommended dependencies using the conda command lin
 ```bash
 conda install -c conda-forge pyomeca
 ```
+
 Now that you have installed pyomeca, you should be able to import it:
 
 ```python
@@ -135,7 +137,9 @@ Pyomeca is designed to work well with other libraries that we have developed:
 
 ## Bug reports & questions
 
-Pyomeca is Apache-licensed and the source code is available on [GitHub](https://github.com/pyomeca/pyomeca). If any questions or issues come up as you use pyomeca, please get in touch via [GitHub issues](https://github.com/pyomeca/pyomeca/issues). We welcome any input, feedback, bug reports, and contributions.
+Pyomeca is Apache-licensed and the source code is available on [GitHub](https://github.com/pyomeca/pyomeca).
+If any questions or issues come up as you use pyomeca, please get in touch via [GitHub issues](https://github.com/pyomeca/pyomeca/issues).
+We welcome any input, feedback, bug reports, and contributions.
 
 ## Contributors and support
 
