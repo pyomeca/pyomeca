@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -58,7 +58,7 @@ class Rototrans:
             # if we provide data, we copy them to avoid making inplace changes
             data = data.copy()
 
-            if data.shape[0] != 4 or data.shape[1] != 4:
+            if data.shape[0] not in (3, 4) or data.shape[0] != data.shape[1]:
                 raise IndexError(
                     f"data must have first and second dimensions of length 4, you have: {data.shape}"
                 )
