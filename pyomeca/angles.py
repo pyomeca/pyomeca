@@ -27,7 +27,7 @@ class Angles:
             Angles `xarray.DataArray` with the specified data and coordinates
 
         !!! example
-            To instantiate an `Angles` 4 by 4 and 100 frames filled with some random data:
+            To instantiate an `Angles` 3 by 3 and 100 frames filled with some random data:
 
             ```python
             import numpy as np
