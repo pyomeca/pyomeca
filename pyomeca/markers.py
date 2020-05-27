@@ -131,7 +131,7 @@ class Markers:
         trailing_columns: Optional[Union[str, int]] = None,
         prefix_delimiter: Optional[str] = None,
         suffix_delimiter: Optional[str] = None,
-        skiprows: Optional[List[int]] = None,
+        skip_rows: Optional[List[int]] = None,
         pandas_kwargs: Optional[dict] = None,
         attrs: Optional[dict] = None,
     ) -> xr.DataArray:
@@ -149,7 +149,7 @@ class Markers:
             trailing_columns: If for some reason the csv reads extra columns, how many should be ignored
             prefix_delimiter: Delimiter that split each column name by its prefix (we keep only the column name)
             suffix_delimiter: Delimiter that split each column name by its suffix (we keep only the column name)
-            skiprows: Line numbers to skip (0-indexed)
+            skip_rows: Line numbers to skip (0-indexed)
             pandas_kwargs: Keyword arguments to be passed to `pandas.read_csv`
             attrs: attrs to be passed to `xr.DataArray`. If attrs['rate'] is provided, compute the time accordingly
 
@@ -222,7 +222,7 @@ class Markers:
             trailing_columns,
             prefix_delimiter,
             suffix_delimiter,
-            skiprows,
+            skip_rows,
             pandas_kwargs,
             attrs,
         )
@@ -240,7 +240,7 @@ class Markers:
         trailing_columns: Optional[Union[str, int]] = None,
         prefix_delimiter: Optional[str] = None,
         suffix_delimiter: Optional[str] = None,
-        skiprows: Optional[List[int]] = None,
+        skip_rows: Optional[List[int]] = None,
         pandas_kwargs: Optional[dict] = None,
         attrs: Optional[dict] = None,
     ) -> xr.DataArray:
@@ -259,7 +259,7 @@ class Markers:
             trailing_columns: If for some reason the csv reads extra columns, how many should be ignored
             prefix_delimiter: Delimiter that split each column name by its prefix (we keep only the column name)
             suffix_delimiter: Delimiter that split each column name by its suffix (we keep only the column name)
-            skiprows: Line numbers to skip (0-indexed)
+            skip_rows: Line numbers to skip (0-indexed)
             pandas_kwargs: Keyword arguments to be passed to `pandas.read_excel`
             attrs: attrs to be passed to `xr.DataArray`. If attrs['rate'] is provided, compute the time accordingly
 
@@ -332,7 +332,7 @@ class Markers:
             trailing_columns,
             prefix_delimiter,
             suffix_delimiter,
-            skiprows,
+            skip_rows,
             pandas_kwargs,
             attrs,
             sheet_name,

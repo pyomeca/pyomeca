@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Union, Optional, List, Callable
+from typing import Callable, List, Optional, Union
 
 import ezc3d
 import numpy as np
@@ -76,25 +76,25 @@ def read_csv_or_excel(
     trailing_columns: Optional[Union[str, int]] = None,
     prefix_delimiter: Optional[str] = None,
     suffix_delimiter: Optional[str] = None,
-    skiprows: Optional[List[int]] = None,
+    skip_rows: Optional[List[int]] = None,
     pandas_kwargs: Optional[dict] = None,
     attrs: Optional[dict] = None,
     sheet_name: Union[int, str] = 0,
 ):
-    if skiprows is None:
-        skiprows = np.arange(header + 1, first_row) if header else np.arange(first_row)
+    if skip_rows is None:
+        skip_rows = np.arange(header + 1, first_row) if header else np.arange(first_row)
 
     if pandas_kwargs is None:
         pandas_kwargs = {}
 
     if extension == "csv":
-        data = pd.read_csv(filename, header=header, skiprows=skiprows, **pandas_kwargs)
+        data = pd.read_csv(filename, header=header, skiprows=skip_rows, **pandas_kwargs)
     else:
         data = pd.read_excel(
             filename,
             sheet_name=sheet_name,
             header=header,
-            skiprows=skiprows,
+            skiprows=skip_rows,
             **pandas_kwargs,
         )
 
