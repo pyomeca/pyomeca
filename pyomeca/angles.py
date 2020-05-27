@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -34,7 +34,7 @@ class Angles:
             from pyomeca import Angles
 
             n_axis = 3
-            n_channel = 3
+            n_channel = 4
             n_frames = 100
             data = np.random.random(size=(n_axis, n_channel, n_frames))
             angles = Angles(data)
