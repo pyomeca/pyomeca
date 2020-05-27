@@ -1,12 +1,12 @@
 from pathlib import Path
-from typing import Union, Optional
+from typing import Optional, Union
 
 import numpy as np
 import pandas as pd
 import xarray as xr
 
 from pyomeca.io import write
-from pyomeca.processing import matrix, filter, interp, misc, rototrans
+from pyomeca.processing import filter, interp, matrix, misc, rototrans
 
 
 @xr.register_dataarray_accessor("meca")
@@ -497,6 +497,11 @@ class DataArrayAccessor(object):
             ```
 
             ![band_stop](/images/api/band_stop.svg)
+        
+        !!! note
+            You can also perform a notch filter with this method.
+            A notch filter is a band-stop filter with a narrow bandwidth.
+            It rejects a narrow frequency band and leaves the rest of the spectrum little changed.
         """
         return filter.band_stop(self._obj, freq, order, cutoff)
 
