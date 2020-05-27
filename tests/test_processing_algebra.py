@@ -1,7 +1,7 @@
 import numpy as np
 
-from pyomeca import Markers
-from tests._constants import MARKERS_DATA, ANALOGS_DATA, EXPECTED_VALUES
+from pyomeca import Analogs, Markers
+from tests._constants import ANALOGS_DATA, EXPECTED_VALUES, MARKERS_DATA
 from tests.utils import is_expected_array
 
 
@@ -11,19 +11,12 @@ def test_proc_abs():
 
 
 def test_proc_matmul():
-    m = MARKERS_DATA.sel(axis="x", channel="PSISl").meca.matmul(
-        MARKERS_DATA.sel(axis="y", channel="PSISl")
-    )
-    m_ref = MARKERS_DATA.sel(axis="x", channel="PSISl") @ MARKERS_DATA.sel(
-        axis="y", channel="PSISl"
-    )
-    np.testing.assert_array_almost_equal(m, 87604420.17968313, decimal=6)
-    np.testing.assert_array_almost_equal(m, m_ref, decimal=6)
-
-    a = ANALOGS_DATA.sel(channel="EMG1").meca.matmul(ANALOGS_DATA.sel(channel="EMG10"))
-    a_ref = ANALOGS_DATA.sel(channel="EMG1") @ ANALOGS_DATA.sel(channel="EMG10")
-    np.testing.assert_array_almost_equal(a, -1.41424996e-06, decimal=6)
-    np.testing.assert_array_almost_equal(a, a_ref, decimal=6)
+    random_markers_1 = Markers.from_random_data()
+    random_markers_2 = Markers.from_random_data()
+    markers_matmul = random_markers_1.meca.matmul(random_markers_2)
+    ref_markers_matmul = random_markers_1 @ random_markers_2
+    np.testing.assert_almost_equal(markers_matmul, 38333.42705246, decimal=6)
+    np.testing.assert_almost_equal(markers_matmul, ref_markers_matmul, decimal=6)
 
 
 def test_proc_square_sqrt():
