@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Union, Optional, List, Tuple
+from typing import List, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -128,7 +128,7 @@ class Markers:
         first_row: int = 0,
         first_column: Optional[Union[str, int]] = None,
         time_column: Optional[Union[str, int]] = None,
-        last_column_to_remove: Optional[Union[str, int]] = None,
+        trailing_columns: Optional[Union[str, int]] = None,
         prefix_delimiter: Optional[str] = None,
         suffix_delimiter: Optional[str] = None,
         skiprows: Optional[List[int]] = None,
@@ -146,7 +146,7 @@ class Markers:
             first_row: First row of the data (0-indexed)
             first_column: First column of the data (0-indexed)
             time_column: Location of the time column. If None, indices are associated
-            last_column_to_remove: If for some reason the csv reads extra columns, how many should be ignored
+            trailing_columns: If for some reason the csv reads extra columns, how many should be ignored
             prefix_delimiter: Delimiter that split each column name by its prefix (we keep only the column name)
             suffix_delimiter: Delimiter that split each column name by its suffix (we keep only the column name)
             skiprows: Line numbers to skip (0-indexed)
@@ -219,7 +219,7 @@ class Markers:
             first_row,
             first_column,
             time_column,
-            last_column_to_remove,
+            trailing_columns,
             prefix_delimiter,
             suffix_delimiter,
             skiprows,
@@ -237,7 +237,7 @@ class Markers:
         first_row: int = 0,
         first_column: Optional[Union[str, int]] = None,
         time_column: Optional[Union[str, int]] = None,
-        last_column_to_remove: Optional[Union[str, int]] = None,
+        trailing_columns: Optional[Union[str, int]] = None,
         prefix_delimiter: Optional[str] = None,
         suffix_delimiter: Optional[str] = None,
         skiprows: Optional[List[int]] = None,
@@ -256,7 +256,7 @@ class Markers:
             first_row: First row of the data (0-indexed)
             first_column: First column of the data (0-indexed)
             time_column: Location of the time column. If None, indices are associated
-            last_column_to_remove: If for some reason the csv reads extra columns, how many should be ignored
+            trailing_columns: If for some reason the csv reads extra columns, how many should be ignored
             prefix_delimiter: Delimiter that split each column name by its prefix (we keep only the column name)
             suffix_delimiter: Delimiter that split each column name by its suffix (we keep only the column name)
             skiprows: Line numbers to skip (0-indexed)
@@ -329,7 +329,7 @@ class Markers:
             first_row,
             first_column,
             time_column,
-            last_column_to_remove,
+            trailing_columns,
             prefix_delimiter,
             suffix_delimiter,
             skiprows,

@@ -3,13 +3,13 @@ import pytest
 
 from pyomeca import Analogs, Markers
 from tests._constants import (
-    MARKERS_ANALOGS_C3D,
     ANALOGS_CSV,
+    ANALOGS_XLSX,
+    EXPECTED_VALUES,
+    MARKERS_ANALOGS_C3D,
     MARKERS_CSV,
     MARKERS_CSV_WITHOUT_HEADER,
-    ANALOGS_XLSX,
     MARKERS_XLSX,
-    EXPECTED_VALUES,
 )
 from tests.utils import is_expected_array
 
@@ -98,11 +98,11 @@ def test_read_catch_error(
         reader(MARKERS_ANALOGS_C3D, usecols=usecols)
 
 
-def test_csv_last_column_to_remove():
+def test_csv_trailing_columns():
     last_column_to_remove = 5
     ref = Analogs.from_csv(**analogs_csv_kwargs).channel[:-last_column_to_remove]
     without_last_columns = Analogs.from_csv(
-        **analogs_csv_kwargs, last_column_to_remove=last_column_to_remove
+        **analogs_csv_kwargs, trailing_columns=last_column_to_remove
     ).channel
     np.testing.assert_array_equal(x=ref, y=without_last_columns)
 

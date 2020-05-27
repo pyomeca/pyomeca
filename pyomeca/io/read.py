@@ -73,7 +73,7 @@ def read_csv_or_excel(
     first_row: int = 0,
     first_column: Optional[Union[str, int]] = None,
     time_column: Optional[Union[str, int]] = None,
-    last_column_to_remove: Optional[Union[str, int]] = None,
+    trailing_columns: Optional[Union[str, int]] = None,
     prefix_delimiter: Optional[str] = None,
     suffix_delimiter: Optional[str] = None,
     skiprows: Optional[List[int]] = None,
@@ -115,8 +115,8 @@ def read_csv_or_excel(
     if first_column:
         data = data.drop(data.columns[:first_column], axis=1)
 
-    if last_column_to_remove:
-        data = data.drop(data.columns[-last_column_to_remove:], axis=1)
+    if trailing_columns:
+        data = data.drop(data.columns[-trailing_columns:], axis=1)
 
     channels, idx = caller._get_requested_channels_from_pandas(
         data.columns, header, usecols, prefix_delimiter, suffix_delimiter
