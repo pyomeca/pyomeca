@@ -68,10 +68,10 @@ emg.plot(x="time", col="channel", col_wrap=3)
 
 ```python
 emg_processed = (
-    emg.meca.band_pass(freq=emg.rate, order=2, cutoff=[10, 425])
+    emg.meca.band_pass(order=2, cutoff=[10, 425])
     .meca.center()
     .meca.abs()
-    .meca.low_pass(freq=emg.rate, order=4, cutoff=5)
+    .meca.low_pass(order=4, cutoff=5, freq=emg.rate)
     .meca.normalize()
 )
 

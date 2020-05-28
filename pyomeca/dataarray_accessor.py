@@ -376,15 +376,19 @@ class DataArrayAccessor(object):
 
     # filter ------------------------------------
     def low_pass(
-        self, freq: Union[int, float], order: int, cutoff: Union[int, float, np.array]
+        self,
+        order: int,
+        cutoff: Union[int, float, np.array],
+        freq: Optional[Union[int, float]] = None,
     ) -> xr.DataArray:
         """
         Low-pass Butterworth filter.
 
         Arguments:
-            freq: Sampling frequency
             order: Order of the filter
             cutoff: Cut-off frequency
+            freq: Sampling frequency.
+                Optional if attrs["rate"] is specified.
 
         Returns:
             A low-pass filtered `xarray.DataArray`
@@ -396,7 +400,7 @@ class DataArrayAccessor(object):
             from pyomeca import Analogs
 
             analogs = Analogs.from_random_data()
-            analogs.meca.low_pass(freq=100, order=2, cutoff=5)
+            analogs.meca.low_pass(order=2, cutoff=5, freq=100)
             ```
 
             Let's see how the low-pass smooth a fake sinusoidal signal:
@@ -412,7 +416,7 @@ class DataArrayAccessor(object):
             y = np.sin(w * time_vector) + 0.1 * np.sin(10 * w * time_vector)
 
             analogs = Analogs(y.reshape(1, -1))
-            low_pass = analogs.meca.low_pass(freq=freq, order=2, cutoff=5)
+            low_pass = analogs.meca.low_pass(order=2, cutoff=5, freq=freq)
 
             analogs.plot(label="raw")
             low_pass.plot(label="low-pass @ 5Hz")
@@ -422,18 +426,22 @@ class DataArrayAccessor(object):
 
             ![low_pass](/images/api/low_pass.svg)
         """
-        return filter.low_pass(self._obj, freq, order, cutoff)
+        return filter.low_pass(self._obj, order, cutoff, freq)
 
     def high_pass(
-        self, freq: Union[int, float], order: int, cutoff: Union[int, float, np.array]
+        self,
+        order: int,
+        cutoff: Union[int, float, np.array],
+        freq: Optional[Union[int, float]] = None,
     ) -> xr.DataArray:
         """
         High-pass Butterworth filter.
 
         Arguments:
-            freq: Sampling frequency
             order: Order of the filter
             cutoff: Cut-off frequency
+            freq: Sampling frequency.
+                Optional if attrs["rate"] is specified.
 
         Returns:
             A high-pass filtered `xarray.DataArray`
@@ -450,7 +458,7 @@ class DataArrayAccessor(object):
             fake_emg = np.random.uniform(low=-1, high=1, size=(1, 1000))
             analogs = Analogs(fake_emg)
             freq = 1000  # Hz
-            high_pass = analogs.meca.high_pass(freq=freq, order=2, cutoff=100)
+            high_pass = analogs.meca.high_pass(order=2, cutoff=100, freq=freq)
 
             analogs.plot(label="raw")
             high_pass.plot(label="high-pass @ 100Hz")
@@ -460,18 +468,22 @@ class DataArrayAccessor(object):
 
             ![high_pass](/images/api/high_pass.svg)
         """
-        return filter.high_pass(self._obj, freq, order, cutoff)
+        return filter.high_pass(self._obj, order, cutoff, freq)
 
     def band_stop(
-        self, freq: Union[int, float], order: int, cutoff: Union[list, tuple, np.array]
+        self,
+        order: int,
+        cutoff: Union[list, tuple, np.array],
+        freq: Optional[Union[int, float]] = None,
     ) -> xr.DataArray:
         """
         Band-stop Butterworth filter.
 
         Arguments:
-            freq: Sampling frequency
             order: Order of the filter
             cutoff: Cut-off frequency such as (lower, upper)
+            freq: Sampling frequency.
+                Optional if attrs["rate"] is specified.
 
         Returns:
             A band-stop filtered `xarray.DataArray`
@@ -488,7 +500,7 @@ class DataArrayAccessor(object):
             fake_emg = np.random.uniform(low=-1, high=1, size=(1, 1000))
             analogs = Analogs(fake_emg)
             freq = 1000  # Hz
-            band_stop = analogs.meca.band_stop(freq=freq, order=2, cutoff=[40, 60])
+            band_stop = analogs.meca.band_stop(order=2, cutoff=[40, 60], freq=freq)
 
             analogs.plot(label="raw")
             band_stop.plot(label="band-stop @ 40-60Hz")
@@ -503,18 +515,22 @@ class DataArrayAccessor(object):
             A notch filter is a band-stop filter with a narrow bandwidth.
             It rejects a narrow frequency band and leaves the rest of the spectrum little changed.
         """
-        return filter.band_stop(self._obj, freq, order, cutoff)
+        return filter.band_stop(self._obj, order, cutoff, freq)
 
     def band_pass(
-        self, freq: Union[int, float], order: int, cutoff: Union[list, tuple, np.array]
+        self,
+        order: int,
+        cutoff: Union[list, tuple, np.array],
+        freq: Optional[Union[int, float]] = None,
     ) -> xr.DataArray:
         """
         Band-pass Butterworth filter.
 
         Arguments:
-            freq: Sampling frequency
             order: Order of the filter
             cutoff: Cut-off frequency such as (lower, upper)
+            freq: Sampling frequency.
+                Optional if attrs["rate"] is specified.
 
         Returns:
             A band-pass filtered `xarray.DataArray`
@@ -531,7 +547,7 @@ class DataArrayAccessor(object):
             fake_emg = np.random.uniform(low=-1, high=1, size=(1, 1000))
             analogs = Analogs(fake_emg)
             freq = 1000  # Hz
-            band_pass = analogs.meca.band_pass(freq=freq, order=2, cutoff=[10, 200])
+            band_pass = analogs.meca.band_pass(order=2, cutoff=[10, 200], freq=freq)
 
             analogs.plot(label="raw")
             band_pass.plot(label="band-pass @ 10-200Hz")
@@ -541,7 +557,7 @@ class DataArrayAccessor(object):
 
             ![band_pass](/images/api/band_pass.svg)
         """
-        return filter.band_pass(self._obj, freq, order, cutoff)
+        return filter.band_pass(self._obj, order, cutoff, freq)
 
     # signal processing misc --------------------
     def fft(self, freq: Union[int, float], only_positive: bool = True) -> xr.DataArray:
@@ -571,7 +587,7 @@ class DataArrayAccessor(object):
             y = np.sin(w * time) + 0.1 * np.sin(10 * w * time)
 
             analogs = Analogs(y.reshape(1, -1))
-            analogs_low_passed = analogs.meca.low_pass(freq=freq, order=2, cutoff=5)
+            analogs_low_passed = analogs.meca.low_pass(order=2, cutoff=5, freq=freq)
 
             # compute fft on raw and low-passed signal
             fft_raw = analogs.meca.fft(freq=freq)
