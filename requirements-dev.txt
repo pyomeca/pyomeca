@@ -1,10 +1,12 @@
 -e .
+autoflake
 black
+bs4
+isort
+mkdocs
+mkdocs-material
+mkdocs-minify-plugin
+mkdocstrings
 pytest
 pytest-cov
 requests
-bs4
-mkdocs
-mkdocs-material
-mkdocstrings
-mkdocs-minify-plugin

@@ -1,6 +1,8 @@
 .PHONY : test lint doc nb_to_md clean all
 
 lint:
+	isort -rc . ;\
+	autoflake -r --in-place --remove-unused-variables . ;\
 	black .
 
 test:
