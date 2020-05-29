@@ -31,13 +31,13 @@ class Rototrans:
             To instantiate a `Rototrans` 4 by 4 and 100 frames filled with some random data:
 
             ```python
-            import numpy as np
             from pyomeca import Rototrans
+            import numpy as np
 
-            n_row = 4
-            n_col = 4
+            # create random yet homogeneous data
             n_frames = 100
-            data = np.random.random(size=(n_row, n_col, n_frames))
+            data = Rototrans.from_random_data(size=(4, 4, 100)).data
+
             rt = Rototrans(data)
             ```
 
