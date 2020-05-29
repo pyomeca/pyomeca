@@ -1,6 +1,6 @@
 import numpy as np
 
-from tests._constants import MARKERS_DATA, ANALOGS_DATA, EXPECTED_VALUES
+from tests._constants import ANALOGS_DATA, EXPECTED_VALUES, MARKERS_DATA
 from tests.utils import is_expected_array
 
 

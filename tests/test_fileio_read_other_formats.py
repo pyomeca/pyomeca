@@ -1,12 +1,13 @@
 import pytest
 
 from pyomeca import Analogs, Markers
+
 from ._constants import (
-    ANALOGS_STO,
-    ANALOGS_MOT,
     ANALOGS_CSV,
-    MARKERS_TRC,
+    ANALOGS_MOT,
+    ANALOGS_STO,
     EXPECTED_VALUES,
+    MARKERS_TRC,
 )
 from .utils import is_expected_array
 

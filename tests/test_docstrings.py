@@ -5,12 +5,12 @@ import pytest
 
 import pyomeca
 from tests.utils import (
+    DocStringError,
+    do_we_generate_doc_files,
     extract_code_blocks_from_md,
     function_has_return,
-    DocStringError,
-    get_available_methods,
-    do_we_generate_doc_files,
     generate_api_json,
+    get_available_methods,
 )
 
 generate_doc_files = do_we_generate_doc_files()

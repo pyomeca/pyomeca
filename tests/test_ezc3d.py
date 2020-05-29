@@ -1,7 +1,7 @@
 import ezc3d
 import xarray as xr
 
-from ._constants import MARKERS_ANALOGS_C3D, EXPECTED_VALUES
+from ._constants import EXPECTED_VALUES, MARKERS_ANALOGS_C3D
 from .utils import is_expected_array
 
 

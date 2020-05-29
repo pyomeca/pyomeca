@@ -2,8 +2,9 @@ import numpy as np
 import pytest
 import xarray as xr
 
-from pyomeca import Analogs, Markers, Angles, Rototrans
-from ._constants import ANALOGS_DATA, MARKERS_DATA, EXPECTED_VALUES
+from pyomeca import Analogs, Angles, Markers, Rototrans
+
+from ._constants import ANALOGS_DATA, EXPECTED_VALUES, MARKERS_DATA
 from .utils import is_expected_array
 
 
