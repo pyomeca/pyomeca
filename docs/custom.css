@@ -1,0 +1,63 @@
+div.doc-contents {
+  border-bottom: 2px solid rgb(230, 230, 230);
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.matrix-stroke {
+  stroke: #263238;
+  stroke-width: 0.5;
+}
+
+.chart-text {
+  font-size: 16px;
+  fill: #263238 !important;
+}
+
+.cell:hover rect {
+  fill-opacity: 0.7;
+}
+
+.tooltip {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 50px;
+  top: 50px;
+  width: 40%;
+  background-color: #fefefe !important;
+}
+
+.nb-output {
+  margin-left: 30px !important;
+  margin-right: 30px !important;
+  opacity: 0.8 !important;
+}
+
+.nb-output button {
+  display: none;
+}
+
+.xr-attrs dd {
+  margin: 0 !important;
+}
+
+.xr-dim-list:before {
+  content: none !important;
+}
+
+.xr-dim-list:after {
+  content: none !important;
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: none !important;
+}
+
+code th {
+  min-width: 0 !important;
+}

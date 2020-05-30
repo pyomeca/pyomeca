@@ -1,5 +1,0 @@
-# Config file for automatic testing at codacy.com
----
-exclude_paths:
-  - 'tests/*'
-  - 'setup.py'
