@@ -1,0 +1,12 @@
+-e .
+autoflake
+black
+bs4
+isort
+mkdocs
+mkdocs-material
+mkdocs-minify-plugin
+mkdocstrings
+pytest
+pytest-cov
+requests
