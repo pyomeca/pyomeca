@@ -68,7 +68,7 @@ def test_construct_rt():
 
     with pytest.raises(ValueError):
         Rototrans(data=np.zeros((4, 4, 1)))
-        
+
     with pytest.raises(ValueError):
         Rototrans(data=np.ones((4, 4, 1)))
 
