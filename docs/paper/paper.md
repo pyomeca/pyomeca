@@ -39,4 +39,17 @@ Others do not leverage labels and metadata [@Walt2011-em; @Hachaj2019-tk; @Virta
 These data are inherently multidimensional and structured around labels.
 Metadata are also needed to inform about important features of the experiment.\label{fig:biomech-data}](fig/biomech-data.pdf)
 
+# Summary
+
+As a python library, `pyomeca` enables extraction, processing and visualization of biomechanical data for use in research and education.
+It is motivated by the need for simpler tools and more reproducible workflows allowing practitioners to focus on their specific interests and leaving `pyomeca` to handle the computational details for them.
+`pyomeca` builds on the core scientific python packages, in particular `numpy` [@Wall2011-em], `scipy` [@Virtanen2020-zv], `matplotlib` [@Hunter2007-fv] and `xarray` [@Hoyer2017-sf].
+By providing labeled querying and computation, efficient algorithms and persistent metadata, the integration of `xarray` facilitates usability, which is a step towards the adoption of programming in biomechanics.
+`xarray` is designed as a general-purpose library and tries to avoid including domain specific functionalities --- but inevitably, the need for more domain specific logic arises.
+`pyomeca` provides a biomechanics layer that supports specialized file formats (`c3d`, `mat`, `trc`, `sto`, `mot`, `csv` and `xlsx`) and implements signal processing and matrix manipulation routines commonly used in biomechanics.
+`pyomeca` was written in a modular, object-oriented way, which makes it extensible and promotes the use of method chaining.
+`pyomeca` follows software best practices by being fully tested, linted and type annotated --- ensuring that the package is easily distributable and modifiable.
+In addition to the [static documentation and API reference](https://pyomeca.github.io/), `pyomeca` includes a set of Jupyter Notebooks with examples.
+These notebooks can be read and executed by anyone with only a web browser through [binder](https://mybinder.org/).
+
 # References
