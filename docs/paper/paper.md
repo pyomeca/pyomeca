@@ -65,4 +65,11 @@ Each structure is associated with a specific biomechanical data type:
 
 While there are technically dozens of functions implemented in `pyomeca`, one can generally group them into two distinct categories: object creation and data processing.
 
+## Object Creation
+
+The starting point for working with `pyomeca` is to create an object with one of the specific methods associated with the different classes available.
+`pyomeca` offers several ways to create these objects: by directly specifying the data, by sampling random data from distributions, by converting other data structures or by reading files (\autoref{fig:object-creation}).
+
+![`pyomeca` offers several ways to create specialized data structures: from scratch (orange), from random data (red), from other data structures (blue) or from files (green).\label{fig:object-creation}](fig/object-creation.pdf)
+
 # References
