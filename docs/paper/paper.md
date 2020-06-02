@@ -121,4 +121,12 @@ emg_processed.plot.hist(ax=axes[1], bins=50)
 
 ![It is straightforward to represent the average profile of the EMG signal (left) or the distribution of EMG activations (right) thanks to `xarray`.\label{fig:ex-3-aggr}](fig/ex-3-aggr.pdf)
 
+```python
+emg_dataframe = emg_processed.meca.to_wide_dataframe()
+emg_dataframe.plot.box(showfliers=False)
+```
+
+![`pyomeca` offers a method to convert the data structure into a `pandas` dataframe [@McKinney2010-pl].
+This allows users to further extend the plot possibilities using the visualization built into `pandas` itself, such as boxplot.\label{fig:ex-4-box}](fig/ex-4-box.pdf)
+
 # References
