@@ -23,9 +23,6 @@ date: 2 June 2020
 bibliography: paper.bib
 ---
 
-- library format and cap
-- hiphen
-
 # Statement of Need
 
 Biomechanics is defined as the study of the structure and function of biological systems by means of the methods of mechanics [@Hatze1974-zc].
