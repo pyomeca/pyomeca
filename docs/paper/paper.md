@@ -129,4 +129,10 @@ emg_dataframe.plot.box(showfliers=False)
 ![`pyomeca` offers a method to convert the data structure into a `pandas` dataframe [@McKinney2010-pl].
 This allows users to further extend the plot possibilities using the visualization built into `pandas` itself, such as boxplot.\label{fig:ex-4-box}](fig/ex-4-box.pdf)
 
+```python
+emg_dataframe.corr().style.background_gradient().set_precision(2)
+```
+
+![By using a `pandas` dataframe, users also benefit from its broad range of IO tools and statistical methods, such as computing the correlation matrix between the different muscles.\label{fig:ex-5-corr}](fig/ex-5-corr.pdf)
+
 # References
