@@ -77,7 +77,7 @@ The starting point for working with `pyomeca` is to create an object with one of
 `pyomeca`'s main functionality is to offer dedicated biomechanical routines.
 These features can be broadly grouped into different categories: filtering, signal processing, normalization, matrix manipulation and file output functions (\autoref{fig:data-processing}).
 
-![`pyomeca` data processing capabilities are available through the `meca` `DataArrayAccessor` (e.g. `array.meca`) that allow to implement domain specific methods on `xarray` data objects.
+![`pyomeca` data processing capabilities are available through the `meca` `DataArrayAccessor` (e.g. `array.meca`) that allow implementing domain specific methods on `xarray` data objects.
 These methods can be categorized into filters (orange), signal processing (red), normalization (blue), matrix manipulation (green) and file output (purple) routines.\label{fig:data-processing}](fig/data-processing.pdf)
 
 ## A Biomechanical Example: Electromyographic Pipeline
