@@ -23,6 +23,9 @@ date: 2 June 2020
 bibliography: paper.bib
 ---
 
+- library format and cap
+- hiphen
+
 # Statement of Need
 
 Biomechanics is defined as the study of the structure and function of biological systems by means of the methods of mechanics [@Hatze1974-zc].
@@ -84,7 +87,7 @@ These methods can be categorized into filters (orange), signal processing (red),
 
 `pyomeca` has documented examples for different biomechanical tasks such as getting Euler angles from a rototranslation matrix, creating a system of axes from skin markers position or setting a rotation or a translation.
 Another typical task concerns electromyographic (EMG) data processing.
-Using `pyomeca`, one can easily extract (\autoref{fig:ex-1-raw}), process (\autoref{fig:ex-2-processed}) and visualize (\autoref{fig:ex-3-aggr}, \autoref{fig:ex-4-box}, \autoref{fig:ex-5-corr}) such data.
+Using `pyomeca`, one can easily extract (\autoref{fig:ex-1-raw}), process (\autoref{fig:ex-2-processed}) and visualize (\autoref{fig:ex-3-aggr}, \autoref{fig:ex-4-box} and \autoref{fig:ex-5-corr}) such data.
 
 ```python
 from pyomeca import Analogs
@@ -134,5 +137,16 @@ emg_dataframe.corr().style.background_gradient().set_precision(2)
 ```
 
 ![By using a `pandas` dataframe, users also benefit from its broad range of IO tools and statistical methods, such as computing the correlation matrix between the different muscles.\label{fig:ex-5-corr}](fig/ex-5-corr.pdf)
+
+# Research Projects Using `pyomeca`
+
+You can find an [up-to-date list of research projects using `pyomeca`](https://pyomeca.github.io/about/#papers-citing-pyomeca) on the static documentation.
+
+# Acknowledgements
+
+`pyomeca` is an open-source project created and supported by the Simulation and Movement Modeling (S2M) lab located in Montreal.
+We thank the contributors that helped build `pyomeca`.
+You can find an [up-to-date list of contributors](https://github.com/pyomeca/pyomeca/graphs/contributors) on GitHub.
+We also would like to extend thanks to the contributors of the libraries used to build `pyomeca` — particularly `numpy`, `scipy`, `matplotlib` and `xarray`.
 
 # References
