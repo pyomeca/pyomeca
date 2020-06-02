@@ -71,8 +71,16 @@ class Rototrans:
             coords["time"] = time
 
         # Make sure last line reads [0, 0, 0, 1]
-        data[3, :3, :] = 0
-        data[3, 3, :] = 1
+        zeros = data[3, :3, :]
+        ones = data[3, 3, :]
+        if not np.alltrue(zeros == 0) or not np.alltrue(ones == 1):
+            some_zeros = np.random.choice(zeros.ravel(), 5)
+            some_ones = np.random.choice(ones.ravel(), 5)
+            raise ValueError(
+                "Last line does not read [0, 0, 0, 1].\n"
+                f"Here are some values that should be 0: {some_zeros}\n"
+                f"And others that should 1: {some_ones}"
+            )
 
         return xr.DataArray(
             data=data,
