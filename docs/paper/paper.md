@@ -147,6 +147,6 @@ You can find an [up-to-date list of research projects using `pyomeca`](https://p
 `pyomeca` is an open-source project created and supported by the Simulation and Movement Modeling (S2M) lab located in Montreal.
 We thank the contributors that helped build `pyomeca`.
 You can find an [up-to-date list of contributors](https://github.com/pyomeca/pyomeca/graphs/contributors) on GitHub.
-We also would like to extend thanks to the contributors of the libraries used to build `pyomeca` — particularly `numpy`, `scipy`, `matplotlib` and `xarray`.
+We also would like to extend thanks to the contributors of the libraries used to build `pyomeca` --- particularly `numpy`, `scipy`, `matplotlib` and `xarray`.
 
 # References
