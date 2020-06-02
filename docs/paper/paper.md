@@ -80,5 +80,21 @@ These features can be broadly grouped into different categories: filtering, sign
 ![`pyomeca` data processing capabilities are available through the `meca` `DataArrayAccessor` (e.g. `array.meca`) that allow to implement domain specific methods on `xarray` data objects.
 These methods can be categorized into filters (orange), signal processing (red), normalization (blue), matrix manipulation (green) and file output (purple) routines.\label{fig:data-processing}](fig/data-processing.pdf)
 
+## A Biomechanical Example: Electromyographic Pipeline
+
+`pyomeca` has documented examples for different biomechanical tasks such as getting Euler angles from a rototranslation matrix, creating a system of axes from skin markers position or setting a rotation or a translation.
+Another typical task concerns electromyographic (EMG) data processing.
+Using `pyomeca`, one can easily extract (\autoref{fig:ex-1-raw}), process (\autoref{}) and visualize (\autoref{}) such data.
+
+```python
+from pyomeca import Analogs
+
+emg = Analogs.from_c3d("data.c3d")
+emg.plot(x="time", hue="channel")
+```
+
+![Biomechanical data are often stored in the `c3d` binary file format.
+Thanks to the `ezc3d` library (REF), pyomeca can easily read these files and visualize them with the `matplotlib` interface provided by `xarray`.
+\label{fig:ex-1-raw}](fig/ex-1-raw.pdf)
 
 # References
