@@ -110,4 +110,15 @@ emg_processed.plot(x="time", col="channel", col_wrap=3)
 
 ![EMG data analysis consists of a series of signal processing steps that can be carried out by `pyomeca` in a clear and modular way.\label{fig:ex-2-processed}](fig/ex-2-processed.pdf)
 
+```python
+import matplotlib.pyplot as plt
+
+_, axes = plt.subplots(ncols=2)
+
+emg_processed.mean("channel").plot(ax=axes[0])
+emg_processed.plot.hist(ax=axes[1], bins=50)
+```
+
+![It is straightforward to represent the average profile of the EMG signal (left) or the distribution of EMG activations (right) thanks to `xarray`.\label{fig:ex-3-aggr}](fig/ex-3-aggr.pdf)
+
 # References
