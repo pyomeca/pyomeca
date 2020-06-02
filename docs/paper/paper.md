@@ -72,4 +72,12 @@ The starting point for working with `pyomeca` is to create an object with one of
 
 ![`pyomeca` offers several ways to create specialized data structures: from scratch (orange), from random data (red), from other data structures (blue) or from files (green).\label{fig:object-creation}](fig/object-creation.pdf)
 
+## Data Processing
+
+`pyomeca`'s main functionality is to offer dedicated biomechanical routines.
+These features can be broadly grouped into different categories: filtering, signal processing, normalization, matrix manipulation and file output functions (\autoref{fig:data-processing}).
+
+![`pyomeca` data processing capabilities are available through the `meca` `DataArrayAccessor` (e.g. `array.meca`) that allow to implement domain specific methods on `xarray` data objects.
+These methods can be categorized into filters (orange), signal processing (red), normalization (blue), matrix manipulation (green) and file output (purple) routines.\label{fig:object-creation}](fig/object-creation.pdf)
+
 # References
