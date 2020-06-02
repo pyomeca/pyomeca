@@ -84,7 +84,7 @@ These methods can be categorized into filters (orange), signal processing (red),
 
 `pyomeca` has documented examples for different biomechanical tasks such as getting Euler angles from a rototranslation matrix, creating a system of axes from skin markers position or setting a rotation or a translation.
 Another typical task concerns electromyographic (EMG) data processing.
-Using `pyomeca`, one can easily extract (\autoref{fig:ex-1-raw}), process (\autoref{}) and visualize (\autoref{}) such data.
+Using `pyomeca`, one can easily extract (\autoref{fig:ex-1-raw}), process (\autoref{fig:ex-2-processed}) and visualize (\autoref{fig:ex-3-aggr}, \autoref{fig:ex-4-box}, \autoref{fig:ex-5-corr}) such data.
 
 ```python
 from pyomeca import Analogs
