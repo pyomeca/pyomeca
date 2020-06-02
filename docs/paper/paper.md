@@ -52,4 +52,17 @@ By providing labeled querying and computation, efficient algorithms and persiste
 In addition to the [static documentation and API reference](https://pyomeca.github.io/), `pyomeca` includes a set of Jupyter Notebooks with examples.
 These notebooks can be read and executed by anyone with only a web browser through [binder](https://mybinder.org/).
 
+# Features
+
+`pyomeca` inherits from the `xarray` features set, which includes label-based indexing, arithmetic, aggregation and alignment, resampling and rolling window operations, plotting, missing data handling and out-of-core computation.
+In addition, pyomeca has four data structures built upon `xarray`.
+Each structure is associated with a specific biomechanical data type:
+
+- `Angles`: joint angles,
+- `Rototrans`: rototranslation matrix,
+- `Analogs`: generic signals such as EMGs, force signals or any other analog signals,
+- `Markers`: skin markers position.
+
+While there are technically dozens of functions implemented in `pyomeca`, one can generally group them into two distinct categories: object creation and data processing.
+
 # References
