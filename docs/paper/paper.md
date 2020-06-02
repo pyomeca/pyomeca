@@ -97,4 +97,17 @@ emg.plot(x="time", hue="channel")
 Thanks to the `ezc3d` library (REF), pyomeca can easily read these files and visualize them with the `matplotlib` interface provided by `xarray`.
 \label{fig:ex-1-raw}](fig/ex-1-raw.pdf)
 
+```python
+emg_processed = (
+    emg.meca.band_pass(order=2, cutoff=[10, 425])
+    .meca.center()
+    .meca.abs()
+    .meca.low_pass(order=4, cutoff=5)
+    .meca.normalize()
+)
+emg_processed.plot(x="time", col="channel", col_wrap=3)
+```
+
+![EMG data analysis consists of a series of signal processing steps that can be carried out by `pyomeca` in a clear and modular way.\label{fig:ex-2-processed}](fig/ex-2-processed.pdf)
+
 # References
