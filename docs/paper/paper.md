@@ -1,5 +1,5 @@
 ---
-title: "`Pyomeca`: An Open-Source Framework for Biomechanical Analysis"
+title: "`pyomeca`: An Open-Source Framework for Biomechanical Analysis"
 tags:
   - python
   - biomechanics
@@ -33,7 +33,7 @@ These data are typically multidimensional arrays structured around labels with a
 Existing software solutions share some limitations.
 Some of them are not free of charge [@Rasmussen2003-yv] or based on closed-source programming language [@Dixon2017-co; @Muller2019-vd].
 Others do not leverage labels and metadata [@Walt2011-em; @Hachaj2019-tk; @Virtanen2020-zv].
-Pyomeca is a python package designed to address these limitations.
+`pyomeca` is a python package designed to address these limitations.
 
 ![An example of biomechanical data with skin marker positions.
 These data are inherently multidimensional and structured around labels.
