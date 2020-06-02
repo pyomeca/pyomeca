@@ -9,7 +9,7 @@ on:
       - master
   schedule:
     # every sunday at 14:00 UTC
-    - cron:  '0 14 * * SUN'
+    - cron: "0 14 * * SUN"
 
 jobs:
   build:
@@ -52,7 +52,7 @@ jobs:
       - name: Coverage (ubuntu only)
         if: startsWith(matrix.os, 'ubuntu')
         env:
-          COVERALLS_REPO_TOKEN: PZM3oz4Z1NbKgI9rvS7Of89vA7KdHsDAE
+          COVERALLS_REPO_TOKEN: XiFSzZ4JyITqinzFkJhNKD201jE7Bilmh
         run: |
           pip install coveralls
           coveralls
