@@ -15,8 +15,9 @@ nav:
   - Overview: overview.md
   - Getting Started: getting-started.md
   - User Guide:
-    - Object creation: object-creation.md
-    - Data processing: data-processing.md
+      - Object creation: object-creation.md
+      - Data processing: data-processing.md
+  - Contributing: contributing.md
   - About: about.md
   - API reference:
       Analogs: api/analogs.md
