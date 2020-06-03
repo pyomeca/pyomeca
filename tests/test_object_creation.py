@@ -70,9 +70,9 @@ def test_rototrans_creation():
 
     data = Markers(MARKERS_DATA.values)
     array = Rototrans.from_markers(
-        origin=data[:, [0], :],
-        axis_1=data[:, [0, 1], :],
-        axis_2=data[:, [0, 2], :],
+        origin=data.isel(channel=[0]),
+        axis_1=data.isel(channel=[0, 1]),
+        axis_2=data.isel(channel=[0, 2]),
         axes_name="xy",
         axis_to_recalculate="y",
     )
