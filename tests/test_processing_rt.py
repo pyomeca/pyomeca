@@ -66,6 +66,12 @@ def test_construct_rt():
     with pytest.raises(IndexError):
         Rototrans(data=np.zeros(1))
 
+    with pytest.raises(ValueError):
+        Rototrans(data=np.zeros((4, 4, 1)))
+
+    with pytest.raises(ValueError):
+        Rototrans(data=np.ones((4, 4, 1)))
+
     with pytest.raises(IndexError):
         Rototrans.from_euler_angles(
             angles=random_vector[..., :5],

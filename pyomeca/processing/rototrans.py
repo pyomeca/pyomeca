@@ -154,7 +154,9 @@ def rototrans_from_markers(
     else:
         raise ValueError("`axis_to_recalculate must be `x`, `y` or `z`")
 
-    rt = caller(np.zeros((4, 4, origin.time.size)))
+    rt = np.zeros((4, 4, origin.time.size))
+    rt[3, 3, :] = 1
+    rt = caller(rt)
     rt[:3, 0, :] = x / np.linalg.norm(x, axis=0)
     rt[:3, 1, :] = y / np.linalg.norm(y, axis=0)
     rt[:3, 2, :] = z / np.linalg.norm(z, axis=0)
@@ -165,7 +167,9 @@ def rototrans_from_markers(
 def rototrans_from_transposed_rototrans(
     caller: Callable, rt: xr.DataArray
 ) -> xr.DataArray:
-    rt_t = caller(np.zeros((4, 4, rt.time.size)))
+    rt_t = np.zeros((4, 4, rt.time.size))
+    rt_t[3, 3, :] = 1
+    rt_t = caller(rt_t)
 
     # the rotation part is just the transposed of the rotation
     rt_t.meca.rotation = rt.meca.rotation.transpose("col", "row", "time")

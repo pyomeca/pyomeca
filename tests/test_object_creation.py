@@ -68,7 +68,14 @@ def test_rototrans_creation():
     np.testing.assert_array_equal(x=array, y=xr.DataArray(np.eye(4)[..., np.newaxis]))
     assert array.dims == dims
 
-    array = Rototrans(MARKERS_DATA.values, time=MARKERS_DATA.time)
+    data = Markers(MARKERS_DATA.values)
+    array = Rototrans.from_markers(
+        origin=data.isel(channel=[0]),
+        axis_1=data.isel(channel=[0, 1]),
+        axis_2=data.isel(channel=[0, 2]),
+        axes_name="xy",
+        axis_to_recalculate="y",
+    )
     is_expected_array(array, **EXPECTED_VALUES[67])
 
     size = 4, 4, 100
