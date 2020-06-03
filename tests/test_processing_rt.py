@@ -5,6 +5,8 @@ import pytest
 
 from pyomeca import Angles, Markers, Rototrans
 
+from .utils import restard_seed
+
 SEQ = (
     ["".join(p) for i in range(1, 4) for p in permutations("xyz", i)]
     + ["zyzz"]
