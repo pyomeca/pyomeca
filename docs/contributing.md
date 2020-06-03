@@ -72,3 +72,12 @@ This pull request and its associated changes will eventually be committed to the
 This request then goes to the repository maintainers, and they will review the code.
 If you need to make more changes, you can make them in your branch, add them to a new commit and push them to GitHub.
 The pull request will be automatically updated.
+
+!!! note "PR Checklist"
+
+    Let's summarize the steps needed to get your PR ready for submission.
+    0. **Use an isolated Python environment**.
+    1. **Properly test your code**. Write new tests if needed and make sure that your modification didn't break anything by running `make test`.
+    2. **Properly format your code**. You can verify that it passes the formatting guidelines by running `make lint`.
+    3. **Push your code and create a PR**.
+    4. **Properly describe your modifications** with a helpful title and description. If this addresses an issue, please reference it.
