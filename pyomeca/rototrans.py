@@ -92,7 +92,7 @@ class Rototrans:
 
     @classmethod
     def from_random_data(
-        cls, distribution: str = "normal", size: tuple = (4, 4, 100), **kwargs
+        cls, distribution: str = "normal", size: tuple = (3, 1, 100), **kwargs
     ) -> xr.DataArray:
         """
         Create random data from a specified distribution (normal by default) using random walk.
