@@ -45,7 +45,7 @@ Adding tests is required if you add or modify existing codes in pyomeca.
 Therefore, it is worth getting in the habit of writing tests ahead of time so this is never an issue.
 The pyomeca test suite runs automatically on GitHub Actions, once your pull request is submitted.
 However, we strongly encourage running the tests prior to submitting the pull request.
-To do so, simply run `make test`.
+To do so, run `make test` or simply `pytest tests`.
 
 ## Linting your code
 
