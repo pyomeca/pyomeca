@@ -8,11 +8,13 @@ import pandas as pd
 # Path to data
 from pyomeca import Analogs, Markers
 
+from .utils import restart_seed
+
 mpl.rcParams["axes.spines.right"] = False
 mpl.rcParams["axes.spines.top"] = False
 plt.style.use("seaborn-ticks")  # bmh, ggplot, seaborn-whitegrid
 
-np.random.seed(42)  # to make the random sampling consistent across runs
+restart_seed()
 
 if "tests" in f"{Path('.').absolute()}":
     DATA_FOLDER = Path("data")
