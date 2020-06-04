@@ -5,7 +5,7 @@ import pytest
 
 from pyomeca import Angles, Markers, Rototrans
 
-from .utils import restard_seed
+from .utils import restart_seed
 
 SEQ = (
     ["".join(p) for i in range(1, 4) for p in permutations("xyz", i)]
@@ -245,7 +245,7 @@ def test_average_rt():
     angles_size = (3, 1, 100)
     ref_angles_from_rt_mean = [0.25265133, 0.57436872, 0.79133042]
 
-    restard_seed()
+    restart_seed()
     angles = Angles.from_random_data(size=angles_size)
     # min-max normalization to keep the angles low
     angles = angles.pipe(lambda x: (x - x.min()) / (x.max() - x.min()))

@@ -2,7 +2,7 @@ import numpy as np
 
 from pyomeca import Analogs, Markers
 from tests._constants import ANALOGS_DATA, EXPECTED_VALUES, MARKERS_DATA
-from tests.utils import is_expected_array, restard_seed
+from tests.utils import is_expected_array, restart_seed
 
 
 def test_proc_abs():
@@ -11,7 +11,7 @@ def test_proc_abs():
 
 
 def test_proc_matmul():
-    restard_seed()
+    restart_seed()
     random_markers_1 = Markers.from_random_data()
     random_markers_2 = Markers.from_random_data()
     markers_matmul = random_markers_1.meca.matmul(random_markers_2)

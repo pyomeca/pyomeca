@@ -8,7 +8,7 @@ import xarray as xr
 mkdocs_server = "http://127.0.0.1:8000"
 
 
-def restard_seed(seed: int = 42):
+def restart_seed(seed: int = 42):
     np.random.seed(seed)
 
 
