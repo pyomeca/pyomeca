@@ -5,8 +5,8 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-from pyomeca.io import read, utils
-from pyomeca.processing.markers import markers_from_rototrans
+from .io import read, utils
+from .processing.markers import markers_from_rototrans
 
 
 class Markers:
