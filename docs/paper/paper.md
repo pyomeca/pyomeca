@@ -94,7 +94,7 @@ emg.plot(x="time", hue="channel")
 ```
 
 ![Biomechanical data are often stored in the `c3d` binary file format.
-Thanks to the `ezc3d` library (REF), pyomeca can easily read these files and visualize them with the `matplotlib` interface provided by `xarray`.
+Thanks to the `ezc3d` library [@ezc3d], `pyomeca` can easily read these files and visualize them with the `matplotlib` interface provided by `xarray`.
 \label{fig:ex-1-raw}](fig/ex-1-raw.pdf)
 
 ```python
