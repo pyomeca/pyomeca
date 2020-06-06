@@ -8,6 +8,6 @@ setup(
     author_email="martinez.staps@gmail.com",
     url="https://github.com/pyomeca/pyomeca",
     license="Apache 2.0",
-    packages=["pyomeca"],
+    packages=["pyomeca", "pyomeca.io", "pyomeca.processing"],
     keywords="pyomeca",
 )
