@@ -4,7 +4,8 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-from .angles import Angles
+from pyomeca import Angles
+
 from .processing import rototrans
 
 

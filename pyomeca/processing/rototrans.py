@@ -4,7 +4,8 @@ import numpy as np
 import xarray as xr
 from scipy.optimize import least_squares
 
-from ..angles import Angles
+from pyomeca import Angles
+
 from ..processing import misc
 
 
