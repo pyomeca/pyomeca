@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-from pyomeca.processing import angles
+from .processing import angles
 
 
 class Angles:

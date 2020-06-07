@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-from pyomeca.io.utils import col_spliter, find_end_header_in_opensim_file
+from .utils import col_spliter, find_end_header_in_opensim_file
 
 
 def read_c3d(

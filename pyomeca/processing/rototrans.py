@@ -5,7 +5,8 @@ import xarray as xr
 from scipy.optimize import least_squares
 
 from pyomeca import Angles
-from pyomeca.processing import misc
+
+from ..processing import misc
 
 
 def rototrans_from_euler_angles(

@@ -5,8 +5,8 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-from pyomeca.io import write
-from pyomeca.processing import filter, interp, matrix, misc, rototrans
+from .io import write
+from .processing import filter, interp, matrix, misc, rototrans
 
 
 @xr.register_dataarray_accessor("meca")

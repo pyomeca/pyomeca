@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import find_packages, setup
 
 setup(
     name="pyomeca",
@@ -8,6 +8,6 @@ setup(
     author_email="martinez.staps@gmail.com",
     url="https://github.com/pyomeca/pyomeca",
     license="Apache 2.0",
-    packages=["pyomeca"],
+    packages=find_packages(),
     keywords="pyomeca",
 )

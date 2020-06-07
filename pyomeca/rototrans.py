@@ -5,7 +5,8 @@ import pandas as pd
 import xarray as xr
 
 from pyomeca import Angles
-from pyomeca.processing import rototrans
+
+from .processing import rototrans
 
 
 class Rototrans:
