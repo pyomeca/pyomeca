@@ -31,7 +31,7 @@ jobs:
           conda-channels: conda-forge
 
       - name: Add path DLL to windows path (windows only)
-        runs-on: windows-latest
+        if: startsWith(matrix.os, 'windows')
         run: echo "##[add-path]C:\Miniconda\Library\bin"
 
       - name: Install Dependencies
@@ -40,12 +40,12 @@ jobs:
           pip install -r requirements-dev.txt
           conda info -a
 
-      - name: Lint python (ubuntu only)
-        runs-on: ubuntu-latest
+      - name: Lint Python (ubuntu only)
+        if: startsWith(matrix.os, 'ubuntu')
         run: black --check .
 
       - name: Lint (ubuntu only)
-        runs-on: ubuntu-latest
+        if: startsWith(matrix.os, 'ubuntu')
         uses: docker://github/super-linter:v2.2.0
 
       - name: Test
@@ -54,7 +54,7 @@ jobs:
           python -m pytest --cov-report term-missing --color=yes --cov=pyomeca tests
 
       - name: Coverage (ubuntu only)
-        runs-on: ubuntu-latest
+        if: startsWith(matrix.os, 'ubuntu')
         env:
           COVERALLS_REPO_TOKEN: XiFSzZ4JyITqinzFkJhNKD201jE7Bilmh
         run: |
