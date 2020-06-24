@@ -4,25 +4,37 @@ Pyomeca is Apache-licensed and the source code is available on [GitHub](https://
 
 ## Citing Pyomeca
 
-If you use pyomeca in your academic work, please consider citing [our paper]() as:
+If you use pyomeca in your academic work, please consider citing [our paper](https://github.com/openjournals/joss-papers/blob/joss.02323/joss.02323/10.21105.joss.02323.pdf) as:
 
 ```bibtex
-@article{jos-pyomeca,
-    author = {author},
-    title = {title},
-    journal = {journal},
-    year = {year},
+@unpublished{Martinez2020,
+  doi = {},
+  url = {},
+  year = {2020},
+  publisher = {The Open Journal},
+  volume = {},
+  number = {},
+  pages = {},
+  author = {Romain Martinez and Benjamin Michaud and Mickael Begon},
+  title = {Pyomeca: An Open-Source Framework for Biomechanical Analysis},
+  journal = {Journal of Open Source Software}
 }
 ```
+
+!!! note
+
+    Our paper is currently under review.
+    You can follow the review process [here](https://github.com/openjournals/joss-reviews/issues/2323).
+    Once available, we will update the BibTex entry.
 
 Please consider citing the [xarray](https://openresearchsoftware.metajnl.com/articles/10.5334/jors.148/) project, which pyomeca is based on:
 
 ```bibtex
 @article{jors-xarray,
-title  = {Xarray: N-D labeled arrays and datasets in Python},
+title = {Xarray: N-D labeled arrays and datasets in Python},
 author = {Joe Hamman and Stephan Hoyer},
-year   = {2017},
-journal    = {Journal of Open Research Software}
+year = {2017},
+journal = {Journal of Open Research Software}
 }
 ```
 
