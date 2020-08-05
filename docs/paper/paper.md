@@ -31,7 +31,7 @@ The processing, analysis and visualization of these data could therefore be unif
 Most biomechanical data characterizing human and animal movement appear as temporal waveforms representing specific measures such as muscle activity or joint angles.
 These data are typically multidimensional arrays structured around labels with arbitrary metadata (\autoref{fig:biomech-data}).
 Existing software solutions share some limitations.
-Some of them are not free of charge [@Rasmussen2003-yv] or based on closed-source programming language [@Dixon2017-co; @Muller2019-cx].
+Some of them are not free of charge [@Damsgaard2006-gq] or based on closed-source programming language [@Dixon2017-co; @Muller2019-cx].
 Others do not leverage labels and metadata [@Walt2011-em; @Hachaj2019-tk; @Virtanen2020-zv].
 `pyomeca` is a python package designed to address these limitations.
 
