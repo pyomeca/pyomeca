@@ -49,7 +49,9 @@ It is motivated by the need for simpler tools and more reproducible workflows al
 By providing labeled querying and computation, efficient algorithms and persistent metadata, the integration of `xarray` facilitates usability, which is a step towards the adoption of programming in biomechanics.
 `xarray` is designed as a general-purpose library and tries to avoid including domain specific functionalities --- but inevitably, the need for more domain specific logic arises.
 `pyomeca` provides a biomechanics layer that supports specialized file formats (`c3d`, `mat`, `trc`, `sto`, `mot`, `csv` and `xlsx`) and implements signal processing and matrix manipulation routines commonly used in biomechanics.
-`pyomeca` was written in a modular, object-oriented way, which makes it extensible and promotes the use of method chaining.
+We believe `pyomeca` is a solid foundation for more advanced research implementations and could, in the future, provide functions for processing and extracting meaningful clinical outputs from the raw data.
+`pyomeca` was written with the Unix philosophy in mind, that is to design each program to do one thing well and expect the output of every program to become the input to another, as yet unknown, program.
+As such, it is written in a modular, object-oriented way --- which makes it extensible and easy to develop --- and it interacts well with other projects under the [`pyomeca umbrella`](https://github.com/pyomeca), namely [`ezc3d`](https://github.com/pyomeca/ezc3d), [`pyosim`](https://github.com/pyomeca/pyosim) or [`biorbd-viz`](https://github.com/pyomeca/biorbd-viz).
 `pyomeca` follows software best practices by being fully tested, linted and type annotated --- ensuring that the package is easily distributable and modifiable.
 In addition to the [static documentation and API reference](https://pyomeca.github.io/), `pyomeca` includes a set of Jupyter Notebooks with examples.
 These notebooks can be read and executed by anyone with only a web browser through [binder](https://mybinder.org/).
