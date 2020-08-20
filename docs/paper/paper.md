@@ -34,6 +34,8 @@ Existing software solutions share some limitations.
 Some of them are not free of charge [@Damsgaard2006-gq] or based on closed-source programming language [@Dixon2017-co; @Muller2019-cx].
 Others do not leverage labels and metadata [@Walt2011-em; @Hachaj2019-tk; @Virtanen2020-zv].
 `pyomeca` is a python package designed to address these limitations.
+It provides basic operations useful in the daily workflow of a biomechanical researcher such as reading, writing, filtering and plotting, but also more advanced biomechanical routines geared towards rigid body mechanics and signal processing.
+By offering a single, efficient and flexible implementation, `pyomeca` standardizes these procedures and avoids wasting valuable research time writing functions that have, sometimes, nothing to do with the research interests.
 
 ![An example of biomechanical data with skin marker positions.
 These data are inherently multidimensional and structured around labels.
@@ -47,7 +49,9 @@ It is motivated by the need for simpler tools and more reproducible workflows al
 By providing labeled querying and computation, efficient algorithms and persistent metadata, the integration of `xarray` facilitates usability, which is a step towards the adoption of programming in biomechanics.
 `xarray` is designed as a general-purpose library and tries to avoid including domain specific functionalities --- but inevitably, the need for more domain specific logic arises.
 `pyomeca` provides a biomechanics layer that supports specialized file formats (`c3d`, `mat`, `trc`, `sto`, `mot`, `csv` and `xlsx`) and implements signal processing and matrix manipulation routines commonly used in biomechanics.
-`pyomeca` was written in a modular, object-oriented way, which makes it extensible and promotes the use of method chaining.
+We believe `pyomeca` is a solid foundation for more advanced research implementations and could, in the future, provide functions for processing and extracting meaningful clinical outputs from the raw data.
+`pyomeca` was written with the Unix philosophy in mind, that is to design each program to do one thing well and expect the output of every program to become the input to another, as yet unknown, program.
+As such, it is written in a modular, object-oriented way --- which makes it extensible and easy to develop --- and it interacts well with other projects under the [`pyomeca umbrella`](https://github.com/pyomeca), namely [`ezc3d`](https://github.com/pyomeca/ezc3d), [`pyosim`](https://github.com/pyomeca/pyosim) or [`biorbd-viz`](https://github.com/pyomeca/biorbd-viz).
 `pyomeca` follows software best practices by being fully tested, linted and type annotated --- ensuring that the package is easily distributable and modifiable.
 In addition to the [static documentation and API reference](https://pyomeca.github.io/), `pyomeca` includes a set of Jupyter Notebooks with examples.
 These notebooks can be read and executed by anyone with only a web browser through [binder](https://mybinder.org/).
@@ -55,7 +59,7 @@ These notebooks can be read and executed by anyone with only a web browser throu
 # Features
 
 `pyomeca` inherits from the `xarray` features set, which includes label-based indexing, arithmetic, aggregation and alignment, resampling and rolling window operations, plotting, missing data handling and out-of-core computation.
-In addition, pyomeca has four data structures built upon `xarray`.
+In addition, `pyomeca` has four data structures built upon `xarray`.
 Each structure is associated with a specific biomechanical data type:
 
 - `Angles`: joint angles,
