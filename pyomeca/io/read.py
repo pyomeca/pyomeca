@@ -141,7 +141,11 @@ def read_sto_or_mot(
         end_header = find_end_header_in_opensim_file(filename)
 
     data = caller.from_csv(
-        filename, header=end_header + 1, first_column=0, time_column=0, **kwargs,
+        filename,
+        header=end_header + 1,
+        first_column=0,
+        time_column=0,
+        **kwargs,
     )
     data.attrs["rate"] = (1 / (data.time[1] - data.time[0])).round().item()
     return data
@@ -149,7 +153,12 @@ def read_sto_or_mot(
 
 def read_trc(caller: Callable, filename: Union[str, Path], **kwargs):
     data = caller.from_csv(
-        filename, header=3, first_row=6, first_column=1, time_column=1, **kwargs,
+        filename,
+        header=3,
+        first_row=6,
+        first_column=1,
+        time_column=1,
+        **kwargs,
     )
     data.attrs["rate"] = (1 / (data.time[1] - data.time[0])).round().item()
     return data

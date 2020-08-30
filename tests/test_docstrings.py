@@ -39,7 +39,8 @@ def test_docstring_example(method):
         else ""
     )
     code_block = extract_code_blocks_from_md(method.__doc__).replace(
-        "plt.show()", plt_show_replacer,
+        "plt.show()",
+        plt_show_replacer,
     )
     exec(code_block, {}, {})
 

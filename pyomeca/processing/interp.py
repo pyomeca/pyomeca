@@ -14,7 +14,9 @@ def time_normalize(
         if norm_time:
             first_last_time = (0, 99)
             array["time"] = np.linspace(
-                first_last_time[0], first_last_time[1], array["time"].shape[0],
+                first_last_time[0],
+                first_last_time[1],
+                array["time"].shape[0],
             )
         else:
             first_last_time = (array.time[0], array.time[-1])

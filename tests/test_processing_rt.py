@@ -61,7 +61,8 @@ def test_construct_rt():
     np.arange(0, rt_random_angles.time.size / 0.5, 1 / 0.5)
 
     rt_with_time = Rototrans(
-        rt_random_angles, time=np.arange(0, rt_random_angles.time.size / 100, 1 / 100),
+        rt_random_angles,
+        time=np.arange(0, rt_random_angles.time.size / 100, 1 / 100),
     )
     assert rt_with_time.time[-1] == 0.09
 

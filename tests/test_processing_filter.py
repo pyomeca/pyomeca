@@ -14,10 +14,12 @@ def test_proc_filters():
         **EXPECTED_VALUES[32],
     )
     is_expected_array(
-        ANALOGS_DATA.meca.low_pass(order=order, cutoff=5), **EXPECTED_VALUES[32],
+        ANALOGS_DATA.meca.low_pass(order=order, cutoff=5),
+        **EXPECTED_VALUES[32],
     )
     is_expected_array(
-        ANALOGS_DATA.meca.high_pass(order=order, cutoff=100), **EXPECTED_VALUES[33],
+        ANALOGS_DATA.meca.high_pass(order=order, cutoff=100),
+        **EXPECTED_VALUES[33],
     )
     is_expected_array(
         ANALOGS_DATA.meca.band_pass(order=order, cutoff=[10, 200]),
@@ -34,16 +36,20 @@ def test_proc_filters():
         **EXPECTED_VALUES[36],
     )
     is_expected_array(
-        MARKERS_DATA.meca.low_pass(order=order, cutoff=5), **EXPECTED_VALUES[36],
+        MARKERS_DATA.meca.low_pass(order=order, cutoff=5),
+        **EXPECTED_VALUES[36],
     )
     is_expected_array(
-        MARKERS_DATA.meca.high_pass(order=order, cutoff=10), **EXPECTED_VALUES[37],
+        MARKERS_DATA.meca.high_pass(order=order, cutoff=10),
+        **EXPECTED_VALUES[37],
     )
     is_expected_array(
-        MARKERS_DATA.meca.band_pass(order=order, cutoff=[1, 10]), **EXPECTED_VALUES[38],
+        MARKERS_DATA.meca.band_pass(order=order, cutoff=[1, 10]),
+        **EXPECTED_VALUES[38],
     )
     is_expected_array(
-        MARKERS_DATA.meca.band_stop(order=order, cutoff=[5, 6]), **EXPECTED_VALUES[39],
+        MARKERS_DATA.meca.band_stop(order=order, cutoff=[5, 6]),
+        **EXPECTED_VALUES[39],
     )
 
     with pytest.raises(ValueError):
