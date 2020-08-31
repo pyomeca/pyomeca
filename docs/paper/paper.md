@@ -33,7 +33,7 @@ These data are typically multidimensional arrays structured around labels with a
 Existing software solutions share some limitations.
 Some of them are not free of charge [@Damsgaard2006-gq] or based on closed-source programming language [@Dixon2017-co; @Muller2019-cx].
 Others do not leverage labels and metadata [@Walt2011-em; @Hachaj2019-tk; @Virtanen2020-zv].
-`pyomeca` is a python package designed to address these limitations.
+`pyomeca` is a Python package designed to address these limitations.
 It provides basic operations useful in the daily workflow of a biomechanical researcher such as reading, writing, filtering and plotting, but also more advanced biomechanical routines geared towards rigid body mechanics and signal processing.
 By offering a single, efficient and flexible implementation, `pyomeca` standardizes these procedures and avoids wasting valuable research time writing functions that have, sometimes, nothing to do with the research interests.
 
@@ -43,9 +43,9 @@ Metadata are also needed to inform about important features of the experiment.\l
 
 # Summary
 
-As a python library, `pyomeca` enables extraction, processing and visualization of biomechanical data for use in research and education.
+As a Python library, `pyomeca` enables extraction, processing and visualization of biomechanical data for use in research and education.
 It is motivated by the need for simpler tools and more reproducible workflows allowing practitioners to focus on their specific interests and leaving `pyomeca` to handle the computational details for them.
-`pyomeca` builds on the core scientific python packages, in particular `numpy` [@Walt2011-em], `scipy` [@Virtanen2020-zv], `matplotlib` [@Hunter2007-fv] and `xarray` [@Hoyer2017-sf].
+`pyomeca` builds on the core scientific Python packages, in particular `numpy` [@Walt2011-em], `scipy` [@Virtanen2020-zv], `matplotlib` [@Hunter2007-fv] and `xarray` [@Hoyer2017-sf].
 By providing labeled querying and computation, efficient algorithms and persistent metadata, the integration of `xarray` facilitates usability, which is a step towards the adoption of programming in biomechanics.
 `xarray` is designed as a general-purpose library and tries to avoid including domain specific functionalities --- but inevitably, the need for more domain specific logic arises.
 `pyomeca` provides a biomechanics layer that supports specialized file formats (`c3d`, `mat`, `trc`, `sto`, `mot`, `csv` and `xlsx`) and implements signal processing and matrix manipulation routines commonly used in biomechanics.
