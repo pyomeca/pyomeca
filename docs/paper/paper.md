@@ -58,7 +58,7 @@ These notebooks can be read and executed by anyone with only a web browser throu
 
 # Features
 
-`pyomeca` inherits from the `xarray` features set, which includes label-based indexing, arithmetic, aggregation and alignment, resampling and rolling window operations, plotting, missing data handling and out-of-core computation.
+`pyomeca` inherits from the `xarray` feature set, which includes label-based indexing, arithmetic, aggregation and alignment, resampling and rolling window operations, plotting, missing data handling and out-of-core computation.
 In addition, `pyomeca` has four data structures built upon `xarray`.
 Each structure is associated with a specific biomechanical data type:
 
