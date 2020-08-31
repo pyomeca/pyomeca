@@ -35,7 +35,7 @@ Some of them are proprietary [@Damsgaard2006-gq] or based on closed-source progr
 Others do not leverage labels and metadata [@Walt2011-em; @Hachaj2019-tk; @Virtanen2020-zv].
 `pyomeca` is a Python package designed to address these limitations.
 It provides basic operations useful in the daily workflow of a biomechanical researcher such as reading, writing, filtering and plotting, but also more advanced biomechanical routines geared towards rigid body mechanics and signal processing.
-By offering a single, efficient and flexible implementation, `pyomeca` standardizes these procedures and avoids wasting valuable research time writing functions that have, sometimes, nothing to do with the research interests.
+By offering a single, efficient and flexible implementation, `pyomeca` standardizes these procedures, freeing up valuable research time, thereby allowing researchers to focus on the scientific research questions at hand.
 
 ![An example of biomechanical data with skin marker positions.
 These data are inherently multidimensional and structured around labels.
