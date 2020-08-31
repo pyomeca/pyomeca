@@ -26,7 +26,7 @@ bibliography: paper.bib
 # Statement of Need
 
 Biomechanics is defined as the study of the structure and function of biological systems by means of the methods of mechanics [@Hatze1974-zc].
-While biomechanics branches into several subfields, the data used are remarkably similar.
+While musculoskeletal biomechanics branches into several subfields, the data used are remarkably similar.
 The processing, analysis and visualization of these data could therefore be unified in a software package.
 Most biomechanical data characterizing human and animal movement appear as temporal waveforms representing specific measures such as muscle activity or joint angles.
 These data are typically multidimensional arrays structured around labels with arbitrary metadata (\autoref{fig:biomech-data}).
@@ -37,7 +37,7 @@ Others do not leverage labels and metadata [@Walt2011-em; @Hachaj2019-tk; @Virta
 It provides basic operations useful in the daily workflow of a biomechanical researcher such as reading, writing, filtering and plotting, but also more advanced biomechanical routines geared towards rigid body mechanics and signal processing.
 By offering a single, efficient and flexible implementation, `pyomeca` standardizes these procedures, freeing up valuable research time, thereby allowing researchers to focus on the scientific research questions at hand.
 
-![An example of biomechanical data with skin marker positions.
+![An example of musculoskeletal biomechanical data with skin marker positions.
 These data are inherently multidimensional and structured around labels.
 Metadata are also needed to inform about important features of the experiment.\label{fig:biomech-data}](fig/biomech-data.pdf)
 
@@ -48,7 +48,7 @@ It is motivated by the need for simpler tools and more reproducible workflows al
 `pyomeca` builds on the core scientific Python packages, in particular `numpy` [@Walt2011-em], `scipy` [@Virtanen2020-zv], `matplotlib` [@Hunter2007-fv] and `xarray` [@Hoyer2017-sf].
 By providing labeled querying and computation, efficient algorithms and persistent metadata, the integration of `xarray` facilitates usability, which is a step towards the adoption of programming in biomechanics.
 `xarray` is designed as a general-purpose library and tries to avoid including domain specific functionalities --- but inevitably, the need for more domain specific logic arises.
-`pyomeca` provides a biomechanics layer that supports specialized file formats (`c3d`, `mat`, `trc`, `sto`, `mot`, `csv` and `xlsx`) and implements signal processing and matrix manipulation routines commonly used in biomechanics.
+`pyomeca` provides a biomechanics layer that supports specialized file formats (`c3d`, `mat`, `trc`, `sto`, `mot`, `csv` and `xlsx`) and implements signal processing and matrix manipulation routines commonly used in musculoskeletal biomechanics.
 We believe `pyomeca` is a solid foundation for more advanced research implementations and could, in the future, provide functions for processing and extracting meaningful clinical outputs from the raw data.
 `pyomeca` was written with the Unix philosophy in mind, that is to design each program to do one thing well and expect the output of every program to become the input to another, as yet unknown, program.
 As such, it is written in a modular, object-oriented way --- which makes it extensible and easy to develop --- and it interacts well with other projects under the [`pyomeca umbrella`](https://github.com/pyomeca), namely [`ezc3d`](https://github.com/pyomeca/ezc3d), [`pyosim`](https://github.com/pyomeca/pyosim) or [`biorbd-viz`](https://github.com/pyomeca/biorbd-viz).
