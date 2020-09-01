@@ -79,7 +79,8 @@ def test_read_analogs(
 @pytest.mark.parametrize("usecols", [[20.0]])
 @pytest.mark.parametrize("extension", _extensions)
 def test_read_catch_error(
-    usecols, extension,
+    usecols,
+    extension,
 ):
     with pytest.raises(IndexError):
         Markers.from_csv(MARKERS_CSV)

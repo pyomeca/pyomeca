@@ -18,7 +18,8 @@ def test_rotate():
     for marker in range(n_markers):
         for frame in range(n_frames):
             expected_rotated_marker[:, marker, frame] = np.dot(
-                rt.isel(time=frame), markers.isel(channel=marker, time=frame),
+                rt.isel(time=frame),
+                markers.isel(channel=marker, time=frame),
             )
 
     np.testing.assert_array_almost_equal(

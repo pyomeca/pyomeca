@@ -509,7 +509,7 @@ class DataArrayAccessor(object):
             ```
 
             ![band_stop](/images/api/band_stop.svg)
-        
+
         !!! note
             You can also perform a notch filter with this method.
             A notch filter is a band-stop filter with a narrow bandwidth.
