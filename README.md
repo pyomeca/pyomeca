@@ -3,6 +3,11 @@
       src="https://raw.githubusercontent.com/pyomeca/design/master/logo/logo_plain_doc.svg?sanitize=true"
       alt="logo"
     />
+  <a href="https://doi.org/10.21105/joss.02431"
+    ><img
+      alt="DOI badge"
+      src="https://joss.theoj.org/papers/10.21105/joss.02431/status.svg"
+  /></a>
   <a href="https://github.com/pyomeca/pyomeca/actions"
     ><img
       alt="Actions Status"
@@ -15,11 +20,6 @@
   /></a>
   <a href="https://anaconda.org/conda-forge/pyomeca"
     ><img
-      alt="License: MIT"
-      src="https://anaconda.org/conda-forge/pyomeca/badges/license.svg"
-  /></a>
-  <a href="https://anaconda.org/conda-forge/pyomeca"
-    ><img
       alt="PyPI"
       src="https://anaconda.org/conda-forge/pyomeca/badges/latest_release_date.svg"
   /></a>
@@ -27,11 +27,6 @@
     ><img
       alt="Downloads"
       src="https://anaconda.org/conda-forge/pyomeca/badges/downloads.svg"
-  /></a>
-  <a href="https://github.com/psf/black"
-    ><img
-      alt="Code style: black"
-      src="https://img.shields.io/badge/code%20style-black-000000.svg"
   /></a>
 </p>
 
@@ -141,7 +136,39 @@ Pyomeca is Apache-licensed and the source code is available on [GitHub](https://
 If any questions or issues come up as you use pyomeca, please get in touch via [GitHub issues](https://github.com/pyomeca/pyomeca/issues).
 We welcome any input, feedback, bug reports, and contributions.
 
-## Contributors and support
+## Citing Pyomeca
+
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.02431/status.svg)](https://doi.org/10.21105/joss.02431)
+
+If you use pyomeca in your academic work, please consider citing [our paper](https://doi.org/10.21105/joss.02431) as:
+
+```bibtex
+@article{Martinez2020,
+  doi = {10.21105/joss.02431},
+  url = {https://doi.org/10.21105/joss.02431},
+  year = {2020},
+  publisher = {The Open Journal},
+  volume = {5},
+  number = {53},
+  pages = {2431},
+  author = {Romain Martinez and Benjamin Michaud and Mickael Begon},
+  title = {`pyomeca`: An Open-Source Framework for Biomechanical Analysis},
+  journal = {Journal of Open Source Software}
+}
+```
+
+Please consider citing the [xarray](https://openresearchsoftware.metajnl.com/articles/10.5334/jors.148/) project, which pyomeca is based on:
+
+```bibtex
+@article{jors-xarray,
+title = {Xarray: N-D labeled arrays and datasets in Python},
+author = {Joe Hamman and Stephan Hoyer},
+year = {2017},
+journal = {Journal of Open Research Software}
+}
+```
+
+## Contributors
 
 - [Romain Martinez](https://github.com/romainmartinez)
 - [Benjamin Michaud](https://github.com/pariterre)
