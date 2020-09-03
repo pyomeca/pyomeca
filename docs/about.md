@@ -34,6 +34,8 @@ journal = {Journal of Open Research Software}
 
 ## Papers using Pyomeca
 
+- Konrad Kluwak, Niżyński Teodor. 2020. "[Gait Classification using LSTM Networks for Tagging System](https://doi.org/10.1109/SoSE50414.2020.9130487)." IEEE 15th International Conference of System of Systems Engineering.
+
 - Grontman Anita, Łukasz Horyza, Krzystof Koczan, Małgorzata Marzec, Maciej Śmiertka, Maciej Trybał. 2020. "[Analysis of sword fencing training evaluation possibilities using Motion Capture techniques](https://doi.org/10.1109/SoSE50414.2020.9130469)." IEEE 15th International Conference of System of Systems Engineering.
 
 - Martinez Romain, Benjamin Michaud, Mickael Begon. 2020. “[`pyomeca`: An Open-Source Framework for Biomechanical Analysis](https://doi.org/10.21105/joss.02431)” Journal of Open Source Software.
