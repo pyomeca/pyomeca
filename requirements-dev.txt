@@ -10,3 +10,4 @@ mkdocstrings
 pytest
 pytest-cov
 requests
+jupyter
