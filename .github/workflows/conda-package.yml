@@ -32,7 +32,7 @@ jobs:
 
       - name: Add path DLL to windows path (windows only)
         if: startsWith(matrix.os, 'windows')
-        run: echo "##[add-path]C:\Miniconda\Library\bin"
+        run: echo "C:\Miniconda\Library\bin" >> $GITHUB_PATH
 
       - name: Install Dependencies
         run: |
