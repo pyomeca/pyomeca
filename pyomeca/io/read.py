@@ -56,8 +56,8 @@ def read_c3d(
         reader.parameters().group(group).parameter("UNITS").valuesAsString()[0]
     )
 
-    time = np.arange(
-        start=0, stop=data.shape[-1] / attrs["rate"], step=1 / attrs["rate"]
+    time = np.linspace(
+        start=0, stop=data.shape[-1] / attrs["rate"], num=data.shape[-1], endpoint=False
     )
     return caller(
         data[0, ...] if group == "ANALOG" else data, channels, time, attrs=attrs
