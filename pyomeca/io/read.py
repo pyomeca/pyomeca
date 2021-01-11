@@ -95,6 +95,7 @@ def read_csv_or_excel(
             sheet_name=sheet_name,
             header=header,
             skiprows=skip_rows,
+            engine="openpyxl",
             **pandas_kwargs,
         )
 
