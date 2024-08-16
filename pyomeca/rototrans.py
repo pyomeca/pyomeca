@@ -74,7 +74,7 @@ class Rototrans:
         # Make sure last line reads [0, 0, 0, 1]
         zeros = data[3, :3, :]
         ones = data[3, 3, :]
-        if not np.alltrue(zeros == 0) or not np.alltrue(ones == 1):
+        if not np.all(zeros == 0) or not np.all(ones == 1):
             some_zeros = np.random.choice(zeros.ravel(), 5)
             some_ones = np.random.choice(ones.ravel(), 5)
             raise ValueError(
