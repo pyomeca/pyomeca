@@ -1,0 +1,47 @@
+[project]
+name = "pyomeca"
+description = "pyomeca is a python library allowing to carry out a complete biomechanical analysis; in a simple, logical and concise way"
+readme = "README.md"
+requires-python = ">=3.6"
+keywords = ['pyomeca']
+license = {text = "Apache 2.0"}
+authors = [
+  {name = "Romain Martinez", email = "martinez.staps@gmail.com"},
+  {name = "Benjamin Michaud"},
+]
+dynamic = ["version"]
+
+dependencies = [
+  "numpy",
+  "scipy",
+  "xarray",
+  "ezc3d >= 1.3.2",
+  "matplotlib",
+  "bottleneck",
+  "openpyxl",
+]
+
+[dependency-groups]
+dev = [
+  "autoflake",
+  "black",
+  "bs4",
+  "isort",
+  "mkdocs",
+  "mkdocs-material",
+  "mkdocs-minify-plugin",
+  "mkdocstrings",
+  "pytest",
+  "pytest-cov",
+  "requests",
+  "jupyter",
+]
+
+[project.urls]
+Repository = "https://github.com/pyomeca/pyomeca"
+
+[tool.setuptools]
+packages = ["pyomeca", "pyomeca.io", "pyomeca.processing"]
+
+[tool.setuptools.dynamic]
+version = {attr = "pyomeca._version.__version__"} 
