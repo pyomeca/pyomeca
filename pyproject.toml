@@ -12,7 +12,6 @@ authors = [
 dynamic = ["version"]
 
 dependencies = [
-  "python",
   "numpy",
   "scipy",
   "xarray",
