@@ -26,14 +26,26 @@ def time_normalize(
 
 def interpolate_missing_data(array: xr.DataArray) -> xr.DataArray:
 
-    interpolated_array = np.zeros_like(array)
-    for i in range(array.shape[0]):
-        bad_indexes = np.isnan(array[i, :])
+    def interpolate(vector: np.ndarray) -> np.ndarray:
+        interpolated_vector = np.zeros_like(vector)
+        bad_indexes = np.isnan(vector)
         good_indexes = np.logical_not(bad_indexes)
-        good_array = array[i, good_indexes]
-        interpolated_array[i, good_indexes] = array[i, good_indexes]
-        interpolated = np.interp(np.nonzero(np.array(bad_indexes))[0], np.nonzero(np.array(good_indexes))[0], np.array(good_array))
-        interpolated_array[i, bad_indexes] = interpolated
+        good_vector = vector[good_indexes]
+        interpolated_vector[good_indexes] = vector[good_indexes]
+        interpolated = np.interp(np.nonzero(np.array(bad_indexes))[0], np.nonzero(np.array(good_indexes))[0], np.array(good_vector))
+        interpolated_vector[bad_indexes] = interpolated
+        return interpolated_vector
+
+    interpolated_array = np.zeros_like(array)
+    if len(array.shape) == 2:
+        for i_shape0 in range(array.shape[0]):
+            interpolated_array[i_shape0, :] = interpolate(array[i_shape0, :])
+    elif len(array.shape) == 3:
+        for i_shape0 in range(array.shape[0]):
+            for i_shape1 in range(array.shape[1]):
+                interpolated_array[i_shape0, i_shape1, :] = interpolate(array[i_shape0, i_shape1, :])
+    else:
+        raise NotImplementedError("Only 2D and 3D arrays are supported yet for interpolate_missing_data.")
 
     new_array = array.copy()
     new_array.values = interpolated_array[:, :]
