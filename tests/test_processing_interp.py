@@ -25,3 +25,21 @@ def test_proc_time_normalize():
     is_expected_array(
         ANALOGS_DATA.meca.time_normalize(time_vector=time_vector), **EXPECTED_VALUES[31]
     )
+
+
+
+def test_proc_interpolate():
+
+    # Fake data
+    marker_data_with_nans = MARKERS_DATA.copy()
+    marker_data_with_nans.values[0, 0, 5:10] = [1, np.nan, np.nan, np.nan, 2]
+    analog_data_with_nans = ANALOGS_DATA.copy()
+    analog_data_with_nans.values[0, 5:10] = [1, np.nan, np.nan, np.nan, 2]
+
+    # Test that it has NaNs
+    np.testing.assert_array_equal(marker_data_with_nans.values[0, 0, 5:10], [1, np.nan, np.nan, np.nan, 2])
+    np.testing.assert_array_equal(analog_data_with_nans.values[0, 5:10], [1, np.nan, np.nan, np.nan, 2])
+
+    # Test that it filled up the nans
+    np.testing.assert_almost_equal(marker_data_with_nans.meca.interpolate_missing_data().values[0, 0, 5:10], [1, 1.25, 1.5, 1.75, 2])
+    np.testing.assert_almost_equal(analog_data_with_nans.meca.interpolate_missing_data().values[0, 5:10], [1, 1.25, 1.5, 1.75, 2])

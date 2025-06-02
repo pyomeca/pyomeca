@@ -374,6 +374,26 @@ class DataArrayAccessor(object):
             self._obj, time_vector, n_frames, norm_time=norm_time
         )
 
+
+    def interpolate_missing_data(self):
+        """
+        Interpolate missing data.
+
+        Returns:
+            A `xarray.DataArray` with interpolated missing data
+
+        !!! example
+            To interpolate missing data in any `xarray.DataArray` (including Analogs, Angles, Markers or Rototrans):
+
+            ```python
+            from pyomeca import Analogs
+
+            analogs = Analogs.from_random_data()
+            analogs.meca.interpolate_missing_data
+            ```
+        """
+        return interp.interpolate_missing_data(self._obj)
+
     # filter ------------------------------------
     def low_pass(
         self,

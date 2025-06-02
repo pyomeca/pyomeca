@@ -22,3 +22,7 @@ def time_normalize(
             first_last_time = (array.time[0], array.time[-1])
         time_vector = np.linspace(first_last_time[0], first_last_time[1], n_frames)
     return array.interp(time=time_vector)
+
+
+def interpolate_missing_data(array: xr.DataArray) -> xr.DataArray:
+    return array.interpolate_na(dim="time", method="linear")
