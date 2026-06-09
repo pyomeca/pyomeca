@@ -56,13 +56,11 @@ def read_c3d(
     attrs["first_frame"] = reader.header().firstFrame() * data_by_frame
     attrs["last_frame"] = reader.header().lastFrame() * data_by_frame
     attrs["rate"] = reader.header().frameRate() * data_by_frame
-    units = reader.parameters().group(group).parameter("UNITS").valuesAsString()
-    attrs["units"] = units[0] if len(units) > 0 else None
+    attrs["units"] = reader.parameters().group(group).parameter("UNITS").valuesAsString()[0]
 
     time = np.linspace(
         start=0, stop=data.shape[-1] / attrs["rate"], num=data.shape[-1], endpoint=False
     )
-
     return caller(
         data[0, ...] if group == "ANALOG" else data, channels, time, attrs=attrs
     )
