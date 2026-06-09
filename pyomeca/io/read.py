@@ -10,12 +10,12 @@ from .utils import col_spliter, find_end_header_in_opensim_file
 
 
 def read_c3d(
-    caller: Callable,
-    filename: Union[str, Path],
-    usecols: Optional[List[Union[str, int]]] = None,
-    prefix_delimiter: Optional[str] = None,
-    suffix_delimiter: Optional[str] = None,
-    attrs: Optional[dict] = None,
+        caller: Callable,
+        filename: Union[str, Path],
+        usecols: Optional[List[Union[str, int]]] = None,
+        prefix_delimiter: Optional[str] = None,
+        suffix_delimiter: Optional[str] = None,
+        attrs: Optional[dict] = None,
 ) -> xr.DataArray:
     group = "ANALOG" if caller.__name__ == "Analogs" else "POINT"
 
@@ -49,37 +49,41 @@ def read_c3d(
     data_by_frame = 1 if group == "POINT" else reader.header().nbAnalogByFrame()
 
     attrs = attrs if attrs else {}
+
+    if data_by_frame == 0:
+        return caller(data[0, ...] if group == "ANALOG" else data, channels, time=np.ndarray([]), attrs=attrs)
+
     attrs["first_frame"] = reader.header().firstFrame() * data_by_frame
     attrs["last_frame"] = reader.header().lastFrame() * data_by_frame
     attrs["rate"] = reader.header().frameRate() * data_by_frame
-    attrs["units"] = (
-        reader.parameters().group(group).parameter("UNITS").valuesAsString()[0]
-    )
+    units = reader.parameters().group(group).parameter("UNITS").valuesAsString()
+    attrs["units"] = units[0] if len(units) > 0 else None
 
     time = np.linspace(
         start=0, stop=data.shape[-1] / attrs["rate"], num=data.shape[-1], endpoint=False
     )
+
     return caller(
         data[0, ...] if group == "ANALOG" else data, channels, time, attrs=attrs
     )
 
 
 def read_csv_or_excel(
-    caller: Callable,
-    extension: str,
-    filename: Union[str, Path],
-    usecols: Optional[List[Union[str, int]]] = None,
-    header: Optional[int] = None,
-    first_row: int = 0,
-    first_column: Optional[Union[str, int]] = None,
-    time_column: Optional[Union[str, int]] = None,
-    trailing_columns: Optional[Union[str, int]] = None,
-    prefix_delimiter: Optional[str] = None,
-    suffix_delimiter: Optional[str] = None,
-    skip_rows: Optional[List[int]] = None,
-    pandas_kwargs: Optional[dict] = None,
-    attrs: Optional[dict] = None,
-    sheet_name: Union[int, str] = 0,
+        caller: Callable,
+        extension: str,
+        filename: Union[str, Path],
+        usecols: Optional[List[Union[str, int]]] = None,
+        header: Optional[int] = None,
+        first_row: int = 0,
+        first_column: Optional[Union[str, int]] = None,
+        time_column: Optional[Union[str, int]] = None,
+        trailing_columns: Optional[Union[str, int]] = None,
+        prefix_delimiter: Optional[str] = None,
+        suffix_delimiter: Optional[str] = None,
+        skip_rows: Optional[List[int]] = None,
+        pandas_kwargs: Optional[dict] = None,
+        attrs: Optional[dict] = None,
+        sheet_name: Union[int, str] = 0,
 ):
     if skip_rows is None:
         skip_rows = np.arange(header + 1, first_row) if header else np.arange(first_row)
@@ -133,10 +137,10 @@ def read_csv_or_excel(
 
 
 def read_sto_or_mot(
-    caller: Callable,
-    filename: Union[str, Path],
-    end_header: Optional[int] = None,
-    **kwargs,
+        caller: Callable,
+        filename: Union[str, Path],
+        end_header: Optional[int] = None,
+        **kwargs,
 ):
     if end_header is None:
         end_header = find_end_header_in_opensim_file(filename)
